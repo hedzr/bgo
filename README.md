@@ -30,9 +30,44 @@ All things you need to do is entering the golang project directory and entering 
 
 ## Getting Started
 
-### directly
+### Install
 
-Go into a folder and run bgo, the cli apps will be found and built.
+Download the prebuilt binaries from Release page.
+
+Or Built from source code:
+
+```bash
+git clone http://github.com/hedzr/bgo.git
+cd bgo
+go run . -s
+```
+
+`go run . -s` will run bgo from source code and install itself to ~/go/bin/.
+
+You could run bgo via docker way:
+
+```bash
+docker pull hedzr/bgo
+# or
+docker push ghcr.io/hedzr/bgo:latest
+```
+
+And run it:
+
+```bash
+docker run -it --rm -v $PWD:/app -v /tmp:/tmp -v /tmp/go-pkg:/go/pkg hedzr/bgo
+```
+
+For macOS/Linux, there is a brew formula:
+
+```bash
+brew install hedzr/brew/bgo
+```
+
+
+### Run directly
+
+To work without `.bgo.yml`, simply go into a folder and run bgo, the cli apps under the folder will be found out and built.
 
 ```bash
 cd my-projects
@@ -46,9 +81,9 @@ bgo --for linux/386 -for linux/amd64,darwin/arm64
 bgo -os linux -arch 386 -arch amd64 -arch arm64
 ```
 
-### with `.bgo.yml`
+### Run with `.bgo.yml`
 
-#### create `.bgo.yml` at first
+#### Create `.bgo.yml` at first
 
 ```bash
 cd my-projects
@@ -56,9 +91,13 @@ bgo init  # create bgo.yml by scanning
 mv bgo.yml .bgo.yml # rename it
 ```
 
-#### tune `.bgo.yml`
+#### Tune `.bgo.yml`
 
-#### run
+See sample of `.bgo.yml`
+
+[.bgo.yml](https://github.com/hedzr/bgo/blob/master/.bgo.yaml)
+
+#### Run
 
 ```bash
 bgo
@@ -73,9 +112,7 @@ bgo will load projects from `.bgo.yml` and build them
 2. `bgo`|`bgo -a`: auto mode - build projects in `.bgo.yml`
 3. `bgo -f`: full mode - build by scanning current directory
 
-## Sample of `.bgo.yml`
 
-[.bgo.yml](https://github.com/hedzr/bgo/blob/master/.bgo.yaml)
 
 
 ## Inspired By:
