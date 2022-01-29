@@ -1,0 +1,127 @@
+---
+app:
+  bgo:
+    build:
+      # the predefined limitations
+      # for guiding which os and arch will be building in auto scope.
+      #
+      # If 'bgo.build.for' is empty slice, the whole available 'go tool dist list'
+      # will be used.
+      #
+      #for:
+      #  - "linux/amd64"
+      #  - "windows/amd64"
+      #  - "darwin/amd64"
+      #  - "darwin/arm64"
+
+      # the predefined limitations
+      os: [ linux ]
+
+      # the predefined limitations
+      #,386,arm64
+      arch: [ amd64 ]
+
+      ldflags: [ "-s", "-w" ]
+
+      # build scopes: auto, full, short
+      #
+      #    bgo --auto will scan the .bgo.yml in workdir and all sub-folders and apply its
+      #    bgo --full will populate all supported targets with 'go tool dist list'
+      #    bgo --short will build just for current hosted CPU and Arch
+      #
+      # First project in first group is **active** project.
+      # Or, first project scanned is **active** if without .bgo.yml found.
+      #
+      # A **active** project will be built in working in 'short' scope.
+      scope: auto
+
+      output:
+        dir: ./bin
+        # split-to sample: "{{.GroupKey}}/{{.ProjectName}}"
+        #
+        # named-as sample: "{{.AppName}}-{{.Version}}-{{.OS}}-{{.ARCH}}"
+        # ## suffix-as: "{{if .OS == windows}}.exe{{else}}{{end}}"
+        # ## zip-suffix-as: "{{if .OS == windows}}.7z{{else}}.xz{{end}}"
+
+      # wild matches with '*' and '?'
+      # excludes patterns will be performed to project directories.
+      # but projects specified in .bgo.yml are always enabled.
+      excludes:
+        - "study*"
+        - "test*"
+
+      goproxy:                # optional, string,
+
+      projects:
+        000-default-group:
+          leading-text:
+          items:
+            # first part of a project key is treated as sorting key.
+            003-generic:
+              dir: ./study/generic
+              gocmd: go1.18beta1
+              os: [darwin]
+              arch: [amd64]
+              version:   # if git revision cannot be retrieved, or just a fixed version be set here
+              #disable: true
+
+            009-bgo-disabled:     # <- form: sortingKey-projectName
+              dir: cli/bgo
+              disabled: true
+
+            001-bgo:     # <- form: sortingKey-projectName
+              name:      # <- app name
+              version: 1.0.0
+              dir: .
+              gen: false
+              install: true
+              cgo: false
+              keep-workdir: false   # true: don't switch workdir to 'dir'
+              use-workdir:          # specify a special workdir
+              extends:
+                - pkg: "github.com/hedzr/cmdr/conf"
+                  values:
+                    AppName: "{{.AppName}}"
+                    Version: "{{.Version}}"
+                    Buildstamp: "{{.BuildTime}}" # or shell it
+                    Githash: "`git describe --tags --abbrev=16`"
+                    # Githash: "{{.GitRevision}}"  # or shell it: "`git describe --tags --abbrev=9`"
+                    GoVersion: "{{.GoVersion}}"  # or shell it
+                    ServerID: "{{.randomString}}"
+              post-action: |
+                if [[ "$OSTYPE" == *{{.OS}}* && "{{.Info.GOARCH}}" == {{.ARCH}} ]]; then
+                  cp {{.Output.Path}} $HOME/go/bin/
+                fi
+                echo "OS: $OSTYPE, Arch: {{.Info.GOARCH}}"
+
+              ldflags: [ "-s", "-w" ] # default ldflags is to get the smaller build for releasing
+              asmflags: []
+              gcflags: []
+              gccgoflags: []
+              tags: []
+              race: false
+              msan: false
+
+              # gocmd: $HOME/go/go1.18beta1/bin/go1.18beta1
+              # goroot: ""
+              #
+              # debug: false            # true to produce a larger build with debug info
+              # disable-result: false   # no ll (Shell list) building result
+              #
+              # disabled: false         # disable this building target temporarily if necessary
+              #
+              # os: [ "linux","darwin","windows" ]
+              # arch: [ "amd64" ]
+              # for: [ "linux/riscv64" ]
+              #
+              # pre-action:
+              # pre-action-file:
+              # post-action:
+              # post-action-file:
+
+            002-jsonx:
+              dir: tools/jsonx
+              gen:
+
+
+

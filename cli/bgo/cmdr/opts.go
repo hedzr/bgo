@@ -51,10 +51,10 @@ func init() {
 	options = append(options, optAddTraceOption)
 	//options = append(options, optAddServerExtOpt«ion)
 
-	//// allow and search '.bgo.yml' at first
-	//locations := []string{".$APPNAME.yml"}
-	//locations = append(locations, cmdr.GetPredefinedLocations()...)
-	//options = append(options, cmdr.WithPredefinedLocations(locations...))
+	// allow and search '.bgo.yml' at first
+	locations := []string{".$APPNAME.yml"}
+	locations = append(locations, cmdr.GetPredefinedLocations()...)
+	options = append(options, cmdr.WithPredefinedLocations(locations...))
 }
 
 func isDebugBuild() bool { return isdelve.Enabled }

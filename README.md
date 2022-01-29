@@ -29,6 +29,16 @@ make info    # print and review the golang build env
 make build
 ```
 
+
+
+## Inspired By:
+
+- https://github.com/mitchellh/gox
+- https://dave.cheney.net/2015/08/22/cross-compilation-with-go-1-5
+- https://github.com/davecheney/golang-crosscompile
+- https://github.com/laher/goxc
+- Makefile
+
 ## LICENSE
 
 MIT

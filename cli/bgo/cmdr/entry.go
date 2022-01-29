@@ -3,7 +3,6 @@ package cmdr
 import (
 	"fmt"
 
-	"github.com/hedzr/bgo/internal"
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/log"
 	"gopkg.in/hedzr/errors.v2"
@@ -22,7 +21,7 @@ func onUnhandledErrorHandler(err interface{}) {
 		// return
 	}
 
-	internal.App().Close()
+	//internal.App().Close()
 
 	panic(err)
 }

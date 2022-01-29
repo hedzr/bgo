@@ -3,15 +3,28 @@ package cmdr
 //goland:noinspection GoNameStartsWithPackageName
 const (
 	appName   = "bgo"
-	version   = "0.2.5"
-	copyright = "bgo - A devops tool - cmdr series"
-	desc      = "bgo is an effective devops tool. It make an demo application for 'cmdr'"
-	longDesc  = `bgo is an effective devops tool. It make an demo application for 'cmdr'.
+	version   = "0.2.9"
+	copyright = "bgo - A super easy way to build your go apps - cmdr series"
+	desc      = "bgo provides a super easy way to build your go apps"
+	longDesc  = `bgo provides a super easy way to build your go apps.
 
 To get help for bgo building options, run 
-'bgo --help', or 'bgo -h'.
+'bgo build --help', or 'bgo b -h'.
 `
 	examples = `
+$ {{.AppName}} init
+  generate bgo.yml. Please rename to .bgo.yml so that {{.AppName}} can autoload it
+$ {{.AppName}}
+  run 'go build' in accord with .bgo.yml
+$ {{.AppName}} -s
+  run 'go build' for current GOOS/GOARCH
+$ {{.AppName}} --for linux/riscv64
+  run 'go build' for specified os/arch
+$ {{.AppName}} --for linux/riscv64 --for linux/386
+  run 'go build' for specified os/arch list
+$ {{.AppName}} --help
+  show help screen.`
+	examplesLong = `
 $ {{.AppName}} gen shell [--bash|--zsh|--auto]
   generate bash/shell completion scripts
 $ {{.AppName}} gen man

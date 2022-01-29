@@ -1,4 +1,10 @@
 swaggerdocs/
+bgo
+bgo.yml
+tools/bgo/go.work
+go.work
+.local/
+
 
 .idea/
 *.iml
