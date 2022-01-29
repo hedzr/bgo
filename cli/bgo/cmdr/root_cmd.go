@@ -1,8 +1,8 @@
 package cmdr
 
 import (
-	"cmdr-starter/internal"
-	"cmdr-starter/internal/core"
+	"github.com/hedzr/bgo/internal"
+	"github.com/hedzr/bgo/internal/core"
 	"github.com/hedzr/cmdr"
 )
 
@@ -24,7 +24,7 @@ func buildRootCmd() (rootCmd *cmdr.RootCommand) {
 		//AddGlobalPostAction(func(cmd *cmdr.Command, args []string) {
 		//	//fmt.Println("# global post-action 2")
 		//}).
-		Copyright(copyright, "hedzr").
+		Copyright(copyright, "bgo Authors").
 		Description(desc, longDesc).
 		Examples(examples)
 	rootCmd = root.RootCommand()

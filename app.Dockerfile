@@ -72,7 +72,7 @@ RUN export GOVER=$(go version) \
     && echo "Using APPNAME=$APPNAME VERSION=$VERSION" \
     && CGO_ENABLED=0 go build -v -tags docker -tags k8s,istio -tags cmdr-apps \
        -ldflags "$LDFLAGS" \
-       -o $TGT/var/lib/$APPNAME/$APPNAME ./cli/your-starter/
+       -o $TGT/var/lib/$APPNAME/$APPNAME ./cli/bgo/
 RUN ls -la $TGT $TGT/var/lib/$APPNAME $TGT/etc/$APPNAME
 # RUN ldd --help
 # RUN ldd $TGT/var/lib/$APPNAME/$APPNAME   # need musl-utils & musl-dev
@@ -134,7 +134,7 @@ EXPOSE $PORT
 
 # Use an unprivileged user.
 USER $USER
-ENTRYPOINT ["/var/lib/your-starter/your-starter"]
+ENTRYPOINT ["/var/lib/bgo/bgo"]
 #ENTRYPOINT ["$APP_HOME/$APPNAME"]
 CMD ["--help"]
 #CMD ["server", "run"]

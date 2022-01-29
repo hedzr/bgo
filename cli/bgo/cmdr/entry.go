@@ -3,7 +3,7 @@ package cmdr
 import (
 	"fmt"
 
-	"cmdr-starter/internal"
+	"github.com/hedzr/bgo/internal"
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/log"
 	"gopkg.in/hedzr/errors.v2"

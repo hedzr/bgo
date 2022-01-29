@@ -1,7 +1,7 @@
 package main
 
 import (
-	cmdrrel "github.com/%REPOSITORY%/cli/%NAME%/cmdr"
+	cmdrrel "github.com/hedzr/bgo/cli/bgo/cmdr"
 )
 
 //func init() {

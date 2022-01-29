@@ -18,7 +18,7 @@ func init() {
 
 	options = append(options, cmdr.WithHelpTailLine(`
 # Type '-h'/'-?' or '--help' to get command help screen.
-# Star me if it's helpful: https://github.com/%REPOSITORY%
+# Star me if it's helpful: https://github.com/hedzr/bgo
 `))
 
 	if isDebugBuild() {

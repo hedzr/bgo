@@ -2,14 +2,14 @@ package cmdr
 
 //goland:noinspection GoNameStartsWithPackageName
 const (
-	appName   = "%NAME%"
+	appName   = "bgo"
 	version   = "0.2.5"
-	copyright = "%NAME% - A devops tool - cmdr series"
-	desc      = "%NAME% is an effective devops tool. It make an demo application for 'cmdr'"
-	longDesc  = `%NAME% is an effective devops tool. It make an demo application for 'cmdr'.
+	copyright = "bgo - A devops tool - cmdr series"
+	desc      = "bgo is an effective devops tool. It make an demo application for 'cmdr'"
+	longDesc  = `bgo is an effective devops tool. It make an demo application for 'cmdr'.
 
-To get help for %NAME% building options, run 
-'%NAME% --help', or '%NAME% -h'.
+To get help for bgo building options, run 
+'bgo --help', or 'bgo -h'.
 `
 	examples = `
 $ {{.AppName}} gen shell [--bash|--zsh|--auto]
