@@ -3,10 +3,15 @@ package cmdr
 import (
 	"github.com/hedzr/bgo/internal/logic"
 	"github.com/hedzr/cmdr"
+	"github.com/hedzr/cmdr/conf"
 )
 
 func buildRootCmd() (rootCmd *cmdr.RootCommand) {
-	root := cmdr.Root(appName, version).
+	ver := version
+	if conf.ServerID != "" {
+		ver = conf.Version
+	}
+	root := cmdr.Root(appName, ver).
 		//AddGlobalPreAction(func(cmd *cmdr.Command, args []string) (err error) {
 		//	// fmt.Printf("# global pre-action 1, curr-dir: %v\n", cmdr.GetCurrentDir())
 		//	// cmdr.Set("enable-ueh", true)
