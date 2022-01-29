@@ -132,21 +132,19 @@ jobs:
             --build-arg VERSION=$VERSION \
             --build-arg PORT=$PORT \
             --build-arg GOPROXY=https://goproxy.io,direct \
-            -t ghcr.io/$ACTOR/cli/$IMAGE_NAME:$IMAGE_TAG \
-            -t ghcr.io/$ACTOR/cli/$IMAGE_NAME:latest \
+            -t ghcr.io/$ACTOR/$IMAGE_NAME:$IMAGE_TAG \
+            -t ghcr.io/$ACTOR/$IMAGE_NAME:latest \
             -t $ACTOR/$IMAGE_NAME:$IMAGE_TAG \
             -t $ACTOR/$IMAGE_NAME:latest \
             .
           if [ "$GH_TOKEN" != "" ]; then
-            echo $GH_TOKEN | docker login ghcr.io -u $ACTOR --password-stdin
-            # docker tag IMAGE_ID ghcr.io/$ACTOR/cli/$IMAGE_NAME:$VERSION
-            docker push ghcr.io/$ACTOR/cli/$IMAGE_NAME:$IMAGE_TAG
-            docker push ghcr.io/$ACTOR/cli/$IMAGE_NAME:latest
+            docker login ghcr.io -u $ACTOR -p $GH_TOKEN
+            # docker tag IMAGE_ID ghcr.io/$ACTOR/$IMAGE_NAME:$VERSION
+            docker push ghcr.io/$ACTOR/$IMAGE_NAME:$IMAGE_TAG
+            docker push ghcr.io/$ACTOR/$IMAGE_NAME:latest
           fi
           if [ "$HUB_TOKEN" != "" ]; then
-            echo $HUB_TOKEN | docker login -u $ACTOR --password-stdin
-            # docker tag docker.pkg.github.com/$ACTOR/cli/$IMAGE_NAME:latest hedzr/$IMAGE_NAME:$IMAGE_TAG
-            # docker tag docker.pkg.github.com/$ACTOR/cli/$IMAGE_NAME:latest hedzr/$IMAGE_NAME:latest
+            docker login -u $ACTOR -p $HUB_TOKEN
             docker push $ACTOR/$IMAGE_NAME:$IMAGE_TAG
             docker push $ACTOR/$IMAGE_NAME:latest
           fi
