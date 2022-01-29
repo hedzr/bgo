@@ -111,7 +111,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
           #IMAGE_NAME: your-starter # never used
           #IMAGE_TAG:
           #PORT:
@@ -201,6 +201,9 @@ jobs:
 
       - name: bump homebrew-brew
         if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
         run: |
           mkdir .pr && cd .pr
           APP_NAME="${GITHUB_REPOSITORY##*/}"
@@ -231,7 +234,7 @@ jobs:
           .pr/bin/bumper brew -act $ACTOR -am $ACTOR_EMAIL -f $APP_NAME \
             -ref $GITHUB_REF -ver $RELEASE_VERSION -t $HOMEBREW_TAP \
             --sha $BINARIES_ASC \
-            --token ${{ secrets.TAP_GITHUB_TOKEN }} \
+            --token ${GH_TOKEN} \
             --push
       - name: bump launchpad
         if: startsWith(github.ref, 'refs/tags/v')
