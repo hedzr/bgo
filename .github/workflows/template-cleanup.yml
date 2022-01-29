@@ -1,0 +1,87 @@
+# GitHub Actions Workflow responsible for cleaning up the IntelliJ Platform Plugin Template repository from
+# the template-specific files and configurations. This workflow is supposed to be triggered automatically
+# when a new template-based repository has been created.
+
+name: Template Cleanup
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+
+  # Run cleaning process only if workflow is triggered by the non-JetBrains/intellij-platform-plugin-template repository.
+  template-cleanup:
+    name: Template Cleanup
+    runs-on: ubuntu-latest
+    if: github.event.repository.name != 'cmdr-go-starter'
+    steps:
+
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v2
+
+      # Cleanup project
+      - name: Cleanup
+        run: |
+          export LC_CTYPE=C
+          export LANG=C
+
+          # Prepare variables
+          NAME="${GITHUB_REPOSITORY##*/}"
+          SAFE_NAME=$(echo $NAME | sed 's/[^a-zA-Z0-9]//g' | tr '[:upper:]' '[:lower:]')
+          ACTOR=$(echo $GITHUB_ACTOR | tr '[:upper:]' '[:lower:]')
+          GROUP="com.github.$ACTOR.$SAFE_NAME"
+
+          mv .github/template-cleanup/cli/your-starter .github/template-cleanup/cli/$NAME
+          mv ./cli/your-starter ./cli/$NAME
+
+          # Replace placeholders in the template-cleanup files
+          find .github/template-cleanup/* -type f -exec sed -i "s/%NAME%/$NAME/g" {} +
+          find .github/template-cleanup/* -type f -exec sed -i "s/%USER%/$ACTOR/g" {} +
+          find .github/template-cleanup/* -type f -exec sed -i "s/%REPOSITORY%/${GITHUB_REPOSITORY/\//\\/}/g" {} +
+          find .github/template-cleanup/* -type f -exec sed -i "s/%GROUP%/$GROUP/g" {} +
+          
+          # Replace template package name in project files with $GROUP
+          #find docs -type f -exec sed -i "s/org.jetbrains.plugins.template/$GROUP/g" {} +
+          #find docs -type f -exec sed -i "s/Template/$NAME/g" {} +
+          #find docs -type f -exec sed -i "s/JetBrains/$ACTOR/g" {} +
+
+          # Remove lines marked with #REMOVE-ON-CLEANUP#
+          find . -type f -exec sed -i '/#REMOVE-ON-CLEANUP#/d' {} +
+
+          # Move content
+          # mkdir -p src/main/kotlin/${GROUP//.//}
+          cp -R .github/template-cleanup/* .
+          # cp -R src/main/kotlin/org/jetbrains/plugins/template/* src/main/kotlin/${GROUP//.//}/
+
+          # mv config files
+          find ./ci/etc/your-starter/* -type f -exec sed -i "s/your-starter/$NAME/g" {} +
+          mv ./ci/etc/your-starter ./ci/etc/$NAME
+          mv ./ci/etc/$NAME/your-starter.yml ./ci/etc/$NAME/$NAME.yml
+
+          # Cleanup
+          rm -rf \
+            .github/readme \
+            .github/template-cleanup \
+            .github/workflows/template-cleanup.yml \
+            .idea/icon.png \
+            CODE_OF_CONDUCT.md \
+            LICENSE 2>/dev/null || true
+
+      # Commit modified files
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Template cleanup"
+          # [ "$(git branch --show-current)" == "main" ] && git checkout master && git merge --no-ff main
+
+      # Push changes
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: master
+          github_token: ${{ secrets.GITHUB_TOKEN }}

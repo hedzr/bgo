@@ -1,0 +1,245 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  pull_request:
+    branches: [ master ]
+    # types: [assigned, opened, synchronize, reopened]
+
+#on: [push, pull_request]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        go-version: [1.16.x,1.17.x] # 1.11.x, 1.12.x, 1.13.x,
+        #os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Test
+        run: |
+          GOSUMDB=off go mod download
+          # go install -v github.com/swaggo/swag/cmd/swag
+          # go generate ./...
+          go build -v ./cli/...
+          go test -v ./...
+
+  coverage:
+    needs: test
+    env:
+      COVERALLS_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17.x
+      - name: Checkout code
+        uses: actions/checkout@v2
+        #with:
+        #  path: ./src/github.com/${{ github.repository }}
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Test & Coverage
+        run: |
+          # go install -v github.com/swaggo/swag/cmd/swag
+          # go generate ./...
+          go test -v -coverprofile=profile.cov ./...
+      - name: Send coverage
+        uses: shogo82148/actions-goveralls@v1
+        with:
+          path-to-profile: profile.cov
+          parallel: true
+
+  build:
+    needs: coverage
+    #env:
+    #  GOPATH: ${{ github.workspace }}
+    #  GO111MODULE: off
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17.x
+      - name: Checkout code
+        uses: actions/checkout@v2
+        #with:
+        #  path: ./src/github.com/${{ github.repository }}
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Docker Build
+        # if: startsWith(github.ref, 'refs/tags/v') || contains(github.ref, '/master')
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IMAGE_NAME: your-starter # never used
+          IMAGE_TAG:
+          PORT:
+          VERSION:
+        run: |
+          IMAGE_NAME="${GITHUB_REPOSITORY##*/}"
+          IMAGE_NAME=$(echo $IMAGE_NAME | sed 's/[go-]//g' | sed 's/[-go]//g' | tr '[:upper:]' '[:lower:]')
+          if [ $IMAGE_NAME = "cmdrstarter" ]; then IMAGE_NAME=your-starter; fi
+          ACTOR=$(echo $GITHUB_ACTOR | tr '[:upper:]' '[:lower:]')
+          #
+          IMAGE_TAG=${GITHUB_REF#*/}
+          IMAGE_TAG=${IMAGE_TAG#*/}
+          IMAGE_TAG=$(echo $IMAGE_TAG | sed -e "s#^v##")
+          echo "Using IMAGE_TAG: $IMAGE_TAG"
+          # export VERSION="$(grep -E "Version[ \t]+=[ \t]+" doc.go|grep -Eo "[0-9.]+")"
+          docker build -f app.Dockerfile \
+            --build-arg APPNAME=$IMAGE_NAME \
+            --build-arg VERSION=$VERSION \
+            --build-arg PORT=$PORT \
+            --build-arg GOPROXY=https://goproxy.io,direct \
+            -t docker.pkg.github.com/$ACTOR/cli/$IMAGE_NAME:$IMAGE_TAG \
+            -t docker.pkg.github.com/$ACTOR/cli/$IMAGE_NAME:latest \
+            -t $ACTOR/$IMAGE_NAME:$IMAGE_TAG \
+            -t $ACTOR/$IMAGE_NAME:latest \
+            .
+          echo $GH_TOKEN | docker login docker.pkg.github.com -u $ACTOR --password-stdin
+          # docker tag IMAGE_ID docker.pkg.github.com/$ACTOR/cli/$IMAGE_NAME:$VERSION
+          docker push docker.pkg.github.com/$ACTOR/cli/$IMAGE_NAME:$IMAGE_TAG
+          docker push docker.pkg.github.com/$ACTOR/cli/$IMAGE_NAME:latest
+          #
+          if [ "$HUB_TOKEN" != ""]; then
+          echo $HUB_TOKEN | docker login -u $ACTOR --password-stdin
+          # docker tag docker.pkg.github.com/$ACTOR/cli/$IMAGE_NAME:latest hedzr/$IMAGE_NAME:$IMAGE_TAG
+          # docker tag docker.pkg.github.com/$ACTOR/cli/$IMAGE_NAME:latest hedzr/$IMAGE_NAME:latest
+          docker push $ACTOR/$IMAGE_NAME:$IMAGE_TAG
+          docker push $ACTOR/$IMAGE_NAME:latest
+          fi
+
+      - name: Build
+        # if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          APP_NAME="${GITHUB_REPOSITORY##*/}"
+          APP_NAME=$(echo $APP_NAME | sed 's/[go-]//g' | sed 's/[-go]//g' | tr '[:upper:]' '[:lower:]')
+          if [ $APP_NAME = "cmdrstarter" ]; then APP_NAME=your-starter; fi
+          ACTOR=$(echo $GITHUB_ACTOR | tr '[:upper:]' '[:lower:]')
+          #
+          export GOSUMDB=off
+          export GIT_REVISION="$(git rev-parse --short HEAD)"
+          export GOVERSION="$(go version)"
+          export BUILDTIME="$(date -u '+%Y-%m-%d_%H-%M-%S')"
+          export VERSION="$(grep -E "Version[ \t]+=[ \t]+" doc.go|grep -Eo "[0-9.]+")"
+          export W_PKG="github.com/hedzr/cmdr/conf"
+          export LDFLAGS="-s -w \
+            -X '$W_PKG.Githash=$GIT_REVISION' \
+            -X '$W_PKG.GoVersion=$GOVERSION' \
+            -X '$W_PKG.Buildstamp=$BUILDTIME' \
+            -X '$W_PKG.Version=$VERSION'"
+          cat <<EOF
+                Version: $VERSION
+           GIT_REVISION: $GIT_REVISION
+              GOVERSION: $GOVERSION
+              BUILDTIME: $BUILDTIME
+          EOF
+          # go install -v github.com/swaggo/swag/cmd/swag
+          # go generate ./...
+          # for app in app1 app2 app3 ...; do
+          for app in $(ls -b ./cli) ; do
+          for dir in cli; do
+            for GOOS in windows linux darwin; do
+              for GOARCH in amd64 arm64; do
+                suf=; if [[ $GOOS == "windows" ]]; then suf=".exe"; if [ "$GOARCH" == "arm64" ]; then GOARCH=arm; fi; fi
+                GOOS=$GOOS GOARCH=$GOARCH go build -v -ldflags "$LDFLAGS" -o ./bin/$APP_NAME$suf ./$dir/$app
+                chmod +x ./bin/$APP_NAME$suf
+                if [[ $GOOS == "windows" ]]; then
+                  7z a ./bin/$APP_NAME-$GOOS-$GOARCH$suf.7z ./bin/$APP_NAME$suf
+                  cd ci && 7z a ./bin/$APP_NAME-$GOOS-$GOARCH$suf.7z etc/* && cd ..
+                else
+                  tar -czf ./bin/$APP_NAME-$GOOS-$GOARCH$suf.tgz ./bin/$APP_NAME$suf -Cci etc
+                fi
+                rm -f ./bin/$APP_NAME$suf
+              done
+            done
+          done
+          done
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@master
+        if:   startsWith(github.ref, 'refs/tags/v')
+        with:
+          name: binaries
+          path: bin/
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        if:   startsWith(github.ref, 'refs/tags/v')
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: bin/*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
+          #body:
+
+  #      - name: Create Release
+  #        id: create_release
+  #        uses: actions/create-release@v1
+  #        env:
+  #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #        with:
+  #          tag_name: ${{ github.ref }}
+  #          release_name: Release ${{ github.ref }}
+  #          draft: false
+  #          prerelease: false
+  #
+  #      - name: Upload Release Asset
+  #        id: upload-release-asset
+  #        uses: actions/upload-release-asset@v1
+  #        env:
+  #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #        with:
+  #          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+  #          asset_path: bin/*
+  #          asset_name: my-artifact.zip
+  #          asset_content_type: application/zip
+
+#  # notifies coveralls that all test jobs are finished
+#  finish:
+#    name: Finish
+#    needs: coverage
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: shogo82148/actions-goveralls@v1
+#        with:
+#          parallel-finished: true
+
+
+
+
+
+
+
+
