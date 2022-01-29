@@ -17,29 +17,65 @@ All things you need to do is entering the golang project directory and entering 
 
 - Run go building with or without a config file `.bgo.yml`
 - Scan the directory to grab all main packages and initial `.bgo.yml`
-- 
+- While 
+
+  - you have lots of small cli apps in many sub-directories
+  - one project wants go1.18beta1 and others stays in go1.17
+  - too much `-tags`, `-ldflags`, `-asmflags`, ...
+  - multiple targets, cross compiling
+  - etc.
+  
+  have a try `bgo`.
+
 
 ## Getting Started
 
-To run the CLI app:
+### directly
+
+Go into a folder and run bgo, the cli apps will be found and built.
 
 ```bash
-# go install -v github.com/swaggo/swag/cmd/swag
-go generate ./...          # run it once at least, for gen the swagger-doc files from skeletons
-go run ./cli/app/cli/app   # build the mainly main.go
+cd my-projects
+bgo
 ```
 
-### Use Makefile for building and CI
-
-You may use `make` simply:
+Filter the target systems by `-for OS/ARCH`, `-os OS` and `-arch ARCH`:
 
 ```bash
-make help    # list all available make targets, such as info, build, ...
-make info    # print and review the golang build env
-
-make build
+bgo --for linux/386 -for linux/amd64,darwin/arm64
+bgo -os linux -arch 386 -arch amd64 -arch arm64
 ```
 
+### with `.bgo.yml`
+
+#### create `.bgo.yml` at first
+
+```bash
+cd my-projects
+bgo init  # create bgo.yml by scanning
+mv bgo.yml .bgo.yml # rename it
+```
+
+#### tune `.bgo.yml`
+
+#### run
+
+```bash
+bgo
+```
+
+bgo will load projects from `.bgo.yml` and build them
+
+
+### Scopes
+
+1. `bgo -s`: short mode - this will build first project with current GOOS/GOARCH.
+2. `bgo`|`bgo -a`: auto mode - build projects in `.bgo.yml`
+3. `bgo -f`: full mode - build by scanning current directory
+
+## Sample of `.bgo.yml`
+
+[.bgo.yml](https://github.com/hedzr/bgo/blob/master/.bgo.yaml)
 
 
 ## Inspired By:
