@@ -66,7 +66,7 @@ RUN echo "Using GOPROXY=$GOPROXY" && go mod download
 RUN export GOVER=$(go version) \
 	&& export LDFLAGS="-s -w \
 	-X \"$W_PKG.Buildstamp=${BUILDTIME}\" -X \"$W_PKG.Githash=${GIT_REVISION}\" \
-	-X \"$W_PKG.Version=${VERSION}\" -X \"$W_PKG.GoVersion=${GOVER}\" " \
+	-X \"$W_PKG.Version=${VERSION}\" -X \"$W_PKG.GoVersion=${GOVER}\" \
 	-X \"$W_PKG.ServerID=docker-build\" " \
 	&& echo "Using APPNAME=$APPNAME VERSION=$VERSION" \
 	&& CGO_ENABLED=0 go build -v -trimpath \

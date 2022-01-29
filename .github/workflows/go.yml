@@ -168,7 +168,7 @@ jobs:
             -X '$W_PKG.GoVersion=$GOVERSION' \
             -X '$W_PKG.Buildstamp=$BUILDTIME' \
             -X '$W_PKG.ServerID=pre-built' \
-            -X '$W_PKG.Version=$VERSION'"
+            -X '$W_PKG.Version=$VERSION' "
           cat <<EOF
                 Version: $VERSION
            GIT_REVISION: $GIT_REVISION
