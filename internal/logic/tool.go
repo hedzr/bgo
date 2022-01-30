@@ -19,7 +19,7 @@ import (
 )
 
 func setSaveMode(b bool) {
-	k2 := "save"
+	k2 := "build.save"
 	cmdr.Set(k2, b)
 }
 
