@@ -49,7 +49,7 @@ You could run bgo via docker way:
 ```bash
 docker pull hedzr/bgo
 # or
-docker push ghcr.io/hedzr/bgo:latest
+docker pull ghcr.io/hedzr/bgo:latest
 ```
 
 And run it:
