@@ -13,6 +13,8 @@ All things you need to do is entering the golang project directory and entering 
 
 > powered by [cmdr](https://github.com/hedzr/cmdr).
 
+![tip-for-bgo](https://cdn.jsdelivr.net/gh/hzimg/blog-pics@master/uPic/image-20220130110150772.png)
+
 ## Features
 
 - Run go building with or without a config file `.bgo.yml`
