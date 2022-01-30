@@ -385,7 +385,7 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 	}
 
 	err = goBuild(bc, bs, cmd...)
-
+	err = nil
 	return
 }
 
