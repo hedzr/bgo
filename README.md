@@ -29,6 +29,14 @@ All things you need to do is entering the golang project directory and entering 
   
   have a try `bgo`.
 
+## History
+
+- v0.3.0
+  - fix: init not work
+  - fix: zsh completion file not fully written
+
+- v0.2.17 and older
+  - pre-releases 
 
 ## Getting Started
 
