@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"fmt"
 	"github.com/hedzr/bgo/internal/logic/build"
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
@@ -463,8 +464,11 @@ func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error)
 			// exec.New().WithCommandString("bash -c 'echo hello world!'", '\'').WithContext(context.Background()).Run()
 		}).
 		WithOnError(func(err error, retCode int, stdoutText, stderrText string) {
-			logx.Error("ERROR:\n%v\nError:\n%v\nRetCode: %v\nCommands: %v\n ",
-				stderrText, err, retCode, cmd)
+			logx.Error("ERROR TEXT:\n%v\nError:\n%v\nRetCode: %v\nCommands: %v\n",
+				logx.ToColor(logx.Red, leftPad(stderrText, 4)),
+				logx.ToColor(logx.Red, leftPad(fmt.Sprintf("%v", err), 4)),
+				logx.ToDim(strconv.Itoa(retCode)),
+				logx.ToDim(fmt.Sprintf("%v", cmd)))
 		})
 	err = c.RunAndCheckError()
 	return
