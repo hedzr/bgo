@@ -17,6 +17,8 @@ All things you need to do is entering the golang project directory and entering 
 
 ## Features
 
+`bgo` makes your golang building life easier, it's an efficent and extensible build tool.
+
 - Run go building with or without a config file `.bgo.yml`
 - Scan the directory to grab all main packages and initial `.bgo.yml`
 - While 
@@ -30,6 +32,13 @@ All things you need to do is entering the golang project directory and entering 
   have a try `bgo`.
 
 ## History
+
+- v0.3.3 (WIP)
+  - fix: bugs
+  - fea: Aliases defined in primary config dir can be merged into bgo command system
+  - fea: `check-code-qualities` alias command added and play `gofmt`, `golint` and `golint` at once.
+  - fea: Extend bgo command system with Aliases definitions.
+  - fea: `bgo init -o bgo.{yml,yaml,json,toml}` writes different config file formats with giving suffix
 
 - v0.3.0
   - fix: init not work
@@ -53,6 +62,8 @@ go run . -s
 ```
 
 `go run . -s` will run bgo from source code and install itself to ~/go/bin/.
+
+![image-20220130101919648](https://cdn.jsdelivr.net/gh/hzimg/blog-pics@master/uPic/image-20220130101919648.png)
 
 You could run bgo via docker way:
 
@@ -84,12 +95,16 @@ cd my-projects
 bgo
 ```
 
+![image-20220128104835837](https://cdn.jsdelivr.net/gh/hzimg/blog-pics@master/uPic/image-20220128104835837.png)
+
 Filter the target systems by `-for OS/ARCH`, `-os OS` and `-arch ARCH`:
 
 ```bash
 bgo --for linux/386 -for linux/amd64,darwin/arm64
 bgo -os linux -arch 386 -arch amd64 -arch arm64
 ```
+
+Both long and short options are available for `for`, `os` and `arch`.
 
 ### Run with `.bgo.yml`
 
@@ -123,6 +138,20 @@ bgo will load projects from `.bgo.yml` and build them
 3. `bgo -f`: full mode - build by scanning current directory
 
 
+### Using shell auto-completion
+
+Run `bgo gen sh --zsh` to install auto-completion script to the proper location and enable the feature:
+
+![image-20220130092618399](https://cdn.jsdelivr.net/gh/hzimg/blog-pics@master/uPic/image-20220130092618399.png)
+
+Run `bgo gen sh --bash -o=bgo.bash` to get bash completions script and put it to the right location. Generally it should be:
+
+```bash
+bgo generate shell --bash -o=bgo.bash
+mv bgo.bash /etc/bash-completion.d/bgo
+```
+
+Nothing needs to do if installed via brew (since v0.3.3+).
 
 
 ## Inspired By:
