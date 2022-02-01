@@ -56,10 +56,6 @@ func newDynBuildInfo() *DynBuildInfo {
 	}
 }
 
-func Prepare() {
-	prepareBuildInfo()
-}
-
 var (
 	gBuildInfo    *Info
 	onceBuildInfo sync.Once
@@ -166,6 +162,8 @@ func retrieveGoToolDists() {
 		if err := scanner.Err(); err != nil {
 			logx.Fatal("Error: %v", err)
 		}
+
+		// merge all distros into cmdr Option Store, key path: app.bgo.dists.os-arch-map
 
 		//cmdr.Set("bgo.dists", TargetPlatforms)
 		err = cmdr.MergeWith(map[string]interface{}{

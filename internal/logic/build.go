@@ -27,8 +27,9 @@ func buildFull(buildScope string) (err error) {
 }
 
 func buildAuto(buildScope string) (err error) {
-	var tp *build.TargetPlatforms
-	tp, err = getTargetPlatforms()
+	var tp = build.NewTargetPlatforms()
+
+	err = tp.Init()
 	if err != nil {
 		return
 	}
@@ -73,7 +74,7 @@ func buildProjects(tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings
 
 	projectName, singleProjectOrPackage := checkSingleProjectNameSpecified(pkgs, bs)
 
-	if bs.Scope != "auto" || cmdr.GetUsedConfigFile() == "" {
+	if bs.Scope != "auto" || cmdr.GetUsedAlterConfigFile() == "" {
 		if (singleProjectOrPackage == nil && projectName != "") || projectName == "" {
 			err = scanWorkDir(bc.WorkDir, bs.Scope, pkgs, bs)
 
