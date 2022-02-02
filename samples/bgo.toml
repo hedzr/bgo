@@ -1,0 +1,67 @@
+[app]
+  [app.bgo]
+    [app.bgo.build]
+      Cgo = false
+      Race = false
+      Msan = false
+      Gocmd = ""
+      Gen = false
+      Install = false
+      Debug = false
+      DisableResult = false
+      Disabled = false
+      KeepWorkdir = false
+      UseWorkDir = ""
+      Os = ["darwin"]
+      Arch = ["amd64"]
+      Goroot = ""
+      PreAction = ""
+      PostAction = ""
+      PreActionFile = ""
+      PostActionFile = ""
+      Scope = ""
+      Excludes = ["study*", "test*"]
+      Goproxy = ""
+      SavedAs = "bgo.toml"
+      [app.bgo.build.Projects]
+        [app.bgo.build.Projects.000-default-group]
+          LeadingText = ""
+          [app.bgo.build.Projects.000-default-group.Items]
+            [app.bgo.build.Projects.000-default-group.Items.app1]
+              Name = ""
+              Dir = "app1"
+              Package = "github.com/hedzr/bgo/samples/app1"
+              MainGo = ""
+              Version = ""
+              Disabled = false
+              KeepWorkdir = true
+              UseWorkDir = ""
+              Os = []
+              Arch = []
+              Goroot = ""
+              PreAction = ""
+              PostAction = ""
+              PreActionFile = ""
+              PostActionFile = ""
+            [app.bgo.build.Projects.000-default-group.Items.app2]
+              Name = ""
+              Dir = "app2"
+              Package = "github.com/hedzr/bgo/samples/app2"
+              MainGo = ""
+              Version = ""
+              Disabled = false
+              KeepWorkdir = true
+              UseWorkDir = ""
+              Os = []
+              Arch = []
+              Goroot = ""
+              PreAction = ""
+              PostAction = ""
+              PreActionFile = ""
+              PostActionFile = ""
+      [app.bgo.build.Output]
+        Dir = "./bin"
+        SplitTo = ""
+        NamedAs = "{{.AppName}}-{{.OS}}-{{.ARCH}}"
+
+
