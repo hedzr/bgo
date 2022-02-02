@@ -1,0 +1,86 @@
+app:
+
+  aliases:
+    # group:                                  # group-name (optional). such as: "别名".
+    commands:
+      # - title: list
+      #   short-name: ls
+      #   # aliases: []
+      #   # name: ""
+      #   invoke-sh: ls -la -G                # for macOS, -G = --color; for linux: -G = --no-group
+      #   # invoke: "another cmdr command"
+      #   # invoke-proc: "..." # same with invoke-sh
+      #   desc: list the current directory
+
+      # - title: echo
+      #   invoke-sh: |
+      #     # pwd
+      #     echo "{{$flg := index .Cmd.Flags 0}}{{$path :=$flg.GetDottedNamePath}} {{$fullpath := .Store.Wrap $path}} {{$fullpath}} | {{.Store.GetString $fullpath}}"
+      #   desc: print the name
+      #   flags:
+      #     - title: name
+      #       default:              # default value
+      #       type: string          # bool, string, duration, int, uint, ...
+      #       group:
+      #       toggle-group:
+      #       desc: specify the name to be printed
+
+      - title: check-code-qualities
+        short-name: chk
+        # aliases: [check]
+        # name: ""
+        invoke-sh: |
+          which golint || go install golang.org/x/lint/golint
+          which gocyclo || go install github.com/fzipp/gocyclo
+          echo
+          echo
+          echo "Command hit: {{.Cmd.GetDottedNamePath}}"
+          echo "fmt {{.ArgsString}}"
+          gofmt -l -s -w {{range .Args}}{{.}}{{end}}
+          echo "lint {{.ArgsString}}"
+          golint {{.ArgsString}}
+          echo "cyclo ."
+          gocyclo -top 20 .
+        # invoke: "another cmdr command"
+        # invoke-proc: "..." # same with invoke-sh
+        shell: /usr/bin/env bash  # optional, default is /bin/bash
+        desc: pre-options before releasing. typically fmt,lint,cyclo,...
+
+      - title: coverage
+        short-name: cov
+        invoke-sh: |
+          # pwd
+          # echo "{{$flg := index .Cmd.Flags 0}}{{$path := $flg.GetDottedNamePath}} {{$fullpath := .Store.Wrap $path}} {{$fullpath}} | {{.Store.GetString $fullpath}}"
+          # echo "{{$flg = index .Cmd.Flags 1}}{{$path = $flg.GetDottedNamePath}} {{$fullpath2 := .Store.Wrap $path}} {{$fullpath2}} | {{.Store.GetString $fullpath2}}"
+          # echo "{{$flg = index .Cmd.Flags 2}}{{$path = $flg.GetDottedNamePath}} {{$fullpath3 := .Store.Wrap $path}} {{$fullpath3}} | {{.Store.GetString $fullpath3}}"
+          go test -v -race -coverprofile={{.Store.GetString $fullpath2}} \
+            -covermode=atomic -timeout=20m \
+            {{if not .Args}}.{{else}}{{.ArgsString}}{{end}} \
+            | tee {{.Store.GetString $fullpath3}}
+          go tool cover \
+            -html={{.Store.GetString $fullpath2}} \
+            -o={{.Store.GetString $fullpath}}
+        desc: run coverage test, produce coverage.log and cover.html
+        examples: bgo cov ./... or bgo cov
+        flags:
+          - title: html
+            default: cover.html # default value
+            default-placeholder: FILE
+            type: string # bool, string, duration, int, uint, ...
+            group:
+            toggle-group:
+            desc: specify the html filename to be output
+          - title: text
+            default: coverage.txt # default value
+            default-placeholder: FILE
+            type: string # bool, string, duration, int, uint, ...
+            group:
+            toggle-group:
+            desc: specify the coverprofile filename
+          - title: log
+            default: coverage.log # default value
+            default-placeholder: FILE
+            type: string # bool, string, duration, int, uint, ...
+            group:
+            toggle-group:
+            desc: specify the name to be logged
