@@ -7,12 +7,10 @@ import (
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/cmdr/tool/randomizer"
-	"github.com/hedzr/log/dir"
 	"github.com/hedzr/log/exec"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os"
-	"path"
 	"regexp"
 	"strings"
 	"text/template"
@@ -132,72 +130,6 @@ func ifLdflags(bc *build.Context) {
 	for k, v := range pairs {
 		bc.Ldflags = append(bc.Ldflags, k+v)
 	}
-}
-
-func getTargetPlatforms() (tp *build.TargetPlatforms, err error) {
-	tp = build.NewTargetPlatforms()
-
-	build.Prepare() // for 'bgo.dists' key in cmdr Option Store
-
-	// 'bgo.dists' was prepared by extracting from
-	// 'go tool dist list', see also
-	// prepareBuildInfo()
-	err = cmdr.GetSectionFrom("bgo.dists", &tp)
-
-	//cmdr.DebugOutputTildeInfo(true)
-
-	return
-}
-
-func saveNewBgoYamlFile(bs *BgoSettings) (err error) {
-	_ = cmdr.SaveCheckpoint()
-	defer cmdr.RestoreCheckpoint()
-
-	cmdr.ResetOptions()
-
-	var bsCopy = new(BgoSettings)
-
-	if err = cmdr.CloneViaGob(bsCopy, bs); err != nil {
-		return
-	}
-
-	cleanupBs(bsCopy)
-
-	err = cmdr.MergeWith(map[string]interface{}{
-		"app": map[string]interface{}{
-			"bgo": map[string]interface{}{
-				"build": bsCopy,
-			},
-		},
-	})
-
-	//cmdr.DebugOutputTildeInfo(false)
-	if err != nil {
-		logx.Fatal("Error: %v", err)
-	}
-
-	logx.Log("%q saved\n", path.Join(dir.GetCurrentDir(), bs.SavedAs))
-	err = cmdr.SaveAsYaml(bs.SavedAs)
-
-	if err == nil {
-		err = appendComments(bs.SavedAs)
-	}
-	return
-}
-
-func appendComments(file string) (err error) {
-	var f *os.File
-	f, err = os.OpenFile(file, os.O_APPEND|os.O_RDWR, 0644)
-	if err == nil {
-		defer func() {
-			err = f.Close()
-		}()
-
-		_, err = f.WriteString(`
-
-`)
-	}
-	return
 }
 
 func cleanupBs(bs *BgoSettings) {

@@ -22,11 +22,11 @@ type (
 	}
 
 	Output struct {
-		Dir         string `yaml:",omitempty"`              // Base Dir
-		SplitTo     string `yaml:"split-to,omitempty"`      // see build.Context, Group, Project, ... | see also BuildContext struct
-		NamedAs     string `yaml:"named-as,omitempty"`      // see build.Context,
-		SuffixAs    string `yaml:"suffix-as,omitempty"`     // NEVER USED.
-		ZipSuffixAs string `yaml:"zip-suffix-as,omitempty"` // NEVER USED. supported: gz/tgz, bz2, xz/txz, 7z
+		Dir         string `yaml:",omitempty"`                                // Base Dir
+		SplitTo     string `yaml:"split-to,omitempty"`                        // see build.Context, Group, Project, ... | see also BuildContext struct
+		NamedAs     string `yaml:"named-as,omitempty"`                        // see build.Context,
+		SuffixAs    string `yaml:"suffix-as,omitempty" json:"-" toml:"-"`     // NEVER USED.
+		ZipSuffixAs string `yaml:"zip-suffix-as,omitempty" json:"-" toml:"-"` // NEVER USED. supported: gz/tgz, bz2, xz/txz, 7z
 	}
 
 	ProjectGroup struct {

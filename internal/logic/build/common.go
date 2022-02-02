@@ -8,8 +8,8 @@ import (
 
 type (
 	CommonBase struct {
-		OS   string `yaml:"-"` // just for string template expansion
-		ARCH string `yaml:"-"` // just for string template expansion
+		OS   string `yaml:"-" json:"-" toml:"-"` // just for string template expansion
+		ARCH string `yaml:"-" json:"-" toml:"-"` // just for string template expansion
 
 		Ldflags    []string `yaml:"ldflags,omitempty,flow"`    // default ldflags is to get the smaller build for releasing
 		Asmflags   []string `yaml:"asmflags,omitempty,flow"`   //
@@ -39,7 +39,7 @@ type (
 		//    Note that before Go 1.5 this option took two separate arguments.
 		//    Now it takes one argument split on the first = sign.
 		Extends      []PackageNameValues `yaml:"extends,omitempty"` //
-		CmdrSpecials bool                `yaml:"cmdr,omitempty"`
+		CmdrSpecials bool                `yaml:"cmdr,omitempty" json:"-" toml:"-"`
 	}
 
 	PackageNameValues struct {
