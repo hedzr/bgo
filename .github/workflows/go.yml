@@ -187,9 +187,9 @@ jobs:
                 chmod +x ./bin/$APP_NAME$suf
                 if [[ $GOOS == "windows" ]]; then
                   7z a ./bin/$APP_NAME-$GOOS-$GOARCH$suf.$suf2 ./bin/$APP_NAME$suf
-                  #cd ci && 7z a ./bin/$APP_NAME-$GOOS-$GOARCH$suf.$suf2 etc/* && cd ..
+                  cd ci && 7z a ./bin/$APP_NAME-$GOOS-$GOARCH$suf.$suf2 etc/* && cd ..
                 else
-                  tar -czf ./bin/$APP_NAME-$GOOS-$GOARCH$suf.$suf2 ./bin/$APP_NAME$suf # -Cci etc
+                  tar -czf ./bin/$APP_NAME-$GOOS-$GOARCH$suf.$suf2 ./bin/$APP_NAME$suf -Cci etc
                 fi
                 sha256sum ./bin/$APP_NAME-$GOOS-$GOARCH$suf.$suf2 >> $BINARIES_ASC
                 rm -f ./bin/$APP_NAME$suf

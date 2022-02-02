@@ -13,7 +13,7 @@ All things you need to do is entering the golang project directory and entering 
 
 > powered by [cmdr](https://github.com/hedzr/cmdr).
 
-![tip-for-bgo](https://cdn.jsdelivr.net/gh/hzimg/blog-pics@master/uPic/image-20220130110150772.png)
+![tip-for-bgo](https://cdn.jsdelivr.net/gh/hzimg/blog-pics@master/uPic/image-20220202111546956.png)
 
 ## Features
 
@@ -35,10 +35,15 @@ All things you need to do is entering the golang project directory and entering 
 
 - v0.3.3 (WIP)
   - fix: bugs
-  - fea: Aliases defined in primary config dir can be merged into bgo command system
-  - fea: `check-code-qualities` alias command added and play `gofmt`, `golint` and `golint` at once.
-  - fea: Extend bgo command system with Aliases definitions.
+  - fea: **Aliases** definitions in primary config directory can be merged into `bgo` command system now
+    - fea: `check-code-qualities` alias command added and play `gofmt`, `golint` and `golint` at once.
+    - fea: Extend `bgo` command system with Aliases definitions.
   - fea: `bgo init -o bgo.{yml,yaml,json,toml}` writes different config file formats with giving suffix
+  - fix: TargetPlatforms.FilterBy not very ok
+  - imp: added cmdr global pre-action: verbose info for debugging
+  - CHANGE: `.bgo.yml` is loaded as an alternative config file now
+  - CHANGE: `$HOME/.bgo` and `conf.d` subdirectory is primary config files now
+  - CHANGE: primary config files will be distributed with binary executable
 
 - v0.3.0
   - fix: init not work

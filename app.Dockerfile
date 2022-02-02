@@ -50,9 +50,10 @@ RUN mkdir -p $APP_HOME && chown -R ${USER}: $APP_HOME
 WORKDIR $APP_HOME
 COPY . .
 RUN ls -la . && pwd
-RUN mkdir -p $TGT/var/lib/$APPNAME/conf.d \
-	&& mkdir -p $TGT/var/run/$APPNAME $TGT/var/log/$APPNAME $TGT/etc $TGT/etc/sysconfig $TGT/etc/default $TGT/etc/$APPNAME \
-	&& touch $TGT/etc/sysconfig/$APPNAME $TGT/etc/default/$APPNAME \
+RUN mkdir -pv $TGT/var/lib/$APPNAME/conf.d \
+	&& mkdir -pv $TGT/var/run/$APPNAME $TGT/var/log/$APPNAME $TGT/etc/$APPNAME/conf/conf.d $TGT/etc/sysconfig $TGT/etc/default $TGT/etc/$APPNAME \
+	&& touch $TGT/etc/sysconfig/$APPNAME $TGT/etc/default/$APPNAME $TGT/etc/$APPNAME/conf/$APPNAME.yml \
+  && cp -R ./ci/etc/$APPNAME $TGT/etc/ \
 	&& chown -R ${USER}: $TGT/var/lib/$APPNAME $TGT/var/log/$APPNAME $TGT/var/run/$APPNAME $TGT/etc/$APPNAME $TGT/etc/sysconfig/$APPNAME $TGT/etc/default/$APPNAME
 # && touch /target/$APPNAME/var/lib/conf.d/90.alternative.yml
 # RUN ls -la ./ &&
@@ -116,7 +117,7 @@ ENV APP_HOME="/var/lib/$APPNAME" TGT=/app \
 	GOPROXY=$GOPROXY
 
 WORKDIR "/app"
-VOLUME ["/app", "/go/pkg", "/tmp"]
+VOLUME ["/app", "/etc/bgo/conf/conf.d", "/go/pkg", "/tmp"]
 # VOLUME [ "/var/log/$APPNAME", "/var/run/$APPNAME", "/var/lib/$APPNAME/conf.d" ]
 
 # COPY --from=builder /usr/share/i18n /usr/share/i18n
