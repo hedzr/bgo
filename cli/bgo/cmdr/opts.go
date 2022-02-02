@@ -52,9 +52,17 @@ func init() {
 	//options = append(options, optAddServerExtOpt«ion)
 
 	// allow and search '.bgo.yml' at first
-	locations := []string{".$APPNAME.yml"}
-	locations = append(locations, cmdr.GetPredefinedLocations()...)
-	options = append(options, cmdr.WithPredefinedLocations(locations...))
+	//locations := []string{".$APPNAME.yml"}
+	//locations = append(locations, cmdr.GetPredefinedLocations()...)
+	//options = append(options, cmdr.WithPredefinedLocations(locations...))
+
+	// allow alternated locations
+	locations := []string{
+		// allow and search '.bgo.yml' at first
+		".$APPNAME.yml",
+	}
+	locations = append(locations, cmdr.GetPredefinedAlterLocations()...)
+	options = append(options, cmdr.WithAlterLocations(locations...))
 }
 
 func isDebugBuild() bool { return isdelve.Enabled }
