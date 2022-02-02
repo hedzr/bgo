@@ -1,7 +1,15 @@
 ---
 app:
   bgo:
-    debug: false
+    # debug: false
+
+  # this file is just a placeholder so that cmdr/bgo
+  # can load any config files in 'conf.d' subdirectory.
+
+  # In default, this file is not in cmdr/bgo watching
+  # list, so keep empty here is a good idea.
+  # Any settings what you want to customize should
+  # be put into conf.d subdirectory.
 
 
 
