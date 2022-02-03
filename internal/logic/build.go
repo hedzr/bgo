@@ -307,19 +307,19 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 
 	if len(bc.Asmflags) > 0 {
 		cmd = append(cmd, strings.Join([]string{"-asmflags",
-			strconv.Quote(strings.Join(bc.Asmflags, " "))}, "="))
+			strings.Join(bc.Asmflags, " ")}, "="))
 	}
 	if len(bc.Gcflags) > 0 {
 		cmd = append(cmd, strings.Join([]string{"-gcflags",
-			strconv.Quote(strings.Join(bc.Gcflags, " "))}, "="))
+			strings.Join(bc.Gcflags, " ")}, "="))
 	}
 	if len(bc.Gccgoflags) > 0 {
 		cmd = append(cmd, strings.Join([]string{"-gccgoflags",
-			strconv.Quote(strings.Join(bc.Gccgoflags, " "))}, "="))
+			strings.Join(bc.Gccgoflags, " ")}, "="))
 	}
 	if len(bc.Tags) > 0 {
 		cmd = append(cmd, strings.Join([]string{"-tags",
-			strconv.Quote(strings.Join(bc.Tags, " "))}, "="))
+			strings.Join(bc.Tags, " ")}, "="))
 	}
 
 	ifLdflags(bc)
@@ -379,7 +379,7 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 	logx.Verbose("     PWD: %v\n", logx.ToDim(dir.GetCurrentDir()))
 	logx.Verbose("     OUT: %v\n", logx.ToDim(bc.Output.Path))
 	logx.Verbose("     Go.mod: %v\n", logx.ToColor(logx.Cyan, bc.GoModFile))
-	logx.Verbose("     CommandLine: %v\n", logx.ToDim("%q", cmd))
+	logx.Verbose("     CommandLine: %v\n", logx.ToDim("%v", cmd))
 
 	if isDryRunMode() {
 		logx.Colored(logx.Yellow, "     STOP since dry-run mode specified,\n")
