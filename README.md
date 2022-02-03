@@ -33,6 +33,9 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
+- v0.3.5 (WIP)
+  - fix: buildtags might not work
+
 - v0.3.3
   - fea: **Aliases** definitions in primary config directory can be merged into `bgo` command system now
     - fea: `check-code-qualities` alias command added and play `gofmt`, `golint` and `golint` at once.
