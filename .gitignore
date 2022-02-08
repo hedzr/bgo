@@ -6,6 +6,7 @@ tools/bgo/go.work
 go.work
 .local/
 
+*.code-workspace
 
 .idea/
 *.iml
