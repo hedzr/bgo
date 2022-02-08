@@ -1,4 +1,4 @@
-package logic
+package dir
 
 import (
 	"github.com/hedzr/log"
@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func relativeDir(dirname, base string) string {
+func RelativeDir(dirname, base string) string {
 	b := dir.NormalizeDir(base)
 	c := strings.Split(b, string(filepath.Separator))
 	var pre []string
@@ -85,15 +85,8 @@ func ForDirMax(
 		}
 
 		if f.IsDir() && (maxDepth <= 0 || (maxDepth > 0 && initialDepth+1 < maxDepth)) {
-			e := false
 			d := path.Join(root, f.Name())
-			for _, ptn := range excludes {
-				if dir.IsWildMatch(d, ptn) {
-					e = true
-					break
-				}
-			}
-			if e {
+			if forFileMatched(d, excludes...) {
 				continue
 			}
 
@@ -106,5 +99,14 @@ func ForDirMax(
 		}
 	}
 
+	return
+}
+
+func forFileMatched(name string, excludes ...string) (yes bool) {
+	for _, ptn := range excludes {
+		if yes = dir.IsWildMatch(name, ptn); yes {
+			break
+		}
+	}
 	return
 }
