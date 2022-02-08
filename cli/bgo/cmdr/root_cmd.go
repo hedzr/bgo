@@ -41,13 +41,7 @@ func buildRootCmd() (rootCmd *cmdr.RootCommand) {
 	// core.AttachToCmdr(root.RootCmdOpt())
 
 	logic.AttachToCmdr(root.RootCmdOpt())
-
-	//cmdr.NewBool(false).
-	//	Titles("enable-ueh", "ueh").
-	//	Description("Enables the unhandled exception handler?").
-	//	AttachTo(root)
-	//soundex(root)
-	//panicTest(root)
+	cmdrMoreCommandsForTest(root.RootCmdOpt())
 
 	//pprof.AttachToCmdr(root.RootCmdOpt())
 
