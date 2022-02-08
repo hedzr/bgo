@@ -33,8 +33,9 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
-- v0.3.5 (WIP)
+- v0.3.9 (WIP)
   - fix: buildtags might not work
+  - fixing: `-os` `-arch` and more `build` options cannot work in root command level
 
 - v0.3.3
   - fea: **Aliases** definitions in primary config directory can be merged into `bgo` command system now
