@@ -36,9 +36,16 @@ All things you need to do is entering the golang project directory and entering 
 - v0.3.13 (WIP)
   - fix: buildtags might not work
   - fixing: `-os` `-arch` and more `build` options cannot work in root command level  
-    ** TEMP WORKAROUND **  
+    **TEMP WORKAROUND**  
     uses full path command `bgo build -os linux` instead of `bgo -os linux` till our new release arrive.
   - 
+  - fea: `bgo init -o bgo.{yml,yaml,json,toml}`
+    - imp:  - optimized json and toml outputting
+    - fea: support bgo init multiple outputs once: `bgo init -o=a.{yml,toml}`, an inessential feature
+  - fix: the wrong template expansion in post/preAction was covered silently; and fixed the typo in postAction
+  - .bgo.yml: bgo - linux+darwin in auto mode.
+  - move `--dry-run` up to root level
+  - working hard ...
 
 - v0.3.3
   - fea: **Aliases** definitions in primary config directory can be merged into `bgo` command system now
@@ -52,7 +59,7 @@ All things you need to do is entering the golang project directory and entering 
   - CHANGE: primary config files will be distributed with binary executable
 
 - v0.3.0
-  - fix: init not work
+  - fix: `bgo init` not work
   - fix: zsh completion file not fully written
 
 - v0.2.17 and older
