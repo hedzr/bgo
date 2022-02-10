@@ -22,10 +22,6 @@ func buildCurr(buildScope string) (err error) {
 	return
 }
 
-func buildFull(buildScope string) (err error) {
-	return buildAuto(buildScope)
-}
-
 func buildAuto(buildScope string) (err error) {
 	var tp = build.NewTargetPlatforms()
 

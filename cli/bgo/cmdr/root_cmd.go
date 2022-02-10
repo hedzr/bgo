@@ -9,9 +9,12 @@ import (
 
 func buildRootCmd() (rootCmd *cmdr.RootCommand) {
 	ver := version
-	if conf.ServerID != "" {
+
+	if //goland:noinspection ALL
+	conf.ServerID != "" {
 		ver = conf.Version
 	}
+
 	root := cmdr.Root(appName, ver).
 		AddGlobalPreAction(func(cmd *cmdr.Command, args []string) (err error) {
 			// fmt.Printf("# global pre-action 1, curr-dir: %v\n", cmdr.GetCurrentDir())
@@ -21,6 +24,8 @@ func buildRootCmd() (rootCmd *cmdr.RootCommand) {
 			logx.Verbose("Config File: %v\n", logx.ToDim("%v", cmdr.GetUsedConfigFile()))
 			logx.Verbose("Config File (2ndry): %v\n", logx.ToDim("%v", cmdr.GetUsedSecondaryConfigFile()))
 			logx.Verbose("Config File (alter): %v\n", logx.ToDim("%v", cmdr.GetUsedAlterConfigFile()))
+			// logx.Log("Args: %v\n", os.Args)
+			// logx.Log("cmd: %v, args: %v\n", cmd.GetTitleName(), args)
 			return
 		}).
 		//AddGlobalPreAction(func(cmd *cmdr.Command, args []string) (err error) {

@@ -4,11 +4,16 @@ import (
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/log"
+	"github.com/hedzr/log/isdelve"
 )
 
 func buildAction(cmd *cmdr.Command, args []string) (err error) {
 	if cmdr.GetDebugMode() {
 		logx.Dim("Debug Mode On, level = %v", log.GetLevel())
+	}
+
+	if isdelve.Enabled {
+		logx.Dim("isdelve Mode On")
 	}
 
 	buildScope := buildScopeFromCmdr(cmd)
@@ -25,10 +30,10 @@ func actionGoBuild(buildScope string) (err error) {
 	//logHiLight("Starting...")
 
 	switch buildScope {
-	case "full":
-		err = buildFull(buildScope)
 	case "short", "current":
 		err = buildCurr(buildScope)
+	case "full":
+		fallthrough
 	default:
 		err = buildAuto(buildScope)
 	}

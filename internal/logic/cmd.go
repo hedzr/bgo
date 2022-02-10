@@ -4,8 +4,11 @@ import (
 	"github.com/hedzr/cmdr"
 )
 
-func AttachToCmdr(root cmdr.OptCmd) {
-	root.Action(rootAction)
+func AttachToCmdr(root *cmdr.RootCmdOpt) {
+	// root.Action(rootAction)
+
+	// make root command as an alias of subcommand 'build'
+	root.RunAsSubCommand("build")
 
 	cmdrOptsScopes(root)
 
@@ -242,10 +245,11 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 
 func cmdrSubCmdInit(root cmdr.OptCmd) {
 	initCmd := root.NewSubCommand("init", "i").
-		Description("scan folder and save config file as bgo.yml").
+		Description(`scan folder and save <i>result</i> to <code>bgo.yml</code>, as <mark>project settings</mark>`).
+		//Description(`<del>scan</del> <u><font color="yellow">folder</font></u> and save <i>result</i> to <code>bgo.yml</code>, as <mark>project settings</mark>`).
 		Action(initAction)
 
-	cmdr.NewString("bgo.yml").
+	cmdr.NewStringSlice("bgo.yml").
 		Titles("output", "o").
 		Description("filename to be saved setting as", "").
 		//ToggleGroup("").
@@ -255,7 +259,12 @@ func cmdrSubCmdInit(root cmdr.OptCmd) {
 
 func cmdrSubCmdBuild(root cmdr.OptCmd) {
 	buildCmd := root.NewSubCommand("build", "b").
-		Description("do 'go build' with .bgo.yml <default>").
+		Description("do 'go build' with <code>.bgo.yml</code>", `
+			do 'go build' with <code>.bgo.yml</code>.
+			
+			This command is a synonym to root ('bgo'), that means, type
+				'bgo -os linux'
+			is equal to 'bgo build -or linux'.`).
 		Action(buildAction)
 
 	//cmdr.NewString("bgo.yml").

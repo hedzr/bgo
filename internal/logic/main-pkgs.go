@@ -95,7 +95,7 @@ func scanWorkDir(workdir, scope string, packages map[string]*pkgInfo, bs *BgoSet
 	// find all packages no matter whether it's a main package
 
 	pd := make(map[string]string) // dir -> package
-	err = ForDir(".", func(depth int, dirname string, fi os.FileInfo) (stop bool, err error) {
+	err = dir.ForDir(".", func(depth int, dirname string, fi os.FileInfo) (stop bool, err error) {
 
 		dirName := dirname // path.Join(dirname, fi.Name())
 		logx.Verbose("  >> %v/%v [%v], %v", dirname, fi.Name(), dirName, dir.GetCurrentDir())
