@@ -183,7 +183,7 @@ func boolToString(b bool) string {
 func tplExpand(tpl, name string, bc interface{}) (output string, err error) {
 	var sb strings.Builder
 	t := template.Must(template.New(name).Parse(tpl))
-	if err := t.Execute(&sb, bc); err == nil {
+	if err = t.Execute(&sb, bc); err == nil {
 		output = sb.String()
 	}
 	return

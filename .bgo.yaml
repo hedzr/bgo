@@ -89,13 +89,15 @@ app:
                     GoVersion: "{{.GoVersion}}"  # or shell it
                     ServerID: "{{.randomString}}"
               post-action: |
-                echo "runtime: $OSTYPE/{{.Info.GOARCH}}, setting {{.OS}}/{{.ARCH}}"
+                echo "runtime: $OSTYPE/{{.Info.GOARCH}}, setting: {{.OS}}/{{.ARCH}}"
                 if [[ "$OSTYPE" == *{{.OS}}* && "{{.Info.GOARCH}}" == {{.ARCH}} ]]; then
-                  cp {{.Output.Path}} $HOME/go/bin/
+                  cp -v {{.Output.Path}} $HOME/go/bin/
                 elif [[ {{.OS}} == linux ]]; then
-                  [ -d $HOME/work/autocomp.work/fish.comp/bin ] && cp {{.Output.Path}} $HOME/work/autocomp.work/fish.comp/bin/{{.AppNmae}}
-                  [ -d $HOME/go/bin/ ] && cp {{.Output.Path}} $HOME/go/bin/{{.AppNmae}}
-                  ls -laG --color $HOME/work/autocomp.work/fish.comp/bin/{{.AppNmae}}
+                  [ -d $HOME/work/autocomp.work/fish.comp/bin ] && \
+                    cp -v {{.Output.Path}} $HOME/work/autocomp.work/fish.comp/bin/{{.AppName}}
+                  [ -d $HOME/go/bin/ ] && \
+                    cp -v {{.Output.Path}} $HOME/go/bin/{{.AppName}}
+                  ls -laG --color $HOME/work/autocomp.work/fish.comp/bin/{{.AppName}}
                 fi
                 echo "OS: $OSTYPE, Arch: {{.Info.GOARCH}}"
 

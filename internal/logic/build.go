@@ -7,6 +7,7 @@ import (
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/log/dir"
 	"github.com/hedzr/log/exec"
+	"gopkg.in/hedzr/errors.v2"
 	"os"
 	"path"
 	"path/filepath"
@@ -426,6 +427,7 @@ func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error)
 		cgo = false
 	}
 
+	ec := errors.NewContainer("holder")
 	c := exec.New(opts...).
 		WithCommand(cmd...).
 		WithEnv("GOOS", bc.OS).
@@ -436,21 +438,25 @@ func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error)
 		WithOnOK(func(retCode int, stdoutText string) {
 			if bc.Install {
 				if err = iaInstall(bc.Output.Path, bc, bs); err != nil {
+					ec.Attach(err)
 					return
 				}
 			}
 			if bc.PostAction != "" {
 				if err = iaRunScript(bc.PostAction, bc, "post-action"); err != nil {
+					ec.Attach(err)
 					return
 				}
 			}
 			if bc.PostActionFile != "" && dir.FileExists(bc.PostActionFile) {
 				if err = iaRunScriptFile(bc.PostActionFile, bc, "post-action-file"); err != nil {
+					ec.Attach(err)
 					return
 				}
 			}
 			if !bc.DisableResult {
 				if err = iaLL(bc.Output.Path, bc); err != nil {
+					ec.Attach(err)
 					return
 				}
 			}
@@ -467,7 +473,13 @@ func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error)
 				logx.ToDim(strconv.Itoa(retCode)),
 				logx.ToDim(fmt.Sprintf("%v", cmd)))
 		})
-	err = c.RunAndCheckError()
+	if err = c.RunAndCheckError(); err != nil {
+		ec.Attach(err)
+	}
+
+	if err = ec.Error(); err != nil {
+		logx.Error("Error occurs: %v", err)
+	}
 	return
 }
 
@@ -502,10 +514,10 @@ func iaInstall(outBinary string, bc *build.Context, bs *BgoSettings) (err error)
 		if gopath == "" {
 			gopath = os.ExpandEnv("$HOME/go")
 		}
-		gobin := path.Join(gopath, "bin")
+		goBin := path.Join(gopath, "bin")
 
-		logx.Log("     > Installing to %v...\n", gobin)
-		err = exec.New().WithCommand("cp", outBinary, gobin).RunAndCheckError()
+		logx.Log("     > Installing to %v...\n", goBin)
+		err = exec.New().WithCommand("cp", outBinary, goBin).RunAndCheckError()
 	}
 	return
 }

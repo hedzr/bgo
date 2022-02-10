@@ -21,5 +21,6 @@ func init() {
 	closers.RegisterCloseFns(func() {
 		_ = os.RemoveAll(TempDir)
 	})
+
 	logx.DimV("Using temp dir: %q", TempDir)
 }
