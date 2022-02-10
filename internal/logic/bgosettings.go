@@ -18,7 +18,7 @@ type (
 		Excludes []string `yaml:",omitempty,flow"`
 		Goproxy  string   `yaml:",omitempty"`
 
-		SavedAs string `yaml:"saved-as,omitempty"`
+		SavedAs []string `yaml:"saved-as,omitempty"`
 	}
 
 	Output struct {
@@ -48,10 +48,10 @@ func newBgoSettings(buildScope string) *BgoSettings {
 	// .bgo.yml will be loaded automatically as a cmdr feature
 	err := cmdr.GetSectionFrom("bgo.build", &bs)
 
-	if bs.SavedAs == "" {
-		bs.SavedAs = "bgo.yml"
+	if bs.SavedAs == nil {
+		bs.SavedAs = []string{"bgo.yml"}
 	}
-	bs.SavedAs = cmdr.GetStringR("settings-filename", bs.SavedAs)
+	bs.SavedAs = cmdr.GetStringSliceR("settings-filename", bs.SavedAs...)
 
 	if str := cmdr.GetStringR("build.gocmd"); str != "" {
 		bs.Gocmd = str

@@ -22,7 +22,7 @@
       Scope = ""
       Excludes = ["study*", "test*"]
       Goproxy = ""
-      SavedAs = "bgo.toml"
+      SavedAs = ["bgo.yml", "bgo.yaml", "bgo.json", "bgo.toml"]
       [app.bgo.build.Projects]
         [app.bgo.build.Projects.000-default-group]
           LeadingText = ""

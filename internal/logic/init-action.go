@@ -8,9 +8,9 @@ func initAction(cmd *cmdr.Command, args []string) (err error) {
 	buildScope := "full"
 	setBuildScope(buildScope)
 
-	on := cmdr.GetStringRP(cmd.GetDottedNamePath(), "output", "bgo.yml")
+	on := cmdr.GetStringSliceRP(cmd.GetDottedNamePath(), "output", "bgo.yml")
 	cmdr.Set("settings-filename", on)
 
-	err = buildFull(buildScope)
+	err = buildAuto(buildScope)
 	return
 }

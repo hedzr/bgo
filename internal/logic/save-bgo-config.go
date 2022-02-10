@@ -9,53 +9,59 @@ import (
 )
 
 func saveNewBgoYamlFile(bs *BgoSettings) (err error) {
-	_ = cmdr.SaveCheckpoint()
-	defer cmdr.RestoreCheckpoint()
+	makeCopyOf := func(bs *BgoSettings) *BgoSettings {
+		var bsCopy = new(BgoSettings)
 
-	cmdr.ResetOptions()
+		if err = cmdr.CloneViaGob(bsCopy, bs); err != nil {
+			return nil
+		}
 
-	var bsCopy = new(BgoSettings)
-
-	if err = cmdr.CloneViaGob(bsCopy, bs); err != nil {
-		return
+		cleanupBs(bsCopy)
+		return bsCopy
 	}
 
-	cleanupBs(bsCopy)
-
+	_ = cmdr.SaveCheckpoint()
+	defer func() { err = cmdr.RestoreCheckpoint() }()
+	cmdr.ResetOptions()
 	err = cmdr.MergeWith(map[string]interface{}{
 		"app": map[string]interface{}{
 			"bgo": map[string]interface{}{
-				"build": bsCopy,
+				"build": makeCopyOf(bs),
 			},
 		},
 	})
-
-	//cmdr.DebugOutputTildeInfo(false)
 	if err != nil {
 		logx.Fatal("Error: %v", err)
 	}
+	//cmdr.DebugOutputTildeInfo(false)
 
 	return saveBgoConfigAs(bs)
 }
 
 func saveBgoConfigAs(bs *BgoSettings) (err error) {
-	logx.Log("%q saved\n", path.Join(dir.GetCurrentDir(), bs.SavedAs))
+	for _, fn := range bs.SavedAs {
+		if fn != "" {
+			switch ext := path.Ext(fn); ext {
+			case ".toml":
+				err = cmdr.SaveAsToml(fn)
+			case ".json":
+				err = cmdr.SaveAsJSONExt(fn, true)
+			case ".yml", ".yaml":
+				fallthrough
+			default:
+				err = cmdr.SaveAsYaml(fn)
+			}
 
-	switch ext := path.Ext(bs.SavedAs); ext {
-	case ".yml", ".yaml":
-		err = cmdr.SaveAsYaml(bs.SavedAs)
-	case ".toml":
-		err = cmdr.SaveAsToml(bs.SavedAs)
-	case ".json":
-		err = cmdr.SaveAsJSON(bs.SavedAs)
-	}
-
-	if err == nil {
-		err = appendComments(bs.SavedAs)
+			if err == nil {
+				logx.Log("%q saved\n", path.Join(dir.GetCurrentDir(), fn))
+				err = appendComments(fn)
+			}
+		}
 	}
 	return
 }
 
+// appendComments todo append some sample yaml comments into .bgo.yml when `bgo init`
 func appendComments(file string) (err error) {
 	var f *os.File
 	f, err = os.OpenFile(file, os.O_APPEND|os.O_RDWR, 0644)
