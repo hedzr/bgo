@@ -8,58 +8,59 @@ import (
 
 type (
 	CommonBase struct {
-		OS   string `yaml:"-" json:"-" toml:"-"` // just for string template expansion
-		ARCH string `yaml:"-" json:"-" toml:"-"` // just for string template expansion
+		OS   string `yaml:"-" json:"-" toml:"-" json:"-" toml:"-"` // just for string template expansion
+		ARCH string `yaml:"-" json:"-" toml:"-" json:"-" toml:"-"` // just for string template expansion
 
-		Ldflags    []string `yaml:"ldflags,omitempty,flow"`    // default ldflags is to get the smaller build for releasing
-		Asmflags   []string `yaml:"asmflags,omitempty,flow"`   //
-		Gcflags    []string `yaml:"gcflags,omitempty,flow"`    //
-		Gccgoflags []string `yaml:"gccgoflags,omitempty,flow"` //
-		Tags       []string `yaml:"tags,omitempty,flow"`       //
+		Ldflags    []string `yaml:"ldflags,omitempty,flow" json:"ldflags,omitempty" toml:"ldflags,omitempty"`          // default ldflags is to get the smaller build for releasing
+		Asmflags   []string `yaml:"asmflags,omitempty,flow" json:"asmflags,omitempty" toml:"asmflags,omitempty"`       //
+		Gcflags    []string `yaml:"gcflags,omitempty,flow" json:"gcflags,omitempty" toml:"gcflags,omitempty"`          //
+		Gccgoflags []string `yaml:"gccgoflags,omitempty,flow" json:"gccgoflags,omitempty" toml:"gccgoflags,omitempty"` //
+		Tags       []string `yaml:"tags,omitempty,flow" json:"tags,omitempty" toml:"tags,omitempty"`                   //
 		// Cgo option
-		Cgo bool `yaml:",omitempty"` //
+		Cgo bool `yaml:",omitempty" json:"cgo,omitempty" toml:"cgo,omitempty"` //
 		// Race option enables data race detection.
 		//		Supported only on linux/amd64, freebsd/amd64, darwin/amd64, windows/amd64,
 		//		linux/ppc64le and linux/arm64 (only for 48-bit VMA).
-		Race bool `yaml:",omitempty"` //
+		Race bool `yaml:",omitempty" json:"race,omitempty" toml:"race,omitempty"` //
 		// Msan option enables interoperation with memory sanitizer.
 		//		Supported only on linux/amd64, linux/arm64
 		//		and only with Clang/LLVM as the host C compiler.
 		//		On linux/arm64, pie build mode will be used.
-		Msan          bool   `yaml:",omitempty"`               //
-		Gocmd         string `yaml:",omitempty"`               // -gocmd go
-		Gen           bool   `yaml:",omitempty"`               // go generate at first?
-		Install       bool   `yaml:",omitempty"`               // install binary to $GOPATH/bin like 'go install' ?
-		Debug         bool   `yaml:",omitempty"`               // true to produce a larger build with debug info
-		DisableResult bool   `yaml:"disable-result,omitempty"` // no ll (Shell list) building result
+		Msan          bool   `yaml:",omitempty" json:"msan,omitempty" toml:"msan,omitempty"`                                   //
+		Gocmd         string `yaml:",omitempty" json:"gocmd,omitempty" toml:"gocmd,omitempty"`                                 // -gocmd go
+		Gen           bool   `yaml:",omitempty" json:"gen,omitempty" toml:"gen,omitempty"`                                     // go generate at first?
+		Install       bool   `yaml:",omitempty" json:"install,omitempty" toml:"install,omitempty"`                             // install binary to $GOPATH/bin like 'go install' ?
+		Debug         bool   `yaml:",omitempty" json:"debug,omitempty" toml:"debug,omitempty"`                                 // true to produce a larger build with debug info
+		DisableResult bool   `yaml:"disable-result,omitempty" json:"disable_result,omitempty" toml:"disable_result,omitempty"` // no ll (Shell list) building result
 
 		// -X for -ldflags,
 		// -X importpath.name=value
 		//    Set the value of the string variable in importpath named name to value.
 		//    Note that before Go 1.5 this option took two separate arguments.
 		//    Now it takes one argument split on the first = sign.
-		Extends      []PackageNameValues `yaml:"extends,omitempty"` //
-		CmdrSpecials bool                `yaml:"cmdr,omitempty" json:"-" toml:"-"`
+		Extends      []PackageNameValues `yaml:"extends,omitempty" json:"extends,omitempty" toml:"extends,omitempty"` //
+		CmdrSpecials bool                `yaml:"cmdr,omitempty" json:"-" toml:"-" json:"cmdr,omitempty" toml:"cmdr,omitempty"`
 	}
 
 	PackageNameValues struct {
-		Package string            `yaml:"pkg,omitempty"`
-		Values  map[string]string `yaml:"values,omitempty"`
+		Package string            `yaml:"pkg,omitempty" json:"package,omitempty" toml:"package,omitempty"`
+		Values  map[string]string `yaml:"values,omitempty" json:"values,omitempty" toml:"values,omitempty"`
 	}
 
 	Common struct {
-		CommonBase     `yaml:"base,omitempty,inline,flow"`
-		Disabled       bool     `yaml:"disabled,omitempty"`
-		KeepWorkdir    bool     `yaml:"keep-workdir,omitempty"`
-		UseWorkDir     string   `yaml:"use-workdir,omitempty"`
-		For            []string `yaml:"for,omitempty,flow"`
-		Os             []string `yaml:"os,omitempty,flow"`
-		Arch           []string `yaml:"arch,omitempty,flow"`
-		Goroot         string   `yaml:"goroot,omitempty,flow"`
-		PreAction      string   `yaml:"pre-action,omitempty"`       // bash script
-		PostAction     string   `yaml:"post-action,omitempty"`      // bash script
-		PreActionFile  string   `yaml:"pre-action-file,omitempty"`  // bash script
-		PostActionFile string   `yaml:"post-action-file,omitempty"` // bash script
+		CommonBase `yaml:",omitempty,inline,flow" json:",omitempty" toml:""`
+
+		Disabled       bool     `yaml:"disabled,omitempty" json:"disabled,omitempty" toml:"disabled,omitempty"`
+		KeepWorkdir    bool     `yaml:"keep-workdir,omitempty" json:"keep_workdir,omitempty" toml:"keep_workdir,omitempty"`
+		UseWorkDir     string   `yaml:"use-workdir,omitempty" json:"use_work_dir,omitempty" toml:"use_work_dir,omitempty"`
+		For            []string `yaml:"for,omitempty,flow" json:"for,omitempty" toml:"for,omitempty"`
+		Os             []string `yaml:"os,omitempty,flow" json:"os,omitempty" toml:"os,omitempty"`
+		Arch           []string `yaml:"arch,omitempty,flow" json:"arch,omitempty" toml:"arch,omitempty"`
+		Goroot         string   `yaml:"goroot,omitempty,flow" json:"goroot,omitempty" toml:"goroot,omitempty"`
+		PreAction      string   `yaml:"pre-action,omitempty" json:"pre_action,omitempty" toml:"pre_action,omitempty"`                   // bash script
+		PostAction     string   `yaml:"post-action,omitempty" json:"post_action,omitempty" toml:"post_action,omitempty"`                // bash script
+		PreActionFile  string   `yaml:"pre-action-file,omitempty" json:"pre_action_file,omitempty" toml:"pre_action_file,omitempty"`    // bash script
+		PostActionFile string   `yaml:"post-action-file,omitempty" json:"post_action_file,omitempty" toml:"post_action_file,omitempty"` // bash script
 	}
 )
 

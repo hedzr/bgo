@@ -9,30 +9,30 @@ type (
 	// BgoSettings for go build.
 	// Generally it's loaded from '.bgo.yml'.
 	BgoSettings struct {
-		*build.Common `yaml:",omitempty,inline"`
+		*build.Common `yaml:",omitempty,inline" json:",omitempty" toml:",omitempty"`
 
-		Scope    string                  `yaml:"scope,omitempty"`
-		Projects map[string]ProjectGroup `yaml:"projects"`
+		Scope    string                  `yaml:"scope,omitempty" json:"scope,omitempty" toml:"scope,omitempty"`
+		Projects map[string]ProjectGroup `yaml:"projects" json:"projects" toml:"projects"`
 
-		Output   Output   `yaml:",omitempty"`
-		Excludes []string `yaml:",omitempty,flow"`
-		Goproxy  string   `yaml:",omitempty"`
+		Output   Output   `yaml:",omitempty" json:"output" toml:"output,omitempty"`
+		Excludes []string `yaml:",omitempty,flow" json:"excludes,omitempty" toml:"excludes,omitempty"`
+		Goproxy  string   `yaml:",omitempty" json:"goproxy,omitempty" toml:"goproxy,omitempty"`
 
-		SavedAs []string `yaml:"saved-as,omitempty"`
+		SavedAs []string `yaml:"saved-as,omitempty" json:"saved_as,omitempty" toml:"saved_as,omitempty"`
 	}
 
 	Output struct {
-		Dir         string `yaml:",omitempty"`                                // Base Dir
-		SplitTo     string `yaml:"split-to,omitempty"`                        // see build.Context, Group, Project, ... | see also BuildContext struct
-		NamedAs     string `yaml:"named-as,omitempty"`                        // see build.Context,
-		SuffixAs    string `yaml:"suffix-as,omitempty" json:"-" toml:"-"`     // NEVER USED.
-		ZipSuffixAs string `yaml:"zip-suffix-as,omitempty" json:"-" toml:"-"` // NEVER USED. supported: gz/tgz, bz2, xz/txz, 7z
+		Dir         string `yaml:",omitempty" json:"dir,omitempty" toml:"dir,omitempty"`                   // Base Dir
+		SplitTo     string `yaml:"split-to,omitempty" json:"split_to,omitempty" toml:"split_to,omitempty"` // see build.Context, Group, Project, ... | see also BuildContext struct
+		NamedAs     string `yaml:"named-as,omitempty" json:"named_as,omitempty" toml:"named_as,omitempty"` // see build.Context,
+		SuffixAs    string `yaml:"suffix-as,omitempty" json:"-" toml:"-"`                                  // NEVER USED.
+		ZipSuffixAs string `yaml:"zip-suffix-as,omitempty" json:"-" toml:"-"`                              // NEVER USED. supported: gz/tgz, bz2, xz/txz, 7z
 	}
 
 	ProjectGroup struct {
-		LeadingText   string                  `yaml:"leading-text,omitempty"`
-		Items         map[string]*ProjectWrap `yaml:"items"`
-		*build.Common `yaml:",omitempty,inline"`
+		LeadingText   string                  `yaml:"leading-text,omitempty" json:"leading_text,omitempty" toml:"leading_text,omitempty"`
+		Items         map[string]*ProjectWrap `yaml:"items" json:"items,omitempty" toml:"items,omitempty"`
+		*build.Common `yaml:",omitempty,inline" json:",omitempty" toml:",omitempty"`
 	}
 )
 

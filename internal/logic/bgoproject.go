@@ -6,19 +6,19 @@ import "github.com/hedzr/bgo/internal/logic/build"
 
 type (
 	ProjectWrap struct {
-		Project `yaml:",omitempty,inline,flow"`
+		Project `yaml:",omitempty,inline,flow" json:"project" toml:"project,omitempty"`
 	}
 
 	Project struct {
-		Name    string `yaml:"name,omitempty"`    // appName if specified
-		Dir     string `yaml:"dir"`               // root dir of this module/cli-app
-		Package string `yaml:"package,omitempty"` // pkgName or mainGo
-		MainGo  string `yaml:"main-go,omitempty"` // default: 'main.go', // or: "./cli", "./cli/main.go", ...
-		Version string `yaml:"version,omitempty"` //
+		Name    string `yaml:"name,omitempty" json:"name,omitempty" toml:"name,omitempty"`          // appName if specified
+		Dir     string `yaml:"dir" json:"dir" toml:"dir"`                                           // root dir of this module/cli-app
+		Package string `yaml:"package,omitempty" json:"package,omitempty" toml:"package,omitempty"` // pkgName or mainGo
+		MainGo  string `yaml:"main-go,omitempty" json:"main_go,omitempty" toml:"main_go,omitempty"` // default: 'main.go', // or: "./cli", "./cli/main.go", ...
+		Version string `yaml:"version,omitempty" json:"version,omitempty" toml:"version,omitempty"` //
 
 		// In current and earlier releases, MainGo is reserved and never used.
 
-		*build.Common `yaml:",omitempty,inline,flow"`
+		*build.Common `yaml:",omitempty,inline,flow" json:",omitempty" toml:",omitempty"`
 
 		// Cmdr building opts
 
