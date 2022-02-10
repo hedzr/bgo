@@ -8,6 +8,15 @@ func AttachToCmdr(root cmdr.OptCmd) {
 	root.Action(rootAction)
 
 	cmdrOptsScopes(root)
+
+	cmdr.NewBool().
+		Titles("dry-run", "dr").
+		Description("Just listing without Go build", "").
+		//ToggleGroup("").
+		Group("Control").
+		EnvKeys("DRY_RUN").
+		AttachTo(root)
+
 	//cmdrOptsBuildCommons(root)
 	//cmdrOptsBuildControls(root)
 
@@ -170,14 +179,6 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 		//ToggleGroup("").
 		Group("Control").
 		EnvKeys("NO_TRIMPATH").
-		AttachTo(cmd)
-
-	cmdr.NewBool().
-		Titles("dry-run", "dr").
-		Description("Just listing without Go build", "").
-		//ToggleGroup("").
-		Group("Control").
-		EnvKeys("DRY_RUN").
 		AttachTo(cmd)
 
 	//cmdr.NewString("").

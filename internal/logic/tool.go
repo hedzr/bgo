@@ -26,7 +26,7 @@ func isSaveMode() (b bool) {
 }
 
 func isDryRunMode() (b bool) {
-	return cmdr.GetBoolR("build.dry-run")
+	return cmdr.GetBoolR("dry-run")
 }
 
 func setBuildScope(scope string) {
