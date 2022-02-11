@@ -34,18 +34,27 @@ All things you need to do is entering the golang project directory and entering 
 ## History
 
 - v0.3.13 (WIP)
-  - fix: buildtags might not work
-  - fixing: `-os` `-arch` and more `build` options cannot work in root command level  
-    **TEMP WORKAROUND**  
-    uses full path command `bgo build -os linux` instead of `bgo -os linux` till our new release arrive.
   - 
+  - 
+  - working hard ...
+
+- v0.3.9
+  - temporary build
   - fea: `bgo init -o bgo.{yml,yaml,json,toml}`
-    - imp:  - optimized json and toml outputting
+    - imp: optimized json and toml outputting
     - fea: support bgo init multiple outputs once: `bgo init -o=a.{yml,toml}`, an inessential feature
+    - imp: better json, toml outputting
   - fix: the wrong template expansion in post/preAction was covered silently; and fixed the typo in postAction
   - .bgo.yml: bgo - linux+darwin in auto mode.
-  - move `--dry-run` up to root level
-  - working hard ...
+  - args:
+    - move `--dry-run` up to root level
+    - fix: buildtags might not work
+    - **fixed**: `-os` `-arch` and more `build` options cannot work in root command level  
+      **TEMP WORKAROUND for older versions**  
+      uses full path command `bgo build -os linux` instead of `bgo -os linux` till our new release arrive.
+  - imp: build - rewrite loopAllPackages, enable leadingText field
+  - imp: logx - LazyInit() and better performance
+  - imp: review codes
 
 - v0.3.3
   - fea: **Aliases** definitions in primary config directory can be merged into `bgo` command system now
