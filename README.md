@@ -38,7 +38,7 @@ All things you need to do is entering the golang project directory and entering 
   - 
   - working hard ...
 
-- v0.3.9
+- v0.3.11
   - temporary build
   - fea: `bgo init -o bgo.{yml,yaml,json,toml}`
     - imp: optimized json and toml outputting
