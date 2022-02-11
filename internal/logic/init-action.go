@@ -11,6 +11,6 @@ func initAction(cmd *cmdr.Command, args []string) (err error) {
 	on := cmdr.GetStringSliceRP(cmd.GetDottedNamePath(), "output", "bgo.yml")
 	cmdr.Set("settings-filename", on)
 
-	err = buildAuto(buildScope)
+	err = buildAuto(buildScope, cmd, args)
 	return
 }

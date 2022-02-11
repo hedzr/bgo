@@ -17,14 +17,14 @@ import (
 	"strings"
 )
 
-func buildCurr(buildScope string) (err error) {
+func buildCurr(buildScope string, cmd *cmdr.Command, args []string) (err error) {
 	tp := build.NewTargetPlatforms()
 	tp.SetOsArch(runtime.GOOS, runtime.GOARCH)
-	err = buildFor(buildScope, tp, nil, nil)
+	err = buildFor(buildScope, tp, nil, nil, cmd, args)
 	return
 }
 
-func buildAuto(buildScope string) (err error) {
+func buildAuto(buildScope string, cmd *cmdr.Command, args []string) (err error) {
 	var tp = build.NewTargetPlatforms()
 
 	err = tp.Init()
@@ -32,11 +32,13 @@ func buildAuto(buildScope string) (err error) {
 		return
 	}
 
-	err = buildFor(buildScope, tp, nil, nil)
+	err = buildFor(buildScope, tp, nil, nil, cmd, args)
 	return
 }
 
-func buildFor(buildScope string, tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings) (err error) {
+func buildFor(buildScope string, tp *build.TargetPlatforms,
+	bc *build.Context, bs *BgoSettings,
+	cmd *cmdr.Command, args []string) (err error) {
 
 	if bc == nil {
 		// initial build-context, preparing the build information
@@ -61,39 +63,54 @@ func buildFor(buildScope string, tp *build.TargetPlatforms, bc *build.Context, b
 		logx.Fatal("BAD, bgoSettings == nil!!")
 	}
 
-	err = buildProjects(tp, bc, bs)
+	err = buildProjects(tp, bc, bs, cmd, args)
 	return
 }
 
-func buildProjects(tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings) (err error) {
-	var pkgs map[string]*pkgInfo
-	if pkgs, err = findMainPackages(bs); err != nil {
+func buildProjects(tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings,
+	cmd *cmdr.Command, args []string) (err error) {
+	var packages map[string]*pkgInfo
+	if packages, err = findMainPackages(bs); err != nil {
 		return
 	}
 
-	projectName, singleProjectOrPackage := checkSingleProjectNameSpecified(pkgs, bs)
+	projectName, singleProjectOrPackage := checkSingleProjectNameSpecified(packages, bs)
 
 	if bs.Scope != "auto" || cmdr.GetUsedAlterConfigFile() == "" {
 		if (singleProjectOrPackage == nil && projectName != "") || projectName == "" {
-			err = scanWorkDir(bc.WorkDir, bs.Scope, pkgs, bs)
+			err = scanWorkDir(bc.WorkDir, bs.Scope, packages, bs)
 
-			for _, pi := range pkgs {
+			for _, pi := range packages {
 				ensureProject(pi, bc, bs)
 			}
 		}
 	}
 
 	if !isDryRunMode() && isSaveMode() {
-		if err = saveBackToBs(pkgs, bs); err == nil {
+		if err = saveBackToBs(packages, bs); err == nil {
 			err = saveNewBgoYamlFile(bs)
 		}
 		return
 	}
 
+	return buildProjectsImpl(packages, tp, bc, bs, cmd, args)
+}
+
+func buildProjectsImpl(
+	packages map[string]*pkgInfo,
+	tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings,
+	cmd *cmdr.Command, args []string,
+) (err error) {
+
+	if cmd.GetTitleName() == "list" {
+		err = listPackages(tp, bc, bs, packages)
+		return
+	}
+
 	// start building now | loop for all modules/projects now
-	ki := getSortedV(pkgs)
+	ki := getSortedV(packages)
 	for _, k := range ki {
-		if err = buildPackages(tp, bc, bs, pkgs[k.Index]); err != nil {
+		if err = buildPackages(tp, bc, bs, packages[k.Index]); err != nil {
 			break
 		}
 	}
@@ -247,84 +264,8 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 	logx.Log("      >> %v/%v, Need Install: %v\n", bc.OS, bc.ARCH, bc.Install)
 	//logx.Dim("     project.Common: %+v\n", *p.Common)
 
-	cmd := []interface{}{"go", "build"}
-
-	st := path.Join(bc.Dir, "go.mod")
-	if dir.FileExists(st) {
-		bc.HasGoMod, bc.GoModFile = true, st
-	} else {
-		st = path.Join(bc.WorkDir, "go.mod")
-		if dir.FileExists(st) {
-			bc.HasGoMod, bc.GoModFile = true, st
-		}
-	}
-
-	if bc.Gocmd != "" {
-		gocmd := os.ExpandEnv(bc.Gocmd)
-		if x, e := exec.LookPath(gocmd); e == nil {
-			y := dir.FollowSymLink(x)
-			cmd[0] = y
-			yup1 := path.Dir(y)
-			if bin := path.Base(yup1); bin == "bin" {
-				bc.GOROOT = path.Dir(yup1)
-			}
-		}
-	}
-
-	if cmdr.GetBoolR("build.verbose") {
-		cmd = append(cmd, "-v")
-	}
-
-	if bc.Debug == false {
-		if cmdr.GetBoolR("build.no-trimpath") == false {
-			cmd = append(cmd, "-trimpath")
-		}
-
-		bc.Ldflags = uniappend(bc.Ldflags, "-s")
-		bc.Ldflags = uniappend(bc.Ldflags, "-w")
-	}
-
-	if cmdr.GetBoolR("build.rebuild") {
-		cmd = append(cmd, "-a")
-	}
-
-	bc.Gen = cmdr.GetBoolR("build.generate", bc.Gen)
-
-	if str := cmdr.GetStringR("build.mod"); str != "" {
-		cmd = append(cmd, "-mod", str)
-	}
-
-	if bc.Race {
-		cmd = append(cmd, "-race")
-	}
-
-	if bc.Msan {
-		cmd = append(cmd, "-msan")
-	}
-
-	if len(bc.Asmflags) > 0 {
-		cmd = append(cmd, strings.Join([]string{"-asmflags",
-			strings.Join(bc.Asmflags, " ")}, "="))
-	}
-	if len(bc.Gcflags) > 0 {
-		cmd = append(cmd, strings.Join([]string{"-gcflags",
-			strings.Join(bc.Gcflags, " ")}, "="))
-	}
-	if len(bc.Gccgoflags) > 0 {
-		cmd = append(cmd, strings.Join([]string{"-gccgoflags",
-			strings.Join(bc.Gccgoflags, " ")}, "="))
-	}
-	if len(bc.Tags) > 0 {
-		cmd = append(cmd, strings.Join([]string{"-tags",
-			strings.Join(bc.Tags, " ")}, "="))
-	}
-
-	ifLdflags(bc)
-
-	if len(bc.Ldflags) > 0 {
-		cmd = append(cmd, strings.Join([]string{"-ldflags",
-			strings.Join(bc.Ldflags, " ")}, "="))
-	}
+	var cmd []interface{}
+	cmd, err = prepareCommandLine(bc, bs)
 
 	var outBinary string
 	outBinary, err = getBuildTargetBinaryPath(bc, bs)
@@ -398,7 +339,133 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 	return
 }
 
+func prepareCommandLine(bc *build.Context, bs *BgoSettings) (cmd []interface{}, err error) {
+	cmd = []interface{}{"go", "build"}
+
+	st := path.Join(bc.Dir, "go.mod")
+	if dir.FileExists(st) {
+		bc.HasGoMod, bc.GoModFile = true, st
+	} else {
+		st = path.Join(bc.WorkDir, "go.mod")
+		if dir.FileExists(st) {
+			bc.HasGoMod, bc.GoModFile = true, st
+		}
+	}
+
+	if bc.Gocmd != "" {
+		gocmd := os.ExpandEnv(bc.Gocmd)
+		if x, e := exec.LookPath(gocmd); e == nil {
+			y := dir.FollowSymLink(x)
+			cmd[0] = y
+			yup1 := path.Dir(y)
+			if bin := path.Base(yup1); bin == "bin" {
+				bc.GOROOT = path.Dir(yup1)
+			}
+		}
+	}
+
+	if cmdr.GetBoolR("build.verbose") {
+		cmd = append(cmd, "-v")
+	}
+
+	if bc.Debug == false {
+		if cmdr.GetBoolR("build.no-trimpath") == false {
+			cmd = append(cmd, "-trimpath")
+		}
+
+		bc.Ldflags = uniappend(bc.Ldflags, "-s")
+		bc.Ldflags = uniappend(bc.Ldflags, "-w")
+	}
+
+	if cmdr.GetBoolR("build.rebuild") {
+		cmd = append(cmd, "-a")
+	}
+
+	bc.Gen = cmdr.GetBoolR("build.generate", bc.Gen)
+
+	x := pclMore1(bc, bs)
+	cmd = append(cmd, x...)
+	return
+}
+
+func pclMore1(bc *build.Context, bs *BgoSettings) (cmd []interface{}) {
+	if str := cmdr.GetStringR("build.mod"); str != "" {
+		cmd = append(cmd, "-mod", str)
+	}
+
+	if bc.Race {
+		cmd = append(cmd, "-race")
+	}
+
+	if bc.Msan {
+		cmd = append(cmd, "-msan")
+	}
+
+	if len(bc.Asmflags) > 0 {
+		cmd = append(cmd, strings.Join([]string{"-asmflags",
+			strings.Join(bc.Asmflags, " ")}, "="))
+	}
+	if len(bc.Gcflags) > 0 {
+		cmd = append(cmd, strings.Join([]string{"-gcflags",
+			strings.Join(bc.Gcflags, " ")}, "="))
+	}
+	if len(bc.Gccgoflags) > 0 {
+		cmd = append(cmd, strings.Join([]string{"-gccgoflags",
+			strings.Join(bc.Gccgoflags, " ")}, "="))
+	}
+	if len(bc.Tags) > 0 {
+		cmd = append(cmd, strings.Join([]string{"-tags",
+			strings.Join(bc.Tags, " ")}, "="))
+	}
+
+	ifLdflags(bc)
+
+	if len(bc.Ldflags) > 0 {
+		cmd = append(cmd, strings.Join([]string{"-ldflags",
+			strings.Join(bc.Ldflags, " ")}, "="))
+	}
+
+	return
+}
+
 func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error) {
+	if err = goBuildPreChecks(bc, bs); err != nil {
+		return
+	}
+
+	var opts []exec.Opt
+	var cgo bool
+	if opts, cgo, err = goBuildPrepareOpts(bc, bs); err != nil {
+		return
+	}
+
+	ec := errors.NewContainer("holder")
+	c := exec.New(opts...).
+		WithCommand(cmd...).
+		WithEnv("GOOS", bc.OS).
+		WithEnv("GOARCH", bc.ARCH).
+		WithEnv("CGO_ENABLED", boolToString(cgo)).
+		//WithStdoutCaught(). // can be removed
+		//WithStderrCaught(). // can be removed
+		WithOnOK(okHandler(ec, bc, bs)).
+		WithOnError(func(err error, retCode int, stdoutText, stderrText string) {
+			logx.Error("ERROR TEXT:\n%v\nError:\n%v\nRetCode: %v\nCommands: %v\n",
+				logx.ToColor(logx.Red, leftPad(stderrText, 4)),
+				logx.ToColor(logx.Red, leftPad(fmt.Sprintf("%v", err), 4)),
+				logx.ToDim(strconv.Itoa(retCode)),
+				logx.ToDim(fmt.Sprintf("%v", cmd)))
+		})
+	if err = c.RunAndCheckError(); err != nil {
+		ec.Attach(err)
+	}
+
+	if err = ec.Error(); err != nil {
+		logx.Error("Error occurs: %v", err)
+	}
+	return
+}
+
+func goBuildPreChecks(bc *build.Context, bs *BgoSettings) (err error) {
 	if bc.PreAction != "" {
 		if err = iaRunScript(bc.PreAction, bc, "pre-action"); err != nil {
 			return
@@ -415,14 +482,16 @@ func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error)
 			return
 		}
 	}
+	return
+}
 
-	var opts []exec.Opt
+func goBuildPrepareOpts(bc *build.Context, bs *BgoSettings) (opts []exec.Opt, cgo bool, err error) {
 	if bc.HasGoMod {
 		opts = append(opts, exec.WithEnv("GO111MODULE", "on"))
-		logx.DimV("       GO111MODULE: ON\n")
+		logx.DimV("           GO111MODULE: ON\n")
 	} else {
 		opts = append(opts, exec.WithEnv("GO111MODULE", "off"))
-		logx.DimV("       GO111MODULE: off\n")
+		logx.DimV("           GO111MODULE: off\n")
 	}
 	if bs.Goproxy != "" {
 		opts = append(opts, exec.WithEnv("GOPROXY", bs.Goproxy))
@@ -432,65 +501,49 @@ func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error)
 		//WithEnv("GOPATH", os.ExpandEnv("$HOME/go")).
 	}
 
-	cgo := bc.Cgo
+	cgo = bc.Cgo
 	if cgo && runtime.GOOS != bc.OS || runtime.GOARCH != bc.ARCH {
 		cgo = false
 	}
 
-	ec := errors.NewContainer("holder")
-	c := exec.New(opts...).
-		WithCommand(cmd...).
-		WithEnv("GOOS", bc.OS).
-		WithEnv("GOARCH", bc.ARCH).
-		WithEnv("CGO_ENABLED", boolToString(cgo)).
-		//WithStdoutCaught(). // can be removed
-		//WithStderrCaught(). // can be removed
-		WithOnOK(func(retCode int, stdoutText string) {
-			if bc.Install {
-				if err = iaInstall(bc.Output.Path, bc, bs); err != nil {
-					ec.Attach(err)
-					return
-				}
-			}
-			if bc.PostAction != "" {
-				if err = iaRunScript(bc.PostAction, bc, "post-action"); err != nil {
-					ec.Attach(err)
-					return
-				}
-			}
-			if bc.PostActionFile != "" && dir.FileExists(bc.PostActionFile) {
-				if err = iaRunScriptFile(bc.PostActionFile, bc, "post-action-file"); err != nil {
-					ec.Attach(err)
-					return
-				}
-			}
-			if !bc.DisableResult {
-				if err = iaLL(bc.Output.Path, bc); err != nil {
-					ec.Attach(err)
-					return
-				}
-			}
-			if len(stdoutText) > 0 {
-				logx.Dim("OUTPUT:\n%v\n", stdoutText)
-			}
-
-			// exec.New().WithCommandString("bash -c 'echo hello world!'", '\'').WithContext(context.Background()).Run()
-		}).
-		WithOnError(func(err error, retCode int, stdoutText, stderrText string) {
-			logx.Error("ERROR TEXT:\n%v\nError:\n%v\nRetCode: %v\nCommands: %v\n",
-				logx.ToColor(logx.Red, leftPad(stderrText, 4)),
-				logx.ToColor(logx.Red, leftPad(fmt.Sprintf("%v", err), 4)),
-				logx.ToDim(strconv.Itoa(retCode)),
-				logx.ToDim(fmt.Sprintf("%v", cmd)))
-		})
-	if err = c.RunAndCheckError(); err != nil {
-		ec.Attach(err)
-	}
-
-	if err = ec.Error(); err != nil {
-		logx.Error("Error occurs: %v", err)
-	}
 	return
+}
+
+func okHandler(ec *errors.WithCauses, bc *build.Context, bs *BgoSettings) (onOK func(retCode int, stdoutText string)) {
+	return func(retCode int, stdoutText string) {
+		var err error
+		if bc.Install {
+			if err = iaInstall(bc.Output.Path, bc, bs); err != nil {
+				ec.Attach(err)
+				return
+			}
+		}
+		if bc.PostAction != "" {
+			if err = iaRunScript(bc.PostAction, bc, "post-action"); err != nil {
+				ec.Attach(err)
+				return
+			}
+		}
+		if bc.PostActionFile != "" && dir.FileExists(bc.PostActionFile) {
+			if err = iaRunScriptFile(bc.PostActionFile, bc, "post-action-file"); err != nil {
+				ec.Attach(err)
+				return
+			}
+		}
+		if !bc.DisableResult {
+			if err = iaLL(bc.Output.Path, bc); err != nil {
+				ec.Attach(err)
+				return
+			}
+		}
+		if len(stdoutText) > 0 {
+			logx.Dim("OUTPUT:\n%v\n", stdoutText)
+		}
+
+		// exec.New().WithCommandString("bash -c 'echo hello world!'", '\'').WithContext(context.Background()).Run()
+
+		return
+	}
 }
 
 //goland:noinspection ALL
@@ -542,8 +595,8 @@ func iaRunScript(scriptsSource string, bc *build.Context, title ...string) (err 
 
 	var script string
 	if script, err = tplExpand(scriptsSource, ttl, bc); err == nil {
-		if cmdr.GetVerboseMode() {
-			logx.Log("     > Invoking %v:\n", ttl)
+		if logx.IsVerboseMode() {
+			logx.Log("         > Invoking %v:\n", ttl)
 			logx.Dim("%v\n", leftPad(script, 7))
 		} else {
 			logx.Log("         > Invoking %v...\n", ttl)
@@ -565,8 +618,8 @@ func iaRunScriptFile(scriptsSource string, bc *build.Context, title ...string) (
 
 	var script string
 	if script, err = tplExpand(scriptsSource, ttl, bc); err == nil {
-		if cmdr.GetVerboseMode() {
-			logx.Log("     > Invoking %v:\n", ttl)
+		if logx.IsVerboseMode() {
+			logx.Log("         > Invoking %v:\n", ttl)
 			logx.Dim("%v\n", leftPad(script, 7))
 		} else {
 			logx.Log("         > Invoking %v...\n", ttl)

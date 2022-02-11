@@ -7,6 +7,10 @@ import (
 	"github.com/hedzr/log/isdelve"
 )
 
+func listAction(cmd *cmdr.Command, args []string) (err error) {
+	return buildAction(cmd, args)
+}
+
 func buildAction(cmd *cmdr.Command, args []string) (err error) {
 	if cmdr.GetDebugMode() {
 		logx.Dim("Debug Mode On, level = %v", log.GetLevel())
@@ -17,11 +21,11 @@ func buildAction(cmd *cmdr.Command, args []string) (err error) {
 	}
 
 	buildScope := buildScopeFromCmdr(cmd)
-	err = actionGoBuild(buildScope)
+	err = actionGoBuild(buildScope, cmd, args)
 	return
 }
 
-func actionGoBuild(buildScope string) (err error) {
+func actionGoBuild(buildScope string, cmd *cmdr.Command, args []string) (err error) {
 	logx.Verbose("Build Scope: %v, Using main config: %v\n", buildScope, cmdr.GetUsedConfigFile())
 
 	//var buildSettings = new(BgoSettings)
@@ -31,11 +35,11 @@ func actionGoBuild(buildScope string) (err error) {
 
 	switch buildScope {
 	case "short", "current":
-		err = buildCurr(buildScope)
+		err = buildCurr(buildScope, cmd, args)
 	case "full":
 		fallthrough
 	default:
-		err = buildAuto(buildScope)
+		err = buildAuto(buildScope, cmd, args)
 	}
 	return
 }

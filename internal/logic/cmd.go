@@ -25,7 +25,12 @@ func AttachToCmdr(root *cmdr.RootCmdOpt) {
 
 	cmdrSubCmdInit(root)
 	cmdrSubCmdBuild(root)
+	cmdrSubCmdList(root)
 }
+
+const gnBuild = "Build Target"
+const gnGoBuild = "Go Build Params"
+const gnControl = "Control"
 
 func cmdrOptsScopes(cmd cmdr.OptCmd) {
 	cmdr.NewBool().
@@ -58,7 +63,7 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
 		Such as '--arch arm64 --arch amd64,386'.
 		The available list can be dumped by 'go tool dist list'`).
 		ToggleGroup("").
-		Group("Build").
+		Group(gnBuild).
 		Placeholder("ARCH").
 		EnvKeys("GOARCH").
 		AttachTo(cmd)
@@ -68,7 +73,7 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
 		Such as '--os linux --os plan9 --os darwin,windows'.
 		The available list can be dumped by 'go tool dist list'`).
 		ToggleGroup("").
-		Group("Build").
+		Group(gnBuild).
 		Placeholder("OS").
 		EnvKeys("GOOS").
 		AttachTo(cmd)
@@ -78,16 +83,17 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
 		Such as '--for linux/arm64 --os plan9/amd64'.
 		The available list can be dumped by 'go tool dist list'`).
 		ToggleGroup("").
-		Group("Build").
+		Group(gnBuild).
 		Placeholder("OS/ARCH").
 		EnvKeys("FOR").
 		AttachTo(cmd)
+
 	cmdr.NewStringSlice().
 		Titles("tags", "tags").
 		Description("Additional '-tags' value to pass to go build (comma separated or multi times)", `Additional '-tags' value to pass to go build (comma separated or multi times)
 		Such as '--tags isdelve --tags private --os aws-build,lan-build'.`).
 		ToggleGroup("").
-		Group("Go Build").
+		Group(gnGoBuild).
 		Placeholder("tag,list").
 		EnvKeys("").
 		AttachTo(cmd)
@@ -95,7 +101,7 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
 		Titles("ldflags", "ldflags").
 		Description("Additional '-ldflags' value to pass to go build (comma separated or multi times)", ``).
 		ToggleGroup("").
-		Group("Go Build").
+		Group(gnGoBuild).
 		Placeholder("[pattern=]arg list").
 		EnvKeys("LDFLAGS").
 		AttachTo(cmd)
@@ -103,7 +109,7 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
 		Titles("gcflags", "gcflags").
 		Description("Additional '-gcflags' value to pass to go build (comma separated or multi times)", ``).
 		ToggleGroup("").
-		Group("Go Build").
+		Group(gnGoBuild).
 		Placeholder("[pattern=]arg list").
 		EnvKeys("GCFLAGS").
 		AttachTo(cmd)
@@ -111,7 +117,7 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
 		Titles("gccgoflags", "gccgoflags").
 		Description("Additional '-gccgoflags' value to pass to go build (comma separated or multi times)", ``).
 		ToggleGroup("").
-		Group("Go Build").
+		Group(gnGoBuild).
 		Placeholder("[pattern=]arg list").
 		EnvKeys("GCCGOFLAGS").
 		AttachTo(cmd)
@@ -119,7 +125,7 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
 		Titles("asmflags", "asmflags").
 		Description("Additional '-asmflags' value to pass to go build (comma separated or multi times)", ``).
 		ToggleGroup("").
-		Group("Go Build").
+		Group(gnGoBuild).
 		Placeholder("[pattern=]arg list").
 		EnvKeys("ASMFLAGS").
 		AttachTo(cmd)
@@ -128,7 +134,7 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
 		Titles("mod", "mod").
 		Description("Additional '-mod' value to pass to go build", ``).
 		ToggleGroup("").
-		Group("Go Build").
+		Group(gnGoBuild).
 		Placeholder("MOD").
 		ValidArgs("readonly", "vendor", "mod").
 		AttachTo(cmd)
@@ -137,14 +143,14 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
 		Titles("cgo", "cgo").
 		Description("enable CGO mode", "").
 		//ToggleGroup("").
-		Group("Go Build").
+		Group(gnGoBuild).
 		EnvKeys("CGO_ENABLED").
 		AttachTo(cmd)
 	cmdr.NewBool().
 		Titles("race", "race").
 		Description("enable --race building", "").
 		//ToggleGroup("").
-		Group("Go Build").
+		Group(gnGoBuild).
 		EnvKeys("RACE").
 		AttachTo(cmd)
 	cmdr.NewBool().
@@ -154,7 +160,7 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
 		and only with Clang/LLVM as the host C compiler.
 		On linux/arm64, pie build mode will be used.`).
 		//ToggleGroup("").
-		Group("Go Build").
+		Group(gnGoBuild).
 		EnvKeys("MSAN").
 		AttachTo(cmd)
 
@@ -162,17 +168,25 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
 		Titles("output", "o").
 		Description("Specify the binary filename pattern", ``).
 		ToggleGroup("").
-		Group("Go Build").
+		Group(gnGoBuild).
 		Placeholder("PATTERN").
 		AttachTo(cmd)
 }
 
 func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
+	cmdr.NewString("").
+		Titles("gocmd", "gocmd").
+		Description("Additional '-gocmd' value to pass to go build", ``).
+		ToggleGroup("").
+		Group(gnControl).
+		Placeholder("GOCMD").
+		AttachTo(cmd)
+
 	cmdr.NewBool().
 		Titles("rebuild", "r").
 		Description("Force rebuilding of package that were up to date", "").
 		//ToggleGroup("").
-		Group("Control").
+		Group(gnControl).
 		EnvKeys("REBUILD").
 		AttachTo(cmd)
 
@@ -180,7 +194,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 		Titles("no-trimpath", "ntp").
 		Description("Don't use -trimapth", "").
 		//ToggleGroup("").
-		Group("Control").
+		Group(gnControl).
 		EnvKeys("NO_TRIMPATH").
 		AttachTo(cmd)
 
@@ -188,7 +202,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 	//	Titles("for", "for").
 	//	Description("Build for os/arch, such as 'linux/riscv64'", "").
 	//	//ToggleGroup("").
-	//	Group("Control").
+	//	Group(gnControl).
 	//	EnvKeys("FOR").
 	//	AttachTo(cmd)
 	//
@@ -196,7 +210,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 	//	Titles("os", "os").
 	//	Description("Build for os, such as 'linux'", "").
 	//	//ToggleGroup("").
-	//	Group("Control").
+	//	Group(gnControl).
 	//	EnvKeys("OS").
 	//	AttachTo(cmd)
 	//
@@ -204,7 +218,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 	//	Titles("arch", "arch").
 	//	Description("Build for arch, such as 'riscv64'", "").
 	//	//ToggleGroup("").
-	//	Group("Control").
+	//	Group(gnControl).
 	//	EnvKeys("ARCH").
 	//	AttachTo(cmd)
 
@@ -212,7 +226,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 		Titles("project-name", "pn", "name").
 		Description("Build one project with its name", "").
 		//ToggleGroup("").
-		Group("Control").
+		Group(gnControl).
 		EnvKeys("PROJECT_NAME").
 		AttachTo(cmd)
 
@@ -220,7 +234,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 		Titles("parallel", "j").
 		Description("TODO: Use parallel building with CPU Core Count, 0 to Auto", "").
 		//ToggleGroup("").
-		Group("Control").
+		Group(gnControl).
 		Placeholder("#").
 		Hidden(true). // parallel building not in planning
 		EnvKeys("PARALLEL").
@@ -230,7 +244,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 		Titles("save", "save").
 		Description("Save this session as a .bgo.yml", "").
 		//ToggleGroup("").
-		Group("Control").
+		Group(gnControl).
 		EnvKeys("SAVE").
 		AttachTo(cmd)
 
@@ -238,7 +252,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 	//	Titles("yes", "y").
 	//	Description("Assume 'yes' while sth has been asking", "").
 	//	//ToggleGroup("").
-	//	Group("Control").
+	//	Group(gnControl).
 	//	EnvKeys("").
 	//	AttachTo(cmd)
 }
@@ -278,4 +292,21 @@ func cmdrSubCmdBuild(root cmdr.OptCmd) {
 
 	cmdrOptsBuildCommons(buildCmd)
 	cmdrOptsBuildControls(buildCmd)
+}
+
+func cmdrSubCmdList(root cmdr.OptCmd) {
+	listCmd := root.NewSubCommand("list", "ls").
+		Description("list projects in .bgo.yml", `
+			list projects in .bgo.yml.
+			
+			prints them in brief mode.`).
+		Action(listAction)
+
+	cmdr.NewBool().
+		Titles("more", "m").
+		Description("more details", "").
+		//ToggleGroup("").
+		Group("").
+		VendorHidden(true).
+		AttachTo(listCmd)
 }
