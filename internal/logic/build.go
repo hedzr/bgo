@@ -175,7 +175,7 @@ func saveBackToBs(packages map[string]*pkgInfo, bs *BgoSettings) (err error) {
 func buildPackages(tpBase *build.TargetPlatforms, bc *build.Context, bs *BgoSettings, pi *pkgInfo) (err error) {
 	ensureProject(pi, bc, bs)
 
-	logx.Colored(logx.Green, "> building for package %v (dir: %q)...", pi.p.Package, pi.dirname)
+	//logx.Colored(logx.Green, "> building for package %v (dir: %q)...", pi.p.Package, pi.dirname)
 
 	if cmdr.GetTraceMode() {
 		//logx.Dim("  - BS:")
@@ -244,7 +244,7 @@ func prepareBuildContextForEachProjectTarget(bc *build.Context, os, arch string,
 
 func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 	//logx.Log("  >> %v/%v", bc.Os, bc.Arch)
-	logx.Log("  >> %v/%v, Need Install: %v\n", bc.OS, bc.ARCH, bc.Install)
+	logx.Log("      >> %v/%v, Need Install: %v\n", bc.OS, bc.ARCH, bc.Install)
 	//logx.Dim("     project.Common: %+v\n", *p.Common)
 
 	cmd := []interface{}{"go", "build"}
@@ -334,13 +334,16 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 
 	if bc.KeepWorkdir {
 		//wd := bc.WorkDir
+		if !dir.FileExists(bc.Dir) {
+			return
+		}
 
 		relOut := outBinary
 		bc.Output.Set(relOut)
 		cmd = append(cmd, "-o", relOut)
 
-		if bc.Dir[0] != '.' {
-			if !path.IsAbs(bc.Dir) {
+		if !path.IsAbs(bc.Dir) && !strings.HasPrefix(bc.Dir, "./") {
+			if bc.Dir != "." {
 				bc.Dir = "./" + bc.Dir
 			}
 		}
@@ -352,7 +355,14 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 			wd = bc.UseWorkDir
 		}
 
-		defer dir.PushDir(wd)()
+		dir.PushDir(wd)()
+		//if c, e := dir.PushDirEx(wd); e != nil {
+		//	logx.Warn("%v\n", logx.ToColor(logx.LightRed, "         The project ignored since not exists."))
+		//	return nil
+		//} else {
+		//	defer c()
+		//}
+		logx.Verbose("         entering dir: %v\n", wd)
 
 		var relOut string
 		relOut, err = filepath.Rel(wd, outBinary)
@@ -364,8 +374,8 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 
 		var relpkg string
 		relpkg, err = filepath.Rel(wd, bc.Dir)
-		if relpkg[0] != '.' {
-			if !path.IsAbs(relpkg) {
+		if !path.IsAbs(relpkg) && !strings.HasPrefix(relpkg, "./") {
+			if relpkg != "." {
 				relpkg = "./" + relpkg
 			}
 		}
@@ -373,13 +383,13 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 		bc.PackageDir = relpkg
 	}
 
-	logx.Verbose("     PWD: %v\n", logx.ToDim(dir.GetCurrentDir()))
-	logx.Verbose("     OUT: %v\n", logx.ToDim(bc.Output.Path))
-	logx.Verbose("     Go.mod: %v\n", logx.ToColor(logx.Cyan, bc.GoModFile))
-	logx.Verbose("     CommandLine: %v\n", logx.ToDim("%v", cmd))
+	logx.Verbose("         PWD: %v\n", logx.ToDim(dir.GetCurrentDir()))
+	logx.Verbose("         OUT: %v\n", logx.ToDim(bc.Output.Path))
+	logx.Verbose("         Go.mod: %v\n", logx.ToColor(logx.Cyan, bc.GoModFile))
+	logx.Verbose("         CommandLine: %v\n", logx.ToDim("%v", cmd))
 
 	if isDryRunMode() {
-		logx.Colored(logx.Yellow, "     STOP since dry-run mode specified,\n")
+		logx.Colored(logx.Yellow, "         STOP since dry-run mode specified,\n")
 		return
 	}
 
@@ -503,8 +513,9 @@ func getBuildTargetBinaryPath(bc *build.Context, bs *BgoSettings) (outBinary str
 }
 
 func iaGenerate(bc *build.Context, bs *BgoSettings) (err error) {
-	logx.Log("     > Run 'go generate' at %q...\n", bc.PackageDir)
-	return exec.New().WithCommand("go", "generate", bc.PackageDir).
+	logx.Log("         > Run 'go generate' at %q...\n", bc.PackageDir)
+	return exec.New().
+		WithCommand("go", "generate", bc.PackageDir).
 		RunAndCheckError()
 }
 
@@ -516,7 +527,7 @@ func iaInstall(outBinary string, bc *build.Context, bs *BgoSettings) (err error)
 		}
 		goBin := path.Join(gopath, "bin")
 
-		logx.Log("     > Installing to %v...\n", goBin)
+		logx.Log("         > Installing to %v...\n", goBin)
 		err = exec.New().WithCommand("cp", outBinary, goBin).RunAndCheckError()
 	}
 	return
@@ -535,10 +546,10 @@ func iaRunScript(scriptsSource string, bc *build.Context, title ...string) (err 
 			logx.Log("     > Invoking %v:\n", ttl)
 			logx.Dim("%v\n", leftPad(script, 7))
 		} else {
-			logx.Log("     > Invoking %v...\n", ttl)
+			logx.Log("         > Invoking %v...\n", ttl)
 		}
 		err = exec.New().
-			WithPadding(7).
+			WithPadding(7+4).
 			WithCommand("/bin/bash", "-c", script).
 			RunAndCheckError()
 	}
@@ -558,10 +569,10 @@ func iaRunScriptFile(scriptsSource string, bc *build.Context, title ...string) (
 			logx.Log("     > Invoking %v:\n", ttl)
 			logx.Dim("%v\n", leftPad(script, 7))
 		} else {
-			logx.Log("     > Invoking %v...\n", ttl)
+			logx.Log("         > Invoking %v...\n", ttl)
 		}
 		err = exec.New().
-			WithPadding(7).
+			WithPadding(7+4).
 			WithCommand("/bin/bash", "-c", script).
 			RunAndCheckError()
 	}
@@ -587,7 +598,7 @@ func iaLL(outBinary string, bc *build.Context) (err error) {
 			targets = append(targets, t)
 		}
 	}
-	err = exec.New().WithPadding(7).WithCommand("ls", "-la", c, targets).RunAndCheckError()
+	err = exec.New().WithPadding(7+2).WithCommand("ls", "-la", c, targets).RunAndCheckError()
 	//err = exec.New().WithPadding(7).WithCommand("gls", "-lh", "--color", targets).RunAndCheckError()
 	//err = exec.New().WithCommand("ls", "-la", c, targets).RunAndCheckError()
 	return
