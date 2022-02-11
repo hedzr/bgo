@@ -5,6 +5,8 @@ import (
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/cmdr/conf"
+	"os"
+	"strings"
 )
 
 func buildRootCmd() (rootCmd *cmdr.RootCommand) {
@@ -20,12 +22,21 @@ func buildRootCmd() (rootCmd *cmdr.RootCommand) {
 			// fmt.Printf("# global pre-action 1, curr-dir: %v\n", cmdr.GetCurrentDir())
 			// cmdr.Set("enable-ueh", true)
 			//err = internal.App().Init(cmd, args) // App() will be auto-closed
-			logx.Verbose("VERBOSE: %v, DEBUG: %v\n", logx.ToDim("%v", cmdr.GetVerboseMode()), logx.ToDim("%v", cmdr.GetDebugMode()))
+
+			logx.LazyInit()
+
+			logx.Verbose("VERBOSE: %v, DEBUG: %v", logx.ToDim("%v", logx.IsVerboseMode()), logx.ToDim("%v", cmdr.GetDebugMode()))
 			logx.Verbose("Config File: %v\n", logx.ToDim("%v", cmdr.GetUsedConfigFile()))
 			logx.Verbose("Config File (2ndry): %v\n", logx.ToDim("%v", cmdr.GetUsedSecondaryConfigFile()))
 			logx.Verbose("Config File (alter): %v\n", logx.ToDim("%v", cmdr.GetUsedAlterConfigFile()))
-			// logx.Log("Args: %v\n", os.Args)
-			// logx.Log("cmd: %v, args: %v\n", cmd.GetTitleName(), args)
+			logx.Verbose("Args: %v\n", strings.Join(os.Args, ", "))
+			logx.Verbose("cmd: %v, args: %v\n", cmd.GetTitleName(), args)
+			if logx.CountOfVerbose() > 1 {
+				logx.Error("an error ok, 1")
+				logx.Warn("a warn ok, 1")
+				logx.Log("a log ok, 1")
+				logx.Verbose("a verbose ok, 1")
+			}
 			return
 		}).
 		//AddGlobalPreAction(func(cmd *cmdr.Command, args []string) (err error) {

@@ -15,6 +15,9 @@ import (
 )
 
 func cmdrMoreCommandsForTest(root cmdr.OptCmd) {
+
+	// test/debug build, many multilevel subcommands here
+
 	cmdrXyPrint(root)
 	cmdrKbPrint(root)
 	cmdrSoundex(root)
