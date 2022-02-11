@@ -23,10 +23,18 @@ func saveNewBgoYamlFile(bs *BgoSettings) (err error) {
 	_ = cmdr.SaveCheckpoint()
 	defer func() { err = cmdr.RestoreCheckpoint() }()
 	cmdr.ResetOptions()
+
+	bsCopy := makeCopyOf(bs)
+	return saveBgoConfigAs(bsCopy, bs.SavedAs)
+}
+
+func saveBgoConfigAs(bs *BgoSettings, savedAs []string) (err error) {
+
+	bs.SavedAs = nil
 	err = cmdr.MergeWith(map[string]interface{}{
 		"app": map[string]interface{}{
 			"bgo": map[string]interface{}{
-				"build": makeCopyOf(bs),
+				"build": bs,
 			},
 		},
 	})
@@ -35,11 +43,7 @@ func saveNewBgoYamlFile(bs *BgoSettings) (err error) {
 	}
 	//cmdr.DebugOutputTildeInfo(false)
 
-	return saveBgoConfigAs(bs)
-}
-
-func saveBgoConfigAs(bs *BgoSettings) (err error) {
-	for _, fn := range bs.SavedAs {
+	for _, fn := range savedAs {
 		if fn != "" {
 			switch ext := path.Ext(fn); ext {
 			case ".toml":
