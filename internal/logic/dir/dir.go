@@ -57,8 +57,19 @@ func ForDirMax(
 		return
 	}
 
+	rootDir := path.Clean(dir.NormalizeDir(root))
+
+	return forDirMax(rootDir, initialDepth, maxDepth, cb, excludes...)
+}
+
+func forDirMax(
+	rootDir string,
+	initialDepth int,
+	maxDepth int,
+	cb func(depth int, dirname string, fi os.FileInfo) (stop bool, err error),
+	excludes ...string,
+) (err error) {
 	var dirs []os.FileInfo
-	rootDir := os.ExpandEnv(root)
 	dirs, err = ioutil.ReadDir(rootDir)
 	if err != nil {
 		// Logger.Fatalf("error in ForDirMax(): %v", err)
@@ -77,6 +88,18 @@ func ForDirMax(
 		return
 	}
 
+	stop, err = forDirMaxLoops(dirs, rootDir, initialDepth, maxDepth, cb, excludes...)
+	return
+}
+
+func forDirMaxLoops(
+	dirs []os.FileInfo,
+	rootDir string,
+	initialDepth int,
+	maxDepth int,
+	cb func(depth int, dirname string, fi os.FileInfo) (stop bool, err error),
+	excludes ...string,
+) (stop bool, err error) {
 	for _, f := range dirs {
 		//Logger.Printf("  - %v", f.Name())
 		if err != nil {
@@ -85,7 +108,7 @@ func ForDirMax(
 		}
 
 		if f.IsDir() && (maxDepth <= 0 || (maxDepth > 0 && initialDepth+1 < maxDepth)) {
-			d := path.Join(root, f.Name())
+			d := path.Join(rootDir, f.Name())
 			if forFileMatched(d, excludes...) {
 				continue
 			}
