@@ -40,7 +40,7 @@ app:
           echo "lint {{.ArgsString}}"
           golint {{.ArgsString}}
           echo "cyclo ."
-          gocyclo -top 20 .
+          gocyclo -top 13 .
         # invoke: "another cmdr command"
         # invoke-proc: "..." # same with invoke-sh
         # shell: /usr/bin/env bash  # optional, default is /bin/bash
