@@ -48,76 +48,7 @@ func newBgoSettings(buildScope string) *BgoSettings {
 	// .bgo.yml will be loaded automatically as a cmdr feature
 	err := cmdr.GetSectionFrom("bgo.build", &bs)
 
-	if bs.SavedAs == nil {
-		bs.SavedAs = []string{"bgo.yml"}
-	}
-	bs.SavedAs = cmdr.GetStringSliceR("settings-filename", bs.SavedAs...)
-
-	if str := cmdr.GetStringR("build.gocmd"); str != "" {
-		bs.Gocmd = str
-	}
-
-	if cmdr.GetBoolR("build.race") {
-		bs.Race = true
-	}
-
-	if cmdr.GetBoolR("build.cgo") {
-		bs.Cgo = true
-	}
-
-	if cmdr.GetBoolR("build.msan") {
-		bs.Msan = true
-	}
-
-	if slice := cmdr.GetStringSliceR("build.ldflags"); len(slice) > 0 {
-		bs.Ldflags = append(bs.Ldflags, slice...)
-	}
-	if slice := cmdr.GetStringSliceR("build.gcflags"); len(slice) > 0 {
-		bs.Gcflags = append(bs.Gcflags, slice...)
-	}
-	if slice := cmdr.GetStringSliceR("build.asmflags"); len(slice) > 0 {
-		bs.Asmflags = append(bs.Asmflags, slice...)
-	}
-	if slice := cmdr.GetStringSliceR("build.gccgoflags"); len(slice) > 0 {
-		bs.Gccgoflags = append(bs.Gccgoflags, slice...)
-	}
-	if slice := cmdr.GetStringSliceR("build.tags"); len(slice) > 0 {
-		bs.Tags = append(bs.Tags, slice...)
-	}
-
-	var manually, os, arch bool
-	if slice := cmdr.GetStringSliceR("build.os"); len(slice) > 0 {
-		//bs.Os = append(bs.Os, slice...)
-		manually, os, bs.Os = true, true, slice
-	} else if bs.Scope != "full" && len(bs.Os) == 0 {
-		bs.Os = []string{"linux", "darwin", "windows"}
-	}
-	if slice := cmdr.GetStringSliceR("build.osarch"); len(slice) > 0 {
-		//bs.Arch = append(bs.Arch, slice...)
-		manually, arch, bs.Arch = true, true, slice
-	} else if bs.Scope != "full" && len(bs.Arch) == 0 {
-		bs.Arch = []string{"amd64"}
-	}
-
-	if manually {
-		if os && !arch {
-			bs.Arch = nil
-		} else if arch && !os {
-			bs.Os = nil
-		}
-	}
-
-	if slice := cmdr.GetStringSliceR("build.for"); len(slice) > 0 {
-		bs.For = slice
-		if manually == false {
-			bs.Os = nil
-			bs.Arch = nil
-		}
-	}
-
-	if str := cmdr.GetStringR("build.output"); str != "" {
-		bs.Output.NamedAs = str
-	}
+	bs.initFromCmdr()
 
 	if err == nil {
 		bs.PullDownCommonSettings()
@@ -132,6 +63,88 @@ func newBgoSettings(buildScope string) *BgoSettings {
 	//cmdr.DebugOutputTildeInfo(true)
 
 	return bs
+}
+
+func (s *BgoSettings) initFromCmdr() {
+
+	if s.SavedAs == nil {
+		s.SavedAs = []string{"bgo.yml"}
+	}
+	s.SavedAs = cmdr.GetStringSliceR("settings-filename", s.SavedAs...)
+
+	if str := cmdr.GetStringR("build.output"); str != "" {
+		s.Output.NamedAs = str
+	}
+
+	if str := cmdr.GetStringR("build.gocmd"); str != "" {
+		s.Gocmd = str
+	}
+
+	s._init1()
+	s._init2()
+}
+
+func (s *BgoSettings) _init1() {
+
+	if cmdr.GetBoolR("build.race") {
+		s.Race = true
+	}
+
+	if cmdr.GetBoolR("build.cgo") {
+		s.Cgo = true
+	}
+
+	if cmdr.GetBoolR("build.msan") {
+		s.Msan = true
+	}
+
+	if slice := cmdr.GetStringSliceR("build.ldflags"); len(slice) > 0 {
+		s.Ldflags = append(s.Ldflags, slice...)
+	}
+	if slice := cmdr.GetStringSliceR("build.gcflags"); len(slice) > 0 {
+		s.Gcflags = append(s.Gcflags, slice...)
+	}
+	if slice := cmdr.GetStringSliceR("build.asmflags"); len(slice) > 0 {
+		s.Asmflags = append(s.Asmflags, slice...)
+	}
+	if slice := cmdr.GetStringSliceR("build.gccgoflags"); len(slice) > 0 {
+		s.Gccgoflags = append(s.Gccgoflags, slice...)
+	}
+	if slice := cmdr.GetStringSliceR("build.tags"); len(slice) > 0 {
+		s.Tags = append(s.Tags, slice...)
+	}
+}
+
+func (s *BgoSettings) _init2() {
+	var manually, os, arch bool
+	if slice := cmdr.GetStringSliceR("build.os"); len(slice) > 0 {
+		//s.Os = append(s.Os, slice...)
+		manually, os, s.Os = true, true, slice
+	} else if s.Scope != "full" && len(s.Os) == 0 {
+		s.Os = []string{"linux", "darwin", "windows"}
+	}
+	if slice := cmdr.GetStringSliceR("build.osarch"); len(slice) > 0 {
+		//s.Arch = append(s.Arch, slice...)
+		manually, arch, s.Arch = true, true, slice
+	} else if s.Scope != "full" && len(s.Arch) == 0 {
+		s.Arch = []string{"amd64"}
+	}
+
+	if manually {
+		if os && !arch {
+			s.Arch = nil
+		} else if arch && !os {
+			s.Os = nil
+		}
+	}
+
+	if slice := cmdr.GetStringSliceR("build.for"); len(slice) > 0 {
+		s.For = slice
+		if manually == false {
+			s.Os = nil
+			s.Arch = nil
+		}
+	}
 }
 
 func (s *BgoSettings) PullDownCommonSettings() {

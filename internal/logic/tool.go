@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os"
-	"regexp"
+	"strconv"
 	"strings"
 	"text/template"
 )
@@ -93,6 +93,11 @@ func ifLdflags(bc *build.Context) {
 		str = fmt.Sprintf("-X %s.GoVersion=", W)
 		pairs[str] = strings.ReplaceAll(bc.GoVersion, " ", "_")
 		//fmt.Sprintf("-X '%s.AppName=%s'", W,bc.AppName),
+
+		str = fmt.Sprintf("-X %s.Serial=", W)
+		pairs[str] = strconv.FormatInt(bc.Serial, 10)
+		str = fmt.Sprintf("-X %s.SerialString=", W)
+		pairs[str] = bc.RandomString
 	}
 
 	for _, pnv := range bc.Common.Extends {

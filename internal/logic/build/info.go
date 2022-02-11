@@ -37,7 +37,7 @@ type (
 
 		RandomString string
 		RandomInt    int
-		Serial       int
+		Serial       int64
 	}
 )
 
@@ -84,8 +84,11 @@ func prepareBuildInfo() {
 			logx.Warn("No suitable Golang executable 'go' found, use runtime.Version() instead.")
 			//os.Exit(1)
 			gBuildInfo.GoVersion = runtime.Version()
-		} else {
-			// logx.Warn("is ok")
+		} else if logx.CountOfVerbose() > 1 {
+			logx.Warn("is warn ok")
+			logx.Trace("is trace ok")
+			logx.Log("is ok")
+			logx.Colored(logx.Green, "is green ok")
 		}
 
 		err = exec.CallQuiet("git describe --tags --abbrev=0", func(retCode int, stdoutText string) {
