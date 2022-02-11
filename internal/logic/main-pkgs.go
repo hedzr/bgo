@@ -3,7 +3,6 @@ package logic
 import (
 	"bufio"
 	"github.com/hedzr/bgo/internal/logic/logx"
-	"github.com/hedzr/cmdr"
 	"github.com/hedzr/log"
 	"github.com/hedzr/log/dir"
 	"github.com/hedzr/log/exec"
@@ -208,7 +207,7 @@ func dissectTheMainDirImpl(dirname string, packages map[string]*pkgInfo, bs *Bgo
 		//
 		// go: cannot find main module, but found .git/config in ...
 		//
-		if cmdr.GetVerboseMode() {
+		if logx.IsVerboseMode() {
 			log.Warnf("dissectTheMainDirImpl(%q) failed: %v", dirname, err)
 		}
 	}
