@@ -12,7 +12,7 @@ app:
               arch: [amd64,"386"]
               package: github.com/hedzr/bgo/samples/app1
               keep-workdir: true
-            app2:
+            010-app2:
               dir: app2
               package: github.com/hedzr/bgo/samples/app2
               keep-workdir: true

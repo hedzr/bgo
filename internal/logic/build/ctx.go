@@ -1,7 +1,9 @@
 package build
 
 import (
+	"github.com/hedzr/bgo/internal/logic/tool"
 	"github.com/hedzr/log/dir"
+	"path"
 )
 
 type (
@@ -28,4 +30,16 @@ func NewContext() *Context {
 		Info:         NewBuildInfo(),
 		DynBuildInfo: newDynBuildInfo(),
 	}
+}
+
+func (bc *Context) FindAppName(knownName, knownProjectName, knownPackageName string) {
+	bc.AppName, bc.ProjectName = knownName, knownProjectName
+	if bc.ProjectName == "" {
+		bc.ProjectName = path.Base(knownPackageName)
+	}
+	if bc.AppName == "" {
+		bc.AppName = bc.ProjectName
+	}
+	bc.ProjectName = tool.StripOrderPrefix(bc.ProjectName)
+	bc.AppName = tool.StripOrderPrefix(bc.AppName)
 }

@@ -1,6 +1,9 @@
 package logic
 
-import "github.com/hedzr/bgo/internal/logic/build"
+import (
+	"github.com/hedzr/bgo/internal/logic/build"
+	"github.com/hedzr/bgo/internal/logic/tool"
+)
 
 //const BgoYamlFilename = ".bgo.yml"
 
@@ -30,6 +33,9 @@ type (
 		//   github release
 		// Before
 		//   fmt, lint, test, cyclo, ...
+
+		keyName string
+		tp      *build.TargetPlatforms
 	}
 )
 
@@ -58,6 +64,16 @@ func newProjectClean(pkg string, dir string) *ProjectWrap {
 	return p
 }
 
+func (p *Project) GetTitleName() string {
+	if p.Name != "" {
+		return p.Name
+	}
+	if p.keyName != "" {
+		return tool.StripOrderPrefix(p.keyName)
+	}
+	return "Name?"
+}
+
 func (p *Project) apply(packageName string, bs *BgoSettings) {
 	if p.Common == nil {
 		p.Common = build.NewCommon()
@@ -82,4 +98,42 @@ func (p *Project) applyPI(pi *pkgInfo) {
 	if p.Dir != pi.dirname {
 		p.Dir = pi.dirname
 	}
+}
+
+func (p *Project) inIntSlice(val int, slice []int) (yes bool) {
+	for _, v := range slice {
+		if yes = val == v; yes {
+			break
+		}
+	}
+	return
+}
+
+func (p *Project) inStringSlice(val string, slice []string) (yes bool) {
+	for _, v := range slice {
+		if yes = val == v; yes {
+			break
+		}
+	}
+	return
+}
+
+func (p *Project) overspreadByTP(scope string, tpBase *build.TargetPlatforms) {
+	for os, oss := range tpBase.OsArchMap {
+		for arch, _ := range oss {
+			if !p.inStringSlice(os, p.Os) {
+				p.Os = append(p.Os, os)
+			}
+			if !p.inStringSlice(arch, p.Arch) {
+				p.Arch = append(p.Arch, arch)
+			}
+		}
+	}
+
+	p.tp = build.NewTargetPlatforms()
+	err := p.tp.Init()
+	if err != nil {
+		return
+	}
+	p.tp.FilterBy(scope, p.For, p.Os, p.Arch)
 }

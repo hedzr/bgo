@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/hedzr/bgo/internal/logic/build"
 	"github.com/hedzr/bgo/internal/logic/logx"
+	"github.com/hedzr/bgo/internal/logic/tool"
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/log/dir"
 	"github.com/hedzr/log/exec"
@@ -54,6 +55,7 @@ func buildFor(buildScope string, tp *build.TargetPlatforms, bc *build.Context, b
 	if bs != nil {
 		logx.Trace("tp = %v\n", tp)
 		logx.Trace("bs = %+v\n", bs)
+		// reduce the top-level targets to a minimal set
 		tp.FilterBy(bs.Scope, bs.For, bs.Os, bs.Arch)
 	} else {
 		logx.Fatal("BAD, bgoSettings == nil!!")
@@ -98,21 +100,23 @@ func buildProjects(tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings
 	return
 }
 
-func checkSingleProjectNameSpecified(pkgs map[string]*pkgInfo, bs *BgoSettings) (projectName string, singleProjectOrPackage *pkgInfo) {
+func checkSingleProjectNameSpecified(packages map[string]*pkgInfo, bs *BgoSettings) (projectName string, singleProjectOrPackage *pkgInfo) {
 	projectName = cmdr.GetStringR("build.project-name")
 	if projectName != "" {
-		for _, p := range pkgs {
-			if StripOrderPrefix(p.projectName) == projectName || StripOrderPrefix(p.appName) == projectName {
+		for _, p := range packages {
+			if tool.StripOrderPrefix(p.projectName) == projectName ||
+				tool.StripOrderPrefix(p.appName) == projectName {
 				singleProjectOrPackage = p
 				break
 			}
 		}
 		if singleProjectOrPackage != nil {
-			pkgs = make(map[string]*pkgInfo)
-			pkgs[path.Clean(singleProjectOrPackage.dirname)] = singleProjectOrPackage
+			packages = make(map[string]*pkgInfo)
+			packages[path.Clean(singleProjectOrPackage.dirname)] = singleProjectOrPackage
 			for _, g := range bs.Projects {
 				for pn, p := range g.Items {
-					if StripOrderPrefix(pn) == projectName || StripOrderPrefix(p.Name) == projectName {
+					if tool.StripOrderPrefix(pn) == projectName ||
+						tool.StripOrderPrefix(p.Name) == projectName {
 						continue
 					}
 					p.Disabled = true
@@ -134,8 +138,8 @@ func ensureProject(pi *pkgInfo, bc *build.Context, bs *BgoSettings) {
 	pi.p = p
 }
 
-func saveBackToBs(pkgs map[string]*pkgInfo, bs *BgoSettings) (err error) {
-	for _, pi := range pkgs {
+func saveBackToBs(packages map[string]*pkgInfo, bs *BgoSettings) (err error) {
+	for _, pi := range packages {
 		var found bool
 		for _, g := range bs.Projects {
 			for _, p := range g.Items {
@@ -168,7 +172,7 @@ func saveBackToBs(pkgs map[string]*pkgInfo, bs *BgoSettings) (err error) {
 	return
 }
 
-func buildPackages(tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings, pi *pkgInfo) (err error) {
+func buildPackages(tpBase *build.TargetPlatforms, bc *build.Context, bs *BgoSettings, pi *pkgInfo) (err error) {
 	ensureProject(pi, bc, bs)
 
 	logx.Colored(logx.Green, "> building for package %v (dir: %q)...", pi.p.Package, pi.dirname)
@@ -184,35 +188,39 @@ func buildPackages(tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings
 		//}
 	}
 
-STOP:
-	for oss, osv := range tp.OsArchMap {
-		for arch, _ := range osv {
-			if cmdr.GetTraceMode() {
-				logx.Dim("%v\n", leftPad(yamlText(pi.p.Common), 5))
-			}
+	err = loopAllProjects(tpBase, bc, bs, buildProject)
 
-			prepareBuildContextForEachProjectTarget(bc, oss, arch, pi)
-
-			err = buildProject(bc, bs)
-			if err != nil {
-				break STOP
-			}
-		}
-	}
+	//STOP:
+	//	for oss, osv := range tp.OsArchMap {
+	//		for arch, _ := range osv {
+	//			if cmdr.GetTraceMode() {
+	//				logx.Dim("%v\n", leftPad(yamlText(pi.p.Common), 5))
+	//			}
+	//
+	//			prepareBuildContextForEachProjectTarget(bc, oss, arch, pi.p,
+	//				pi.projectName, pi.groupKey, pi.groupLeadingText)
+	//
+	//			err = buildProject(bc, bs)
+	//			if err != nil {
+	//				break STOP
+	//			}
+	//		}
+	//	}
 	return
 }
 
-func prepareBuildContextForEachProjectTarget(bc *build.Context, os, arch string, pi *pkgInfo) {
+func prepareBuildContextForEachProjectTarget(bc *build.Context, os, arch string,
+	p *ProjectWrap, knownProjectName, groupKey, groupLeadingText string) {
 	// dynBuildInfo
-	bc.BgoGroupKey = pi.groupKey
-	bc.BgoGroupLeadingText = pi.groupLeadingText
+	bc.BgoGroupKey = groupKey
+	bc.BgoGroupLeadingText = groupLeadingText
 	bc.HasGoMod = false
-	bc.GOROOT, bc.Dir = "", pi.p.Dir
+	bc.GOROOT, bc.Dir = "", p.Dir
 
 	// build info
 	bc.Serial++
-	bc.RandomInt = rr.NextIn(100)
-	bc.RandomString = rr.AsStrings().NextString(24)
+	bc.RandomInt = tool.NextIn(100)
+	bc.RandomString = tool.NextString(24)
 
 	// Bug: Clone/CloneFrom can't process unhashable/uncomparable
 	// field such as the element of 'Extends', i.e.,
@@ -223,23 +231,15 @@ func prepareBuildContextForEachProjectTarget(bc *build.Context, os, arch string,
 	bc.Common = build.NewCommon()
 
 	// bc.DynBuildInfo
-	bc.Common.CloneFrom(pi.p.Common)
+	bc.Common.CloneFrom(p.Common)
 
 	// bc.Gen, bc.Cgo, bc.Race, bc.Gocmd, bc.Install = p.Gen, p.Cgo, p.Race, p.Gocmd, p.Install
 	bc.OS, bc.ARCH, bc.Version = os, arch, bc.GitVersion
-	if pi.p.Version != "" {
-		bc.Version = pi.p.Version
+	if p.Version != "" {
+		bc.Version = p.Version
 	}
 
-	bc.AppName, bc.ProjectName = pi.p.Name, pi.projectName
-	if bc.ProjectName == "" {
-		bc.ProjectName = path.Base(pi.p.Package)
-	}
-	if bc.AppName == "" {
-		bc.AppName = bc.ProjectName
-	}
-	bc.ProjectName = StripOrderPrefix(bc.ProjectName)
-	bc.AppName = StripOrderPrefix(bc.AppName)
+	bc.FindAppName(p.Name, knownProjectName, p.Package)
 }
 
 func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
