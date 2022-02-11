@@ -1,0 +1,24 @@
+app:
+  bgo:
+    build:
+      os: [darwin]
+      arch: [amd64]
+      projects:
+        000-default-group:
+          items:
+            app1:
+              dir: app1
+              os: [darwin,linux,windows]
+              arch: [amd64,"386"]
+              package: github.com/hedzr/bgo/samples/app1
+              keep-workdir: true
+            app2:
+              dir: app2
+              package: github.com/hedzr/bgo/samples/app2
+              keep-workdir: true
+      output:
+        dir: ./bin
+        named-as: '{{.AppName}}-{{.OS}}-{{.ARCH}}'
+      excludes: [study*, test*]
+
+
