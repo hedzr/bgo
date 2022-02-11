@@ -78,6 +78,9 @@ app:
               cgo: false
               keep-workdir: false   # true: don't switch workdir to 'dir'
               use-workdir:          # specify a special workdir
+              os: [ "linux","darwin" ]
+              arch: [ "amd64" ]
+              tags: [ "test" ]
               extends:
                 - pkg: "github.com/hedzr/cmdr/conf"
                   values:
