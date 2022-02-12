@@ -5,6 +5,7 @@ import (
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/bgo/internal/logic/tool"
 	"github.com/hedzr/log/dir"
+	"runtime"
 )
 
 func listPackages(tpBase *build.TargetPlatforms, bc *build.Context, bs *BgoSettings, packages map[string]*pkgInfo) (err error) {
@@ -29,9 +30,11 @@ func loopAllProjects(
 	bc *build.Context, bs *BgoSettings,
 	cb func(bc *build.Context, bs *BgoSettings) (err error),
 ) (err error) {
-	var seq int
+	seq := int(0)
+	shortMode := bs.Scope == "short"
 
 	kiSlice := getSortedProjectGroupKeys(bs.Projects)
+RETURN:
 	for _, ki := range kiSlice {
 		gn, grp := ki.grp, bs.Projects[ki.grp]
 		if grp.Common != nil && grp.Common.Disabled {
@@ -59,12 +62,22 @@ func loopAllProjects(
 			it.overspreadByTP(bs.Scope, tpBase)
 
 		STOP:
-			for oss, osv := range it.tp.OsArchMap {
-				for arch, _ := range osv {
-					prepareBuildContextForEachProjectTarget(bc, oss, arch, it,
-						pn, gn, grp.LeadingText)
+			for osName, osv := range it.tp.OsArchMap {
+				for archName, _ := range osv {
+					if shortMode {
+						if osName != runtime.GOOS || archName != runtime.GOARCH {
+							continue
+						}
+					}
+
+					prepareBuildContextForEachProjectTarget(bc, osName, archName,
+						it, pn, gn, grp.LeadingText)
 					if err = cb(bc, bs); err != nil {
 						break STOP
+					}
+
+					if shortMode {
+						break RETURN
 					}
 				}
 			}
