@@ -97,7 +97,8 @@ func prepareBuildInfo() {
 		})
 		if err != nil {
 			logx.Warn("No suitable 'git' executable found or cannot git describe.")
-			logx.Log("%v", err)
+			logx.Log("Error: %v", err)
+			logx.Log("Env:   %v", os.Environ())
 			//os.Exit(1)
 			gBuildInfo.GitVersion = "-unknown-"
 		}

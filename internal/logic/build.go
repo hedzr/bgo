@@ -579,9 +579,9 @@ func iaInstall(outBinary string, bc *build.Context, bs *BgoSettings) (err error)
 			gopath = os.ExpandEnv("$HOME/go")
 		}
 		goBin := path.Join(gopath, "bin")
-
-		logx.Log("         > Installing to %v...\n", goBin)
-		err = exec.New().WithCommand("cp", outBinary, goBin).RunAndCheckError()
+		tgt := path.Join(goBin, bc.AppName)
+		logx.Log("         > Installing as %v...\n", tgt)
+		err = exec.New().WithCommand("cp", outBinary, tgt).RunAndCheckError()
 	}
 	return
 }
@@ -645,10 +645,10 @@ func iaLL(outBinary string, bc *build.Context) (err error) {
 			if gopath == "" {
 				gopath = os.ExpandEnv("$HOME/go")
 			}
-			gobin := path.Join(gopath, "bin")
-
-			t := path.Join(gobin, path.Base(outBinary))
-			targets = append(targets, t)
+			goBin := path.Join(gopath, "bin")
+			tgt := path.Join(goBin, bc.AppName)
+			// t := path.Join(goBin, path.Base(outBinary))
+			targets = append(targets, tgt)
 		}
 	}
 	err = exec.New().WithPadding(7+2).WithCommand("ls", "-la", c, targets).RunAndCheckError()

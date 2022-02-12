@@ -94,9 +94,9 @@ app:
                     SerialString: "{{.randomString}}" # since cmdr v1.10.23+
                     Serial: "{{.Serial}}" # since cmdr v1.10.23+
               post-action: |
-                echo "runtime: $OSTYPE/{{.Info.GOARCH}}, setting: {{.OS}}/{{.ARCH}}"
-                if [[ "$OSTYPE" == *{{.OS}}* && "{{.Info.GOARCH}}" == {{.ARCH}} ]]; then
-                  cp -v {{.Output.Path}} $HOME/go/bin/
+                echo "runtime: $OSTYPE / {{.Info.GOOS}} / {{.Info.GOARCH}}, setting: {{.OS}}/{{.ARCH}}"
+                if [[ "{{.Info.GOOS}}" == *{{.OS}}* && "{{.Info.GOARCH}}" == {{.ARCH}} ]]; then
+                  cp -v {{.Output.Path}} $HOME/go/bin/{{.AppName}}
                 elif [[ {{.OS}} == linux ]]; then
                   [ -d $HOME/work/autocomp.work/fish.comp/bin ] && \
                     cp -v {{.Output.Path}} $HOME/work/autocomp.work/fish.comp/bin/{{.AppName}}
@@ -104,7 +104,7 @@ app:
                     cp -v {{.Output.Path}} $HOME/go/bin/{{.AppName}}
                   ls -laG --color $HOME/work/autocomp.work/fish.comp/bin/{{.AppName}}
                 fi
-                echo "OS: $OSTYPE, Arch: {{.Info.GOARCH}}"
+                echo "OS: $OSTYPE / {{.Info.GOOS}}, Arch: {{.Info.GOARCH}}"
 
               ldflags: [ "-s", "-w" ] # default ldflags is to get the smaller build for releasing
               asmflags: [ ]
