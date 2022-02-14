@@ -27,13 +27,15 @@ type (
 	}
 
 	Info struct {
-		GoVersion   string // the result from 'go version'
-		GitVersion  string // the result from 'git describe --tags --abbrev=0'
-		GitRevision string // revision, git hash code, from 'git rev-parse --short HEAD'
-		BuildTime   string //
-		GOOS        string // a copy from runtime.GOOS
-		GOARCH      string // a copy from runtime.GOARCH
-		GOVERSION   string // a copy from runtime.Version()
+		GoVersion      string // the result from 'go version'
+		GoVersionMajor int    // 1
+		GoVersionMinor int    // 17
+		GitVersion     string // the result from 'git describe --tags --abbrev=0'
+		GitRevision    string // revision, git hash code, from 'git rev-parse --short HEAD'
+		BuildTime      string //
+		GOOS           string // a copy from runtime.GOOS
+		GOARCH         string // a copy from runtime.GOARCH
+		GOVERSION      string // a copy from runtime.Version()
 
 		RandomString string
 		RandomInt    int
@@ -61,6 +63,15 @@ var (
 	onceBuildInfo sync.Once
 )
 
+func (c *Info) VersionIsGreaterThan(major, minor int) bool {
+	if major > c.GoVersionMajor {
+		return true
+	} else if major == c.GoVersionMajor && minor > c.GoVersionMinor {
+		return true
+	}
+	return false
+}
+
 func prepareBuildInfo() {
 	onceBuildInfo.Do(func() {
 		if gBuildInfo != nil {
@@ -79,6 +90,12 @@ func prepareBuildInfo() {
 				strings.TrimSuffix(strings.TrimPrefix(stdoutText, "go version "), "\n"),
 				" ", "_")
 			logx.Colored(logx.Green, "go.version: %v", gBuildInfo.GoVersion)
+			if strings.HasPrefix(gBuildInfo.GoVersion, "go") {
+				a := strings.Split(gBuildInfo.GoVersion[2:], "_")
+				b := strings.Split(a[0], ".")
+				gBuildInfo.GoVersionMajor, _ = strconv.Atoi(b[0])
+				gBuildInfo.GoVersionMinor, _ = strconv.Atoi(b[1])
+			}
 		})
 		if err != nil {
 			logx.Warn("No suitable Golang executable 'go' found, use runtime.Version() instead.")

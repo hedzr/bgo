@@ -370,7 +370,9 @@ func prepareCommandLine(bc *build.Context, bs *BgoSettings) (cmd []interface{}, 
 
 	if bc.Debug == false {
 		if cmdr.GetBoolR("build.no-trimpath") == false {
-			cmd = append(cmd, "-trimpath")
+			if bc.VersionIsGreaterThan(1, 12) {
+				cmd = append(cmd, "-trimpath")
+			}
 		}
 
 		bc.Ldflags = uniappend(bc.Ldflags, "-s")
@@ -402,13 +404,19 @@ func pclMore1(bc *build.Context, bs *BgoSettings) (cmd []interface{}) {
 	}
 
 	if len(bc.Asmflags) > 0 {
+		if bc.Debug == false && cmdr.GetBoolR("build.no-trimpath") == false && !bc.VersionIsGreaterThan(1, 12) {
+			bc.Asmflags = uniAdd(bc.Asmflags, os.ExpandEnv("-trimpath=$HOME/go/src"))
+		}
 		cmd = append(cmd, strings.Join([]string{"-asmflags",
 			strings.Join(bc.Asmflags, " ")}, "="))
 	}
 	if len(bc.Gcflags) > 0 {
-		cmd = append(cmd, strings.Join([]string{"-gcflags",
-			strings.Join(bc.Gcflags, " ")}, "="))
+		if bc.Debug == false && cmdr.GetBoolR("build.no-trimpath") == false && !bc.VersionIsGreaterThan(1, 12) {
+			bc.Gcflags = uniAdd(bc.Gcflags, os.ExpandEnv("-trimpath=$HOME/go/src"))
+		}
+		cmd = append(cmd, strings.Join([]string{"-gcflags", strings.Join(bc.Gcflags, " ")}, "="))
 	}
+
 	if len(bc.Gccgoflags) > 0 {
 		cmd = append(cmd, strings.Join([]string{"-gccgoflags",
 			strings.Join(bc.Gccgoflags, " ")}, "="))

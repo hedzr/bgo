@@ -69,6 +69,15 @@ func findStringInFile(where, what string) (has bool) {
 	return
 }
 
+func uniAdd(target []string, item string) []string {
+	for _, s := range target {
+		if item == s {
+			return target
+		}
+	}
+	return append(target, item)
+}
+
 func ifLdflags(bc *build.Context) {
 	pairs := make(map[string]string)
 
