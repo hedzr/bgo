@@ -43,7 +43,7 @@ app:
           gocyclo -top 13 .
         # invoke: "another cmdr command"
         # invoke-proc: "..." # same with invoke-sh
-        # shell: /usr/bin/env bash  # optional, default is /bin/bash
+        # shell: /usr/bin/env bash  # optional, default is /bin/bash. Or 'powershell.exe' for windows
         desc: pre-options before releasing. typically fmt,lint,cyclo,...
 
       - title: coverage

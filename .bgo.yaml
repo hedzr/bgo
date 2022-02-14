@@ -71,11 +71,12 @@ app:
 
             001-bgo: # <- form: sortingKey-projectName
               name:      # <- app name
-              version: 1.0.0
+              version: 1.0.0   # this field could be replaced with current git-revision
               dir: .
               gen: false
               install: true
               cgo: false
+              race: false
               keep-workdir: false   # true: don't switch workdir to 'dir'
               use-workdir:          # specify a special workdir
               os: [ "linux","darwin" ]
@@ -85,14 +86,16 @@ app:
                 - pkg: "github.com/hedzr/cmdr/conf"
                   values:
                     AppName: "{{.AppName}}"
-                    Version: "{{.Version}}"
+                    Version: "`git describe --tags --abbrev=16`" # "{{.Version}}"
                     Buildstamp: "{{.BuildTime}}" # or shell it
-                    Githash: "`git describe --tags --abbrev=16`"
+                    Githash: "`git rev-parse --short HEAD`"
                     # Githash: "{{.GitRevision}}"  # or shell it: "`git describe --tags --abbrev=9`"
                     GoVersion: "{{.GoVersion}}"  # or shell it
-                    ServerID: "{{.randomString}}" #
-                    SerialString: "{{.randomString}}" # since cmdr v1.10.23+
+                    ServerID: "{{.RandomString}}" #
+                    SerialString: "{{.RandomString}}" # since cmdr v1.10.23+
                     Serial: "{{.Serial}}" # since cmdr v1.10.23+
+              # NOTE that post-action and pre-action will be interpreted
+              # by /bin/bash or powershell.exe
               post-action: |
                 echo "runtime: $OSTYPE / {{.Info.GOOS}} / {{.Info.GOARCH}}, setting: {{.OS}}/{{.ARCH}}"
                 if [[ "{{.Info.GOOS}}" == *{{.OS}}* && "{{.Info.GOARCH}}" == {{.ARCH}} ]]; then
@@ -110,10 +113,9 @@ app:
               asmflags: [ ]
               gcflags: [ ]
               gccgoflags: [ ]
-              #tags: []
-              race: false
-              msan: false
 
+              # msan: false
+              #
               # gocmd: $HOME/go/go1.18beta1/bin/go1.18beta1
               # goroot: ""
               #
