@@ -81,6 +81,7 @@ app:
               use-workdir:          # specify a special workdir
               os: [ "linux","darwin" ]
               arch: [ "amd64" ]
+              for: [ "windows/amd64" ]
               tags: [ "test" ]
               extends:
                 - pkg: "github.com/hedzr/cmdr/conf"
@@ -96,6 +97,7 @@ app:
                     Serial: "{{.Serial}}" # since cmdr v1.10.23+
               # NOTE that post-action and pre-action will be interpreted
               # by /bin/bash or powershell.exe
+              # BUT, these following codes just works for bash shell.
               post-action: |
                 echo "runtime: $OSTYPE / {{.Info.GOOS}} / {{.Info.GOARCH}}, setting: {{.OS}}/{{.ARCH}}"
                 if [[ "{{.Info.GOOS}}" == *{{.OS}}* && "{{.Info.GOARCH}}" == {{.ARCH}} ]]; then
@@ -105,7 +107,11 @@ app:
                     cp -v {{.Output.Path}} $HOME/work/autocomp.work/fish.comp/bin/{{.AppName}}
                   [ -d $HOME/go/bin/ ] && \
                     cp -v {{.Output.Path}} $HOME/go/bin/{{.AppName}}
-                  ls -laG --color $HOME/work/autocomp.work/fish.comp/bin/{{.AppName}}
+                  ls -la $HOME/work/autocomp.work/fish.comp/bin/{{.AppName}}
+                elif [[ {{.OS}} == windows ]]; then
+                  [ -d /Volumes/hz-pc/hz/bin ] && \
+                    cp -v {{.Output.Path}} /Volumes/hz-pc/hz/bin/{{.AppName}}.exe
+                  ls -la {{.Output.Path}} /Volumes/hz-pc/hz/bin/{{.AppName}}.exe
                 fi
                 echo "OS: $OSTYPE / {{.Info.GOOS}}, Arch: {{.Info.GOARCH}}"
 
