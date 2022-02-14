@@ -92,7 +92,7 @@ func prepareBuildInfo() {
 		}
 
 		err = exec.CallQuiet("git describe --tags --abbrev=0", func(retCode int, stdoutText string) {
-			gBuildInfo.GitVersion = strings.TrimSuffix(stdoutText, "\n")
+			gBuildInfo.GitVersion = strings.TrimSuffix(stdoutText, "\n") // such as v0.3.13
 			logx.Colored(logx.Green, "git.version: %v", gBuildInfo.GitVersion)
 		})
 		if err != nil {
@@ -104,7 +104,7 @@ func prepareBuildInfo() {
 		}
 
 		err = exec.CallQuiet("git rev-parse --short HEAD", func(retCode int, stdoutText string) {
-			gBuildInfo.GitRevision = strings.TrimSuffix(stdoutText, "\n")
+			gBuildInfo.GitRevision = strings.TrimSuffix(stdoutText, "\n") // such as 3e6fd96
 			logx.Colored(logx.Green, "git.revision: %v", gBuildInfo.GitRevision)
 		})
 		if err != nil {
