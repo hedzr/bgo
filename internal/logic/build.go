@@ -553,7 +553,7 @@ func getBuildTargetBinaryPath(bc *build.Context, bs *BgoSettings) (outBinary str
 		if bs.Scope == "short" {
 			outBin = "{{.AppName}}"
 		}
-		if runtime.GOOS == "windows" {
+		if bc.OS == "windows" {
 			outBin += ".exe"
 		}
 
