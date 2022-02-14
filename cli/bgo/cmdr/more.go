@@ -42,7 +42,8 @@ func tgCommand(root cmdr.OptCmd) {
 
 	// toggle-group-test - without a default choice
 
-	fx := root.NewSubCommand("tg-test", "tg", "toggle-group-test").
+	fx := cmdr.NewSubCmd().
+		Titles("tg-test", "tg", "toggle-group-test").
 		Description("tg test new features", "tg test new features,\nverbose long descriptions here.").
 		Group("Test").
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
@@ -58,20 +59,25 @@ func tgCommand(root cmdr.OptCmd) {
 			//logrus.WithField(logex.SKIP, 1).Warningf("dsdsdsds")
 
 			return
-		})
-	fx.NewFlagV(false, "apple").
+		}).
+		AttachTo(root)
+	cmdr.NewBool().Titles("apple", "").
 		Description("the test text.", "").
-		ToggleGroup("fruit")
-	fx.NewFlagV(false, "banana").
+		ToggleGroup("fruit").
+		AttachTo(fx)
+	cmdr.NewBool().Titles("banana", "").
 		Description("the test text.", "").
-		ToggleGroup("fruit")
-	fx.NewFlagV(false, "orange").
+		ToggleGroup("fruit").
+		AttachTo(fx)
+	cmdr.NewBool(true).Titles("orange", "").
 		Description("the test text.", "").
-		ToggleGroup("fruit")
+		ToggleGroup("fruit").
+		AttachTo(fx)
 
 	// tg2 - with a default choice
 
-	fx2 := root.NewSubCommand("tg-test2", "tg2", "toggle-group-test2").
+	fx2 := cmdr.NewSubCmd().
+		Titles("tg-test2", "tg2", "toggle-group-test2").
 		Description("tg2 test new features", "tg2 test new features,\nverbose long descriptions here.").
 		Group("Test").
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
@@ -80,16 +86,20 @@ func tgCommand(root cmdr.OptCmd) {
 			fmt.Printf("> STDIN MODE: %v \n", cmdr.GetBoolR("mx-test.stdin"))
 			fmt.Println()
 			return
-		})
-	fx2.NewFlagV(false, "apple").
+		}).
+		AttachTo(root)
+	cmdr.NewBool().Titles("apple", "").
 		Description("the test text.", "").
-		ToggleGroup("fruit")
-	fx2.NewFlagV(false, "banana").
+		ToggleGroup("fruit").
+		AttachTo(fx2)
+	cmdr.NewBool().Titles("banana", "").
 		Description("the test text.", "").
-		ToggleGroup("fruit")
-	fx2.NewFlagV(true, "orange").
+		ToggleGroup("fruit").
+		AttachTo(fx2)
+	cmdr.NewBool().Titles("orange", "").
 		Description("the test text.", "").
-		ToggleGroup("fruit")
+		ToggleGroup("fruit").
+		AttachTo(fx2)
 
 }
 
@@ -97,7 +107,8 @@ func mxCommand(root cmdr.OptCmd) {
 
 	// mx-test
 
-	mx := root.NewSubCommand("mx-test", "mx").
+	mx := cmdr.NewSubCmd().
+		Titles("mx-test", "mx").
 		Description("mx test new features", "mx test new features,\nverbose long descriptions here.").
 		Group("Test").
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
@@ -149,39 +160,46 @@ func mxCommand(root cmdr.OptCmd) {
 				fmt.Println()
 			}
 			return
-		})
-	mx.NewFlagV("", "test", "t").
+		}).
+		AttachTo(root)
+	cmdr.NewString().Titles("test", "t").
 		Description("the test text.", "").
 		EnvKeys("COOLT", "TEST").
-		Group("")
+		Group("").
+		AttachTo(mx)
 
-	mx.NewFlagV("", "password", "pp").
+	cmdr.NewString().Titles("password", "pp").
 		Description("the password requesting.", "").
 		Group("").
 		Placeholder("PASSWORD").
-		ExternalTool(cmdr.ExternalToolPasswordInput)
+		ExternalTool(cmdr.ExternalToolPasswordInput).
+		AttachTo(mx)
 
-	mx.NewFlagV("", "message", "m", "msg").
+	cmdr.NewString().Titles("message", "m", "msg").
 		Description("the message requesting.", "").
 		Group("").
 		Placeholder("MESG").
-		ExternalTool(cmdr.ExternalToolEditor)
+		ExternalTool(cmdr.ExternalToolEditor).
+		AttachTo(mx)
 
-	mx.NewFlagV("", "fruit", "fr").
+	cmdr.NewString().Titles("fruit", "fr").
 		Description("the message.", "").
 		Group("").
 		Placeholder("FRUIT").
-		ValidArgs("apple", "banana", "orange")
+		ValidArgs("apple", "banana", "orange").
+		AttachTo(mx)
 
-	mx.NewFlagV(1, "head", "hd").
+	cmdr.NewInt(1).Titles("head", "hd").
 		Description("the head lines.", "").
 		Group("").
 		Placeholder("LINES").
-		HeadLike(true, 1, 3000)
+		HeadLike(true, 1, 3000).
+		AttachTo(mx)
 
-	mx.NewFlagV(false, "stdin", "c").
+	cmdr.NewBool().Titles("stdin", "c").
 		Description("read file content from stdin.", "").
-		Group("")
+		Group("").
+		AttachTo(mx)
 
 }
 
@@ -189,7 +207,7 @@ func cmdrXyPrint(root cmdr.OptCmd) {
 
 	// xy-print
 
-	root.NewSubCommand("xy-print", "xy").
+	cmdr.NewSubCmd().Titles("xy-print", "xy").
 		Description("test terminal control sequences", "xy-print test terminal control sequences,\nverbose long descriptions here.").
 		Group("Test").
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
@@ -206,7 +224,8 @@ func cmdrXyPrint(root cmdr.OptCmd) {
 			}
 
 			return
-		})
+		}).
+		AttachTo(root)
 
 }
 
@@ -214,7 +233,7 @@ func cmdrKbPrint(root cmdr.OptCmd) {
 
 	// kb-print
 
-	kb := root.NewSubCommand("kb-print", "kb").
+	kb := cmdr.NewSubCmd().Titles("kb-print", "kb").
 		Description("kilobytes test", "test kibibytes' input,\nverbose long descriptions here.").
 		Group("Test").
 		Examples(`
@@ -228,45 +247,53 @@ $ {{.AppName}} kb --size 1g
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
 			fmt.Printf("Got size: %v (literal: %v)\n\n", cmdr.GetKibibytesR("kb-print.size"), cmdr.GetStringR("kb-print.size"))
 			return
-		})
+		}).
+		AttachTo(root)
 
-	kb.NewFlagV("1k", "size", "s").
+	cmdr.NewString("1k").Titles("size", "s").
 		Description("max message size. Valid formats: 2k, 2kb, 2kB, 2KB. Suffixes: k, m, g, t, p, e.", "").
-		Group("")
+		Group("").
+		AttachTo(kb)
 
 }
 
 func cmdrPanic(root cmdr.OptCmd) {
 	// panic test
 
-	pa := root.NewSubCommand("panic-test", "pa").
+	pa := cmdr.NewSubCmd().
+		Titles("panic-test", "pa").
 		Description("test panic inside cmdr actions", "").
-		Group("Test")
+		Group("Test").
+		AttachTo(root)
 
 	val := 9
 	zeroVal := zero
 
-	pa.NewSubCommand("division-by-zero", "dz").
+	cmdr.NewSubCmd().
+		Titles("division-by-zero", "dz").
 		Description("").
 		Group("Test").
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
 			fmt.Println(val / zeroVal)
 			return
-		})
+		}).
+		AttachTo(pa)
 
-	pa.NewSubCommand("panic", "pa").
+	cmdr.NewSubCmd().
+		Titles("panic", "pa").
 		Description("").
 		Group("Test").
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
 			panic(9)
 			return
-		})
+		}).
+		AttachTo(pa)
 
 }
 
 func cmdrSoundex(root cmdr.OptCmd) {
 
-	root.NewSubCommand("soundex", "snd", "sndx", "sound").
+	cmdr.NewSubCmd().Titles("soundex", "snd", "sndx", "sound").
 		Description("soundex test").
 		Group("Test").
 		TailPlaceholder("[text1, text2, ...]").
@@ -275,13 +302,14 @@ func cmdrSoundex(root cmdr.OptCmd) {
 				fmt.Printf("%5d. %s => %s\n", ix, s, tool.Soundex(s))
 			}
 			return
-		})
+		}).
+		AttachTo(root)
 
 }
 
 func cmdrTtySize(root cmdr.OptCmd) {
 
-	root.NewSubCommand("cols", "rows", "tty-size").
+	cmdr.NewSubCmd().Titles("cols", "rows", "tty-size").
 		Description("detected tty size").
 		Group("Test").
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
@@ -302,12 +330,13 @@ func cmdrTtySize(root cmdr.OptCmd) {
 				//
 			}
 			return
-		})
+		}).
+		AttachTo(root)
 
 }
 
 func cmdrManyCommandsTest(root cmdr.OptCmd) {
-	for i := 1; i <= 43; i++ {
+	for i := 1; i <= 23; i++ {
 		t := fmt.Sprintf("subcmd-%v", i)
 		var ttls []string
 		for o, l := root, cmdr.OptCmd(nil); o != nil && o != l; {
@@ -316,17 +345,29 @@ func cmdrManyCommandsTest(root cmdr.OptCmd) {
 		}
 		ttl := strings.Join(tool.ReverseStringSlice(ttls), ".")
 
-		root.NewSubCommand(t, fmt.Sprintf("sc%v", i)).
+		c := cmdr.NewSubCmd().
+			Titles(t, fmt.Sprintf("sc%v", i)).
 			Description(fmt.Sprintf("subcommands %v.sc%v test", ttl, i)).
-			Group("Test")
+			Group("Test").
+			AttachTo(root)
+		cmdrAddFlags(c)
 	}
 }
 
 func cmdrMultiLevelTest(root cmdr.OptCmd) {
 
-	cmd := root.NewSubCommand("mls", "mls").
+	cmd := cmdr.NewSubCmd().
+		Titles("mls", "mls").
 		Description("multi-level subcommands test").
-		Group("Test")
+		Group("Test").
+		//Sets(func(cmd cmdr.OptCmd) {
+		//	cmdrAddFlags(cmd)
+		//}).
+		AttachTo(root)
+	//cmd := root.NewSubCommand("mls", "mls").
+	//	Description("multi-level subcommands test").
+	//	Group("Test")
+	cmdrAddFlags(cmd)
 	cmdrMultiLevel(cmd, 1)
 
 }
@@ -345,9 +386,122 @@ func cmdrMultiLevel(parent cmdr.OptCmd, depth int) {
 		}
 		ttl := strings.Join(tool.ReverseStringSlice(ttls), ".")
 
-		cc := parent.NewSubCommand(t, fmt.Sprintf("sc%v", i)).
+		cc := cmdr.NewSubCmd().
+			Titles(t, fmt.Sprintf("sc%v", i)).
+			//cc := parent.NewSubCommand(t, fmt.Sprintf("sc%v", i)).
 			Description(fmt.Sprintf("subcommands %v.sc%v test", ttl, i)).
-			Group("Test")
+			Group("Test").
+			AttachTo(parent)
+		cmdrAddFlags(cc)
 		cmdrMultiLevel(cc, depth+1)
 	}
+}
+
+func cmdrAddFlags(c cmdr.OptCmd) {
+
+	cmdr.NewBool().Titles("apple", "").
+		Description("the test text.", "").
+		ToggleGroup("fruit").
+		AttachTo(c)
+	cmdr.NewBool().Titles("banana", "").
+		Description("the test text.", "").
+		ToggleGroup("fruit").
+		AttachTo(c)
+	cmdr.NewBool().Titles("orange", "").
+		Description("the test text.", "").
+		ToggleGroup("fruit").
+		AttachTo(c)
+
+	cmdr.NewString().Titles("message", "m", "msg").
+		Description("the message requesting.", "").
+		Group("").
+		Placeholder("MESG").
+		ExternalTool(cmdr.ExternalToolEditor).
+		AttachTo(c)
+
+	cmdr.NewString().Titles("fruit", "fr").
+		Description("the message.", "").
+		Group("").
+		Placeholder("FRUIT").
+		ValidArgs("apple", "banana", "orange").
+		AttachTo(c)
+
+	cmdr.NewBool(false).
+		Titles("bool", "b").
+		Description("A bool flag", "").
+		Group("").
+		AttachTo(c)
+
+	cmdr.NewInt(1).
+		Titles("int", "i").
+		Description("A int flag", "").
+		Group("1000.Integer").
+		AttachTo(c)
+	cmdr.NewInt64(2).
+		Titles("int64", "i64").
+		Description("A int64 flag", "").
+		Group("1000.Integer").
+		AttachTo(c)
+	cmdr.NewUint(3).
+		Titles("uint", "u").
+		Description("A uint flag", "").
+		Group("1000.Integer").
+		AttachTo(c)
+	cmdr.NewUint64(4).
+		Titles("uint64", "u64").
+		Description("A uint64 flag", "").
+		Group("1000.Integer").
+		AttachTo(c)
+
+	cmdr.NewFloat32(2.71828).
+		Titles("float32", "f", "float").
+		Description("A float32 flag with 'e' value", "").
+		Group("2000.Float").
+		AttachTo(c)
+	cmdr.NewFloat64(3.14159265358979323846264338327950288419716939937510582097494459230781640628620899).
+		Titles("float64", "f64").
+		Description("A float64 flag with a `PI` value", "").
+		Group("2000.Float").
+		AttachTo(c)
+	cmdr.NewComplex64(3.14+9i).
+		Titles("complex64", "c64").
+		Description("A complex64 flag", "").
+		Group("2010.Complex").
+		AttachTo(c)
+	cmdr.NewComplex64(3.14+9i).
+		Titles("complex128", "c128").
+		Description("A complex128 flag", "").
+		Group("2010.Complex").
+		AttachTo(c)
+
+	// a set of booleans
+
+	cmdr.NewBool(false).
+		Titles("single", "s").
+		Description("A bool flag: single", "").
+		Group("Boolean").
+		EnvKeys("").
+		AttachTo(c)
+
+	cmdr.NewBool(false).
+		Titles("double", "d").
+		Description("A bool flag: double", "").
+		Group("Boolean").
+		EnvKeys("").
+		AttachTo(c)
+
+	cmdr.NewBool(false).
+		Titles("norway", "n", "nw").
+		Description("A bool flag: norway", "").
+		Group("Boolean").
+		EnvKeys("").
+		AttachTo(c)
+
+	cmdr.NewBool(false).
+		Titles("mongo", "mongo").
+		Description("A bool flag: mongo", "").
+		Group("Boolean").
+		EnvKeys("").
+		AttachTo(c)
+
 }

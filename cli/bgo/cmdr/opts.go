@@ -63,6 +63,12 @@ func init() {
 	}
 	locations = append(locations, cmdr.GetPredefinedAlterLocations()...)
 	options = append(options, cmdr.WithAlterLocations(locations...))
+
+	// in our internal build (with -tags="test delve"), those
+	// multi-level sub-commands need the auto default action
+	// so that we don't have to write an action explicitly.
+	options = append(options, cmdr.WithInternalDefaultAction(true))
+
 }
 
 func isDebugBuild() bool { return isdelve.Enabled }

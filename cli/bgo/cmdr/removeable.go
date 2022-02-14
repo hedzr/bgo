@@ -15,7 +15,7 @@ func prd(key string, val interface{}, format string, params ...interface{}) {
 func soundex(root cmdr.OptCmd) {
 	// soundex
 
-	parent := root.NewSubCommand("soundex", "snd", "sndx", "sound").
+	parent := cmdr.NewSubCmd().Titles("soundex", "snd", "sndx", "sound").
 		Description("soundex test").
 		Group("Test").
 		TailPlaceholder("[text1, text2, ...]").
@@ -59,7 +59,8 @@ func soundex(root cmdr.OptCmd) {
 			for ix, s := range remainArgs {
 				fmt.Printf("[POST] %5d. %s\n", ix, s)
 			}
-		})
+		}).
+		AttachTo(root)
 
 	cmdr.NewBool(false).
 		Titles("bool", "b").
@@ -151,35 +152,39 @@ func soundex(root cmdr.OptCmd) {
 func panicTest(root cmdr.OptCmd) {
 	// panic test
 
-	pa := root.NewSubCommand("panic-test", "pa", "panic").
+	pa := cmdr.NewSubCmd().Titles("panic-test", "pa", "panic").
 		Description("test panic inside cmdr actions", "").
-		Group("Test")
+		Group("Test").
+		AttachTo(root)
 
 	val := 9
 	zeroVal := zero
 	slice1 := []int{1, 2, 3}
 
-	pa.NewSubCommand("slice-bound-out-of-range", "sb", "sboor").
+	cmdr.NewSubCmd().Titles("slice-bound-out-of-range", "sb", "sboor").
 		Description("").
 		Group("Test").
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
 			fmt.Println(slice1[100])
 			return
-		})
+		}).
+		AttachTo(pa)
 
-	pa.NewSubCommand("division-by-zero", "dz").
+	cmdr.NewSubCmd().Titles("division-by-zero", "dz").
 		Description("").
 		Group("Test").
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
 			fmt.Println(val / zeroVal)
 			return
-		})
+		}).
+		AttachTo(pa)
 
-	pa.NewSubCommand("panic", "pa").
+	cmdr.NewSubCmd().Titles("panic", "pa").
 		Description("").
 		Group("Test").
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
 			panic(9)
 			return
-		})
+		}).
+		AttachTo(pa)
 }
