@@ -43,3 +43,13 @@ func (bc *Context) FindAppName(knownName, knownProjectName, knownPackageName str
 	bc.ProjectName = tool.StripOrderPrefix(bc.ProjectName)
 	bc.AppName = tool.StripOrderPrefix(bc.AppName)
 }
+
+func (bc *Context) CalcVersion() (ver string) {
+	ver = bc.Version
+	if bc.GitRevision[0] == 'v' {
+		ver = bc.GitRevision
+	} else if bc.GitVersion[0] == 'v' {
+		ver = bc.GitVersion
+	}
+	return
+}
