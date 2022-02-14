@@ -85,7 +85,8 @@ func ifLdflags(bc *build.Context) {
 		str = fmt.Sprintf("-X %s.AppName=", W)
 		pairs[str] = bc.AppName
 		str = fmt.Sprintf("-X %s.Version=", W)
-		pairs[str] = strings.TrimPrefix(bc.Version, "v")
+		ver := bc.CalcVersion()
+		pairs[str] = strings.TrimPrefix(ver, "v")
 		str = fmt.Sprintf("-X %s.Buildstamp=", W)
 		pairs[str] = bc.BuildTime
 		str = fmt.Sprintf("-X %s.Githash=", W)
