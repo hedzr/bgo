@@ -661,9 +661,18 @@ func iaRunScript(scriptsSource string, scriptsIsFile bool, bc *build.Context, ti
 
 func iaLL(outBinary string, bc *build.Context) (err error) {
 	// ll binary
-	c := "--color"
-	if runtime.GOOS == "darwin" {
-		c = "-G"
+
+	var cmd []interface{}
+
+	if runtime.GOOS == "windows" {
+		cmd = append(cmd, "dir") // or "ls", but both of them are so poor
+	} else {
+		cmd = append(cmd, "ls", "-la")
+		if runtime.GOOS == "darwin" {
+			cmd = append(cmd, "-G")
+		} else {
+			cmd = append(cmd, "--color")
+		}
 	}
 
 	targets := []string{outBinary}
@@ -681,9 +690,13 @@ func iaLL(outBinary string, bc *build.Context) (err error) {
 		}
 	}
 
+	for _, s := range targets {
+		cmd = append(cmd, s)
+	}
+
 	err = exec.New().
-		WithPadding(7+2).
-		WithCommand("ls", "-la", c, targets).
+		WithPadding(7 + 2).
+		WithCommand(cmd...).
 		RunAndCheckError()
 	//err = exec.New().WithPadding(7).WithCommand("gls", "-lh", "--color", targets).RunAndCheckError()
 	//err = exec.New().WithCommand("ls", "-la", c, targets).RunAndCheckError()
