@@ -258,10 +258,11 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 }
 
 func cmdrSubCmdInit(root cmdr.OptCmd) {
-	initCmd := root.NewSubCommand("init", "i").
+	initCmd := cmdr.NewSubCmd().Titles("init", "i").
 		Description(`scan folder and save <i>result</i> to <code>bgo.yml</code>, as <mark>project settings</mark>`).
 		//Description(`<del>scan</del> <u><font color="yellow">folder</font></u> and save <i>result</i> to <code>bgo.yml</code>, as <mark>project settings</mark>`).
-		Action(initAction)
+		Action(initAction).
+		AttachTo(root)
 
 	cmdr.NewStringSlice("bgo.yml").
 		Titles("output", "o").
@@ -272,14 +273,15 @@ func cmdrSubCmdInit(root cmdr.OptCmd) {
 }
 
 func cmdrSubCmdBuild(root cmdr.OptCmd) {
-	buildCmd := root.NewSubCommand("build", "b").
+	buildCmd := cmdr.NewSubCmd().Titles("build", "b").
 		Description("do 'go build' with <code>.bgo.yml</code>", `
 			do 'go build' with <code>.bgo.yml</code>.
 			
 			This command is a synonym to root ('bgo'), that means, type
 				'bgo -os linux'
 			is equal to 'bgo build -or linux'.`).
-		Action(buildAction)
+		Action(buildAction).
+		AttachTo(root)
 
 	//cmdr.NewString("bgo.yml").
 	//	Titles("output", "o").
@@ -295,12 +297,13 @@ func cmdrSubCmdBuild(root cmdr.OptCmd) {
 }
 
 func cmdrSubCmdList(root cmdr.OptCmd) {
-	listCmd := root.NewSubCommand("list", "ls").
+	listCmd := cmdr.NewSubCmd().Titles("list", "ls").
 		Description("list projects in .bgo.yml", `
 			list projects in .bgo.yml.
 			
 			prints them in brief mode.`).
-		Action(listAction)
+		Action(listAction).
+		AttachTo(root)
 
 	cmdr.NewBool().
 		Titles("more", "m").
