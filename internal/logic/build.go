@@ -662,12 +662,10 @@ func iaRunScript(scriptsSource string, scriptsIsFile bool, bc *build.Context, ti
 func iaLL(outBinary string, bc *build.Context) (err error) {
 	// ll binary
 
-	var cmd []interface{}
+	var cmd = []interface{}{"ls"}
 
-	if runtime.GOOS == "windows" {
-		cmd = append(cmd, "dir") // or "ls", but both of them are so poor
-	} else {
-		cmd = append(cmd, "ls", "-la")
+	if runtime.GOOS != "windows" {
+		cmd = append(cmd, "-la")
 		if runtime.GOOS == "darwin" {
 			cmd = append(cmd, "-G")
 		} else {
@@ -694,11 +692,20 @@ func iaLL(outBinary string, bc *build.Context) (err error) {
 		cmd = append(cmd, s)
 	}
 
-	err = exec.New().
-		WithPadding(7 + 2).
-		WithCommand(cmd...).
-		RunAndCheckError()
-	//err = exec.New().WithPadding(7).WithCommand("gls", "-lh", "--color", targets).RunAndCheckError()
-	//err = exec.New().WithCommand("ls", "-la", c, targets).RunAndCheckError()
+	if runtime.GOOS == "windows" {
+		var sb strings.Builder
+		for _, s := range cmd {
+			sb.WriteString(s.(string))
+			sb.WriteString(" ")
+		}
+		err = exec.InvokeShellScripts(sb.String())
+	} else {
+		err = exec.New().
+			WithPadding(7 + 2).
+			WithCommand(cmd...).
+			RunAndCheckError()
+		//err = exec.New().WithPadding(7).WithCommand("gls", "-lh", "--color", targets).RunAndCheckError()
+		//err = exec.New().WithCommand("ls", "-la", c, targets).RunAndCheckError()
+	}
 	return
 }
