@@ -467,12 +467,12 @@ func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error)
 
 func goBuildPreChecks(bc *build.Context, bs *BgoSettings) (err error) {
 	if bc.PreAction != "" {
-		if err = iaRunScript(bc.PreAction, bc, "pre-action"); err != nil {
+		if err = iaRunScript(bc.PreAction, false, bc, "pre-action"); err != nil {
 			return
 		}
 	}
 	if bc.PreActionFile != "" && dir.FileExists(bc.PreActionFile) {
-		if err = iaRunScriptFile(bc.PreActionFile, bc, "pre-action-file"); err != nil {
+		if err = iaRunScript(bc.PreActionFile, true, bc, "pre-action-file"); err != nil {
 			return
 		}
 	}
@@ -519,13 +519,13 @@ func okHandler(ec *errors.WithCauses, bc *build.Context, bs *BgoSettings) (onOK 
 			}
 		}
 		if bc.PostAction != "" {
-			if err = iaRunScript(bc.PostAction, bc, "post-action"); err != nil {
+			if err = iaRunScript(bc.PostAction, false, bc, "post-action"); err != nil {
 				ec.Attach(err)
 				return
 			}
 		}
 		if bc.PostActionFile != "" && dir.FileExists(bc.PostActionFile) {
-			if err = iaRunScriptFile(bc.PostActionFile, bc, "post-action-file"); err != nil {
+			if err = iaRunScript(bc.PostActionFile, true, bc, "post-action-file"); err != nil {
 				ec.Attach(err)
 				return
 			}
@@ -586,51 +586,78 @@ func iaInstall(outBinary string, bc *build.Context, bs *BgoSettings) (err error)
 	return
 }
 
-func iaRunScript(scriptsSource string, bc *build.Context, title ...string) (err error) {
+func iaRunScript(scriptsSource string, scriptsIsFile bool, bc *build.Context, title ...string) (err error) {
 	var ttl = "invoking-shell-scripts"
 	for _, s := range title {
 		ttl = s
 		break
 	}
 
-	var script string
-	if script, err = tplExpand(scriptsSource, ttl, bc); err == nil {
-		if logx.IsVerboseMode() {
-			logx.Log("         > Invoking %v:\n", ttl)
-			logx.Dim("%v\n", leftPad(script, 7))
-		} else {
-			logx.Log("         > Invoking %v...\n", ttl)
-		}
-		err = exec.New().
-			WithPadding(7+4).
-			WithCommand("/bin/bash", "-c", script).
-			RunAndCheckError()
-	}
+	err = exec.InvokeShellScripts(scriptsSource,
+		exec.WithScriptShell(""), // auto-detect os shell
+		exec.WithScriptIsFile(scriptsIsFile),
+		exec.WithScriptExpander(func(source string) string {
+			if script, err := tplExpand(source, ttl, bc); err == nil {
+				if logx.IsVerboseMode() {
+					logx.Log("         > Invoking %v:\n", ttl)
+					logx.Dim("%v\n", leftPad(script, 7))
+				} else {
+					logx.Log("         > Invoking %v...\n", ttl)
+				}
+				return script
+			}
+			return source
+		}),
+		exec.WithScriptInvoker(func(command string, args ...string) (err error) {
+			return exec.New().
+				WithCommandArgs(command, args...).
+				WithPadding(7 + 4).
+				RunAndCheckError()
+		}),
+	)
+	//var script string
+	//if script, err = tplExpand(scriptsSource, ttl, bc); err == nil {
+	//	if logx.IsVerboseMode() {
+	//		logx.Log("         > Invoking %v:\n", ttl)
+	//		logx.Dim("%v\n", leftPad(script, 7))
+	//	} else {
+	//		logx.Log("         > Invoking %v...\n", ttl)
+	//	}
+	//
+	//	optShell := exec.WithCommand("/bin/bash", "-c", script)
+	//	if runtime.GOOS == "windows" {
+	//		optShell = exec.WithCommand("powershell.exe", "-NoProfile", "-NonInteractive", script)
+	//	}
+	//
+	//	err = exec.New(optShell).
+	//		WithPadding(7 + 4).
+	//		RunAndCheckError()
+	//}
 	return
 }
 
-func iaRunScriptFile(scriptsSource string, bc *build.Context, title ...string) (err error) {
-	var ttl = "invoking-shell-scripts"
-	for _, s := range title {
-		ttl = s
-		break
-	}
-
-	var script string
-	if script, err = tplExpand(scriptsSource, ttl, bc); err == nil {
-		if logx.IsVerboseMode() {
-			logx.Log("         > Invoking %v:\n", ttl)
-			logx.Dim("%v\n", leftPad(script, 7))
-		} else {
-			logx.Log("         > Invoking %v...\n", ttl)
-		}
-		err = exec.New().
-			WithPadding(7+4).
-			WithCommand("/bin/bash", "-c", script).
-			RunAndCheckError()
-	}
-	return
-}
+//func iaRunScriptFile(scriptsSource string, bc *build.Context, title ...string) (err error) {
+//	var ttl = "invoking-shell-scripts"
+//	for _, s := range title {
+//		ttl = s
+//		break
+//	}
+//
+//	var script string
+//	if script, err = tplExpand(scriptsSource, ttl, bc); err == nil {
+//		if logx.IsVerboseMode() {
+//			logx.Log("         > Invoking %v:\n", ttl)
+//			logx.Dim("%v\n", leftPad(script, 7))
+//		} else {
+//			logx.Log("         > Invoking %v...\n", ttl)
+//		}
+//		err = exec.New().
+//			WithPadding(7+4).
+//			WithCommand("/bin/bash", "-c", script).
+//			RunAndCheckError()
+//	}
+//	return
+//}
 
 func iaLL(outBinary string, bc *build.Context) (err error) {
 	// ll binary
@@ -638,7 +665,9 @@ func iaLL(outBinary string, bc *build.Context) (err error) {
 	if runtime.GOOS == "darwin" {
 		c = "-G"
 	}
+
 	targets := []string{outBinary}
+
 	if bc.Install {
 		if bc.OS == bc.GOOS && bc.ARCH == bc.GOARCH {
 			gopath := os.Getenv("GOPATH")
@@ -651,7 +680,11 @@ func iaLL(outBinary string, bc *build.Context) (err error) {
 			targets = append(targets, tgt)
 		}
 	}
-	err = exec.New().WithPadding(7+2).WithCommand("ls", "-la", c, targets).RunAndCheckError()
+
+	err = exec.New().
+		WithPadding(7+2).
+		WithCommand("ls", "-la", c, targets).
+		RunAndCheckError()
 	//err = exec.New().WithPadding(7).WithCommand("gls", "-lh", "--color", targets).RunAndCheckError()
 	//err = exec.New().WithCommand("ls", "-la", c, targets).RunAndCheckError()
 	return
