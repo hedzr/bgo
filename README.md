@@ -33,10 +33,13 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
-- v0.3.13 (WIP)
-  - 
-  - 
-  - working hard ...
+- v0.3.13
+  - fix: script-file not work (pre/post-action-file)
+  - fix: --auto/--short get wrong target platforms matrix sometimes
+  - fix; cross-platform ls
+  - imp: `bgo` has been adapted onto __Windows 11__ (should work for winx too)
+  - imp: more shell completions supported (bash, zsh, fish-shell, etc)
+  - fix/imp: .bgo.yml for myself has wrong params (such as .randomString in extends section, or wrong githash, version) 
 
 - v0.3.12
   - temporary build
