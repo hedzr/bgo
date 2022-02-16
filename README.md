@@ -33,6 +33,9 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
+- v0.3.15
+  - fix: version command and help screen not work
+
 - v0.3.13
   - fix: script-file not work (pre/post-action-file)
   - fix: --auto/--short get wrong target platforms matrix sometimes
