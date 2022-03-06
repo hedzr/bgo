@@ -103,7 +103,7 @@ func forDirMaxLoops(
 	for _, f := range dirs {
 		//Logger.Printf("  - %v", f.Name())
 		if err != nil {
-			log.NewStdLogger().Errorf("error in ForDirMax().cb: %v", err)
+			log.Errorf("error in ForDirMax().cb: %v", err)
 			continue
 		}
 
@@ -117,7 +117,7 @@ func forDirMaxLoops(
 				return
 			}
 			if err = ForDirMax(d, initialDepth+1, maxDepth, cb); err != nil {
-				log.NewStdLogger().Errorf("error in ForDirMax(): %v", err)
+				log.Errorf("error in ForDirMax(): %v", err)
 			}
 		}
 	}
