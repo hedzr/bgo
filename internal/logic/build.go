@@ -8,7 +8,7 @@ import (
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/log/dir"
 	"github.com/hedzr/log/exec"
-	"gopkg.in/hedzr/errors.v2"
+	"gopkg.in/hedzr/errors.v3"
 	"os"
 	"path"
 	"path/filepath"
@@ -447,7 +447,8 @@ func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error)
 		return
 	}
 
-	ec := errors.NewContainer("holder")
+	ec := errors.New("go build has errors")
+	defer ec.Defer(&err)
 	c := exec.New(opts...).
 		WithCommand(cmd...).
 		WithEnv("GOOS", bc.OS).
@@ -463,12 +464,11 @@ func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error)
 				logx.ToDim(strconv.Itoa(retCode)),
 				logx.ToDim(fmt.Sprintf("%v", cmd)))
 		})
-	if err = c.RunAndCheckError(); err != nil {
-		ec.Attach(err)
-	}
+	ec.Attach(c.RunAndCheckError())
 
-	if err = ec.Error(); err != nil {
-		logx.Error("Error occurs: %v", err)
+	if !ec.IsEmpty() {
+		// caller will discard goBuild error, so we print it to notify end-user.
+		logx.Error("Error occurs: %v", ec)
 	}
 	return
 }
@@ -517,7 +517,7 @@ func goBuildPrepareOpts(bc *build.Context, bs *BgoSettings) (opts []exec.Opt, cg
 	return
 }
 
-func okHandler(ec *errors.WithCauses, bc *build.Context, bs *BgoSettings) (onOK func(retCode int, stdoutText string)) {
+func okHandler(ec errors.Error, bc *build.Context, bs *BgoSettings) (onOK func(retCode int, stdoutText string)) {
 	return func(retCode int, stdoutText string) {
 		var err error
 		if bc.Install {
