@@ -3,7 +3,7 @@ package cmdr
 //goland:noinspection GoNameStartsWithPackageName
 const (
 	appName   = "bgo"
-	version   = "0.3.15"
+	version   = "0.3.17"
 	copyright = "bgo - A super easy way to build your go apps - cmdr series"
 	desc      = "bgo provides a super easy way to build your go apps"
 	longDesc  = `bgo provides a super easy way to build your go apps.
