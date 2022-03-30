@@ -3,7 +3,7 @@ package cmdr
 //goland:noinspection GoNameStartsWithPackageName
 const (
 	appName   = "bgo"
-	version   = "0.3.17"
+	version   = "0.3.18"
 	copyright = "bgo - A super easy way to build your go apps - cmdr series"
 	desc      = "bgo provides a super easy way to build your go apps"
 	longDesc  = `bgo provides a super easy way to build your go apps.
@@ -24,6 +24,7 @@ $ {{.AppName}} --for linux/riscv64 --for linux/386
   run 'go build' for specified os/arch list
 $ {{.AppName}} --help
   show help screen.`
+	//nolint
 	examplesLong = `
 $ {{.AppName}} gen shell [--bash|--zsh|--auto]
   generate bash/shell completion scripts
@@ -32,10 +33,12 @@ $ {{.AppName}} gen man
 $ {{.AppName}} --help
   show help screen.
 `
+	//nolint
 	overview = ``
 
 	zero = 0
 
+	//nolint
 	defaultTraceEnabled  = true
 	defaultDebugEnabled  = false
 	defaultLoggerLevel   = "info"

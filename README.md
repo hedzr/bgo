@@ -33,6 +33,12 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
+- v0.3.18
+  - code reviewd
+
+- v0.3.17
+  - upgrade log,errors
+
 - v0.3.15
   - fix: version command and help screen not work
 
