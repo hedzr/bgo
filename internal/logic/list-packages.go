@@ -1,14 +1,14 @@
 package logic
 
-import (
+import ( //nolint:goimports
 	"github.com/hedzr/bgo/internal/logic/build"
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/bgo/internal/logic/tool"
 	"github.com/hedzr/log/dir"
-	"runtime"
+	"runtime" //nolint:goimports
 )
 
-func listPackages(tpBase *build.TargetPlatforms, bc *build.Context, bs *BgoSettings, packages map[string]*pkgInfo) (err error) {
+func listPackages(tpBase *build.TargetPlatforms, bc *build.Context, bs *BgoSettings, packages map[string]*pkgInfo) (err error) { //nolint
 	// ensureProject(pi, bc, bs)
 	//
 	// logx.Colored(logx.Green, "> building for package %v (dir: %q)...", pi.p.Package, pi.dirname)
@@ -18,13 +18,14 @@ func listPackages(tpBase *build.TargetPlatforms, bc *build.Context, bs *BgoSetti
 }
 
 func listProject(bc *build.Context, bs *BgoSettings) (err error) {
-	//logx.Log("  >> %v/%v", bc.Os, bc.Arch)
+	// logx.Log("  >> %v/%v", bc.Os, bc.Arch)
 	logx.Log("      >> %v/%v, Need Install: %v\n", bc.OS, bc.ARCH, bc.Install)
-	//logx.Dim("     project.Common: %+v\n", *p.Common)
+	// logx.Dim("     project.Common: %+v\n", *p.Common)
 
 	return
 }
 
+//nolint:nakedret
 func loopAllProjects(
 	tpBase *build.TargetPlatforms,
 	bc *build.Context, bs *BgoSettings,
@@ -44,7 +45,7 @@ RETURN:
 
 		kiSliceP := getSortedProjectKeys(gn, &grp)
 		for _, kiP := range kiSliceP {
-			//for pn, it := range grp.Items {
+			// for pn, it := range grp.Items {
 			pn, it := kiP.prj, grp.Items[kiP.Index]
 			if it.Disabled {
 				continue
@@ -63,7 +64,7 @@ RETURN:
 
 		STOP:
 			for osName, osv := range it.tp.OsArchMap {
-				for archName, _ := range osv {
+				for archName := range osv {
 					if shortMode {
 						if osName != runtime.GOOS || archName != runtime.GOARCH {
 							continue

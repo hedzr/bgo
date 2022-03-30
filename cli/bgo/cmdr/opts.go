@@ -10,9 +10,10 @@ import (
 
 var options []cmdr.ExecOption
 
+//nolint:gochecknoinits
 func init() {
 	options = append(options, cmdr.WithUnhandledErrorHandler(onUnhandledErrorHandler))
-	//cmdr.WithUnhandledErrorHandler(onUnhandledErrorHandler)
+	// cmdr.WithUnhandledErrorHandler(onUnhandledErrorHandler)
 
 	options = append(options, cmdr.WithLogx(build.New(build.NewLoggerConfigWith(defaultDebugEnabled, defaultLoggerBackend, defaultLoggerLevel, log.WithTimestamp(true, "")))))
 
@@ -25,11 +26,11 @@ func init() {
 		options = append(options, pprof.GetCmdrProfilingOptions())
 	}
 
-	//dex.WithDaemon(
+	// dex.WithDaemon(
 	//	svr.NewDaemon(svr.WithRouterImpl(sth.NewGinMux())),
 	//	dex.WithCommandsModifier(modifier),
 	//	dex.WithLoggerForward(true),
-	//),
+	// ),
 	// server.WithCmdrDaemonSupport(),
 	// server.WithCmdrHook(),
 
@@ -40,21 +41,21 @@ func init() {
 		cmdr.NewBool(false).
 			Titles("trace", "tr").
 			Description("enable trace mode for tcp/mqtt send/recv data dump", "").
-			//Action(func(cmd *cmdr.Command, args []string) (err error) {
+			// Action(func(cmd *cmdr.Command, args []string) (err error) {
 			//	println("trace mode on")
 			//	cmdr.SetTraceMode(true)
 			//	return
-			//}).
+			// }).
 			Group(cmdr.SysMgmtGroup).
 			AttachToRoot(root)
 	}, nil)
 	options = append(options, optAddTraceOption)
-	//options = append(options, optAddServerExtOpt«ion)
+	// options = append(options, optAddServerExtOpt«ion)
 
 	// allow and search '.bgo.yml' at first
-	//locations := []string{".$APPNAME.yml"}
-	//locations = append(locations, cmdr.GetPredefinedLocations()...)
-	//options = append(options, cmdr.WithPredefinedLocations(locations...))
+	// locations := []string{".$APPNAME.yml"}
+	// locations = append(locations, cmdr.GetPredefinedLocations()...)
+	// options = append(options, cmdr.WithPredefinedLocations(locations...))
 
 	// allow alternated locations
 	locations := []string{
@@ -68,15 +69,14 @@ func init() {
 	// multi-level sub-commands need the auto default action
 	// so that we don't have to write an action explicitly.
 	options = append(options, cmdr.WithInternalDefaultAction(true))
-
 }
 
 func isDebugBuild() bool { return isdelve.Enabled }
 
-//var optAddTraceOption cmdr.ExecOption
-//var optAddServerExtOption cmdr.ExecOption
+// var optAddTraceOption cmdr.ExecOption
+// var optAddServerExtOption cmdr.ExecOption
 
-//func init() {
+// func init() {
 //	//// attaches `--trace` to root command
 //	//optAddTraceOption = cmdr.WithXrefBuildingHooks(func(root *cmdr.RootCommand, args []string) {
 //	//	cmdr.NewBool(false).

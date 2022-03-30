@@ -54,19 +54,18 @@ func newBgoSettings(buildScope string) *BgoSettings {
 		bs.PullDownCommonSettings()
 	}
 
-	//logHiLight("Starting...")
+	// logHiLight("Starting...")
 
-	//logx.Dim("- BS:")
-	//logx.Dim("%v", leftPad(yamlText(bs.Projects), 2))
+	// logx.Dim("- BS:")
+	// logx.Dim("%v", leftPad(yamlText(bs.Projects), 2))
 	// os.Exit(0)
 
-	//cmdr.DebugOutputTildeInfo(true)
+	// cmdr.DebugOutputTildeInfo(true)
 
 	return bs
 }
 
 func (s *BgoSettings) initFromCmdr() {
-
 	if s.SavedAs == nil {
 		s.SavedAs = []string{"bgo.yml"}
 	}
@@ -85,7 +84,6 @@ func (s *BgoSettings) initFromCmdr() {
 }
 
 func (s *BgoSettings) _init1() {
-
 	if cmdr.GetBoolR("build.race") {
 		s.Race = true
 	}
@@ -118,13 +116,13 @@ func (s *BgoSettings) _init1() {
 func (s *BgoSettings) _init2() {
 	var manually, os, arch bool
 	if slice := cmdr.GetStringSliceR("build.os"); len(slice) > 0 {
-		//s.Os = append(s.Os, slice...)
+		// s.Os = append(s.Os, slice...)
 		manually, os, s.Os = true, true, slice
-	} else if s.Scope != "full" && len(s.Os) == 0 {
+	} else if s.Scope != "full" && len(s.Os) == 0 { //nolint:goconst
 		s.Os = []string{"linux", "darwin", "windows"}
 	}
 	if slice := cmdr.GetStringSliceR("build.osarch"); len(slice) > 0 {
-		//s.Arch = append(s.Arch, slice...)
+		// s.Arch = append(s.Arch, slice...)
 		manually, arch, s.Arch = true, true, slice
 	} else if s.Scope != "full" && len(s.Arch) == 0 {
 		s.Arch = []string{"amd64"}
@@ -140,7 +138,7 @@ func (s *BgoSettings) _init2() {
 
 	if slice := cmdr.GetStringSliceR("build.for"); len(slice) > 0 {
 		s.For = slice
-		if manually == false {
+		if !manually {
 			s.Os = nil
 			s.Arch = nil
 		}

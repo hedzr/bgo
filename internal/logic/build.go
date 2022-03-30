@@ -1,5 +1,6 @@
 package logic
 
+//nolint:goimports
 import (
 	"fmt"
 	"github.com/hedzr/bgo/internal/logic/build"
@@ -38,13 +39,13 @@ func buildAuto(buildScope string, cmd *cmdr.Command, args []string) (err error) 
 
 func buildFor(buildScope string, tp *build.TargetPlatforms,
 	bc *build.Context, bs *BgoSettings,
-	cmd *cmdr.Command, args []string) (err error) {
-
+	cmd *cmdr.Command, args []string,
+) (err error) {
 	if bc == nil {
 		// initial build-context, preparing the build information
 		bc = build.NewContext()
-		//logx.Log("context: %v", bc)
-		//logx.Log("context.build-info: %v", bc.BuildInfo)
+		// logx.Log("context: %v", bc)
+		// logx.Log("context.build-info: %v", bc.BuildInfo)
 	}
 
 	if bs == nil {
@@ -78,7 +79,7 @@ func buildProjects(tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings
 
 	if bs.Scope != "auto" || cmdr.GetUsedAlterConfigFile() == "" {
 		if (singleProjectOrPackage == nil && projectName != "") || projectName == "" {
-			err = scanWorkDir(bc.WorkDir, bs.Scope, packages, bs)
+			err = scanWorkDir(bc.WorkDir, bs.Scope, packages, bs) //nolint
 
 			for _, pi := range packages {
 				ensureProject(pi, bc, bs)
@@ -99,9 +100,8 @@ func buildProjects(tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings
 func buildProjectsImpl(
 	packages map[string]*pkgInfo,
 	tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings,
-	cmd *cmdr.Command, args []string,
+	cmd *cmdr.Command, args []string, //nolint
 ) (err error) {
-
 	if cmd.GetTitleName() == "list" {
 		err = listPackages(tp, bc, bs, packages)
 		return
@@ -155,7 +155,8 @@ func ensureProject(pi *pkgInfo, bc *build.Context, bs *BgoSettings) {
 	pi.p = p
 }
 
-func saveBackToBs(packages map[string]*pkgInfo, bs *BgoSettings) (err error) {
+//nolint:nakedret
+func saveBackToBs(packages map[string]*pkgInfo, bs *BgoSettings) (err error) { //nolint:unparam
 	for _, pi := range packages {
 		var found bool
 		for _, g := range bs.Projects {
@@ -180,7 +181,7 @@ func saveBackToBs(packages map[string]*pkgInfo, bs *BgoSettings) (err error) {
 				bs.Projects = make(map[string]ProjectGroup)
 				bs.Projects["000-default-group"] = ProjectGroup{Items: make(map[string]*ProjectWrap)}
 			}
-			//if bs.Projects["000-default-group"].Items == nil {
+			// if bs.Projects["000-default-group"].Items == nil {
 			//	bs.Projects["000-default-group"].Items = make(map[string]*ProjectWrap)
 			//}
 			bs.Projects["000-default-group"].Items[pn] = pi.p
@@ -189,25 +190,26 @@ func saveBackToBs(packages map[string]*pkgInfo, bs *BgoSettings) (err error) {
 	return
 }
 
+//nolint:nakedret
 func buildPackages(tpBase *build.TargetPlatforms, bc *build.Context, bs *BgoSettings, pi *pkgInfo) (err error) {
 	ensureProject(pi, bc, bs)
 
-	//logx.Colored(logx.Green, "> building for package %v (dir: %q)...", pi.p.Package, pi.dirname)
+	// logx.Colored(logx.Green, "> building for package %v (dir: %q)...", pi.p.Package, pi.dirname)
 
 	if cmdr.GetTraceMode() {
-		//logx.Dim("  - BS:")
-		//logx.Dim("%v", leftPad(yamlText(bs.Projects), 4))
+		// logx.Dim("  - BS:")
+		// logx.Dim("%v", leftPad(yamlText(bs.Projects), 4))
 
 		logx.Dim("  - Project:")
-		logx.Dim("%v", leftPad(yamlText(pi.p), 4))
-		//if isDryRunMode() {
+		logx.Dim("%v", leftPad(yamlText(pi.p), 4)) //nolint:gomnd
+		// if isDryRunMode() {
 		//	os.Exit(0)
 		//}
 	}
 
 	err = loopAllProjects(tpBase, bc, bs, buildProject)
 
-	//STOP:
+	// STOP:
 	//	for oss, osv := range tp.OsArchMap {
 	//		for arch, _ := range osv {
 	//			if cmdr.GetTraceMode() {
@@ -236,8 +238,8 @@ func prepareBuildContextForEachProjectTarget(bc *build.Context, os, arch string,
 
 	// build info
 	bc.Serial++
-	bc.RandomInt = tool.NextIn(100)
-	bc.RandomString = tool.NextString(24)
+	bc.RandomInt = tool.NextIn(100)       //nolint:gomnd
+	bc.RandomString = tool.NextString(24) //nolint:gomnd
 
 	// Bug: Clone/CloneFrom can't process unhashable/uncomparable
 	// field such as the element of 'Extends', i.e.,
@@ -259,13 +261,17 @@ func prepareBuildContextForEachProjectTarget(bc *build.Context, os, arch string,
 	bc.FindAppName(p.Name, knownProjectName, p.Package)
 }
 
+//nolint:nakedret
 func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
-	//logx.Log("  >> %v/%v", bc.Os, bc.Arch)
+	// logx.Log("  >> %v/%v", bc.Os, bc.Arch)
 	logx.Log("      >> %v/%v, Need Install: %v\n", bc.OS, bc.ARCH, bc.Install)
-	//logx.Dim("     project.Common: %+v\n", *p.Common)
+	// logx.Dim("     project.Common: %+v\n", *p.Common)
 
 	var cmd []interface{}
 	cmd, err = prepareCommandLine(bc, bs)
+	if err != nil {
+		return
+	}
 
 	var outBinary string
 	outBinary, err = getBuildTargetBinaryPath(bc, bs)
@@ -274,7 +280,7 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 	}
 
 	if bc.KeepWorkdir {
-		//wd := bc.WorkDir
+		// wd := bc.WorkDir
 		if !dir.FileExists(bc.Dir) {
 			return
 		}
@@ -297,12 +303,12 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 		}
 
 		dir.PushDir(wd)()
-		//if c, e := dir.PushDirEx(wd); e != nil {
+		// if c, e := dir.PushDirEx(wd); e != nil {
 		//	logx.Warn("%v\n", logx.ToColor(logx.LightRed, "         The project ignored since not exists."))
 		//	return nil
-		//} else {
+		// } else {
 		//	defer c()
-		//}
+		// }
 		logx.Verbose("         entering dir: %v\n", wd)
 
 		var relOut string
@@ -335,11 +341,15 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 	}
 
 	err = goBuild(bc, bs, cmd...)
-	err = nil
+	if err != nil {
+		logx.Error("error logged here: %v", err)
+		err = nil
+	}
 	return
 }
 
-func prepareCommandLine(bc *build.Context, bs *BgoSettings) (cmd []interface{}, err error) {
+//nolint:nakedret
+func prepareCommandLine(bc *build.Context, bs *BgoSettings) (cmd []interface{}, err error) { //nolint
 	cmd = []interface{}{"go", "build"}
 
 	st := path.Join(bc.Dir, "go.mod")
@@ -368,9 +378,9 @@ func prepareCommandLine(bc *build.Context, bs *BgoSettings) (cmd []interface{}, 
 		cmd = append(cmd, "-v")
 	}
 
-	if bc.Debug == false {
-		if cmdr.GetBoolR("build.no-trimpath") == false {
-			if bc.VersionIsGreaterThan(1, 12) {
+	if !bc.Debug {
+		if !cmdr.GetBoolR("build.no-trimpath") {
+			if bc.VersionIsGreaterThan(1, 12) { //nolint:gomnd
 				cmd = append(cmd, "-trimpath")
 			}
 		}
@@ -390,7 +400,8 @@ func prepareCommandLine(bc *build.Context, bs *BgoSettings) (cmd []interface{}, 
 	return
 }
 
-func pclMore1(bc *build.Context, bs *BgoSettings) (cmd []interface{}) {
+//nolint:nakedret
+func pclMore1(bc *build.Context, bs *BgoSettings) (cmd []interface{}) { //nolint
 	if str := cmdr.GetStringR("build.mod"); str != "" {
 		cmd = append(cmd, "-mod", str)
 	}
@@ -404,14 +415,14 @@ func pclMore1(bc *build.Context, bs *BgoSettings) (cmd []interface{}) {
 	}
 
 	if len(bc.Asmflags) > 0 {
-		if bc.Debug == false && cmdr.GetBoolR("build.no-trimpath") == false && !bc.VersionIsGreaterThan(1, 12) {
+		if !bc.Debug && !cmdr.GetBoolR("build.no-trimpath") && !bc.VersionIsGreaterThan(1, 12) { //nolint:gomnd
 			bc.Asmflags = uniAdd(bc.Asmflags, os.ExpandEnv("-trimpath=$HOME/go/src"))
 		}
 		cmd = append(cmd, strings.Join([]string{"-asmflags",
 			strings.Join(bc.Asmflags, " ")}, "="))
 	}
 	if len(bc.Gcflags) > 0 {
-		if bc.Debug == false && cmdr.GetBoolR("build.no-trimpath") == false && !bc.VersionIsGreaterThan(1, 12) {
+		if !bc.Debug && !cmdr.GetBoolR("build.no-trimpath") && !bc.VersionIsGreaterThan(1, 12) { //nolint:gomnd
 			bc.Gcflags = uniAdd(bc.Gcflags, os.ExpandEnv("-trimpath=$HOME/go/src"))
 		}
 		cmd = append(cmd, strings.Join([]string{"-gcflags", strings.Join(bc.Gcflags, " ")}, "="))
@@ -436,6 +447,7 @@ func pclMore1(bc *build.Context, bs *BgoSettings) (cmd []interface{}) {
 	return
 }
 
+//nolint:nakedret
 func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error) {
 	if err = goBuildPreChecks(bc, bs); err != nil {
 		return
@@ -454,13 +466,13 @@ func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error)
 		WithEnv("GOOS", bc.OS).
 		WithEnv("GOARCH", bc.ARCH).
 		WithEnv("CGO_ENABLED", boolToString(cgo)).
-		//WithStdoutCaught(). // can be removed
-		//WithStderrCaught(). // can be removed
+		// WithStdoutCaught(). // can be removed
+		// WithStderrCaught(). // can be removed
 		WithOnOK(okHandler(ec, bc, bs)).
 		WithOnError(func(err error, retCode int, stdoutText, stderrText string) {
 			logx.Error("ERROR TEXT:\n%v\nError:\n%v\nRetCode: %v\nCommands: %v\n",
-				logx.ToColor(logx.Red, leftPad(stderrText, 4)),
-				logx.ToColor(logx.Red, leftPad(fmt.Sprintf("%v", err), 4)),
+				logx.ToColor(logx.Red, leftPad(stderrText, 4)),             //nolint:gomnd
+				logx.ToColor(logx.Red, leftPad(fmt.Sprintf("%v", err), 4)), //nolint:gomnd
 				logx.ToDim(strconv.Itoa(retCode)),
 				logx.ToDim(fmt.Sprintf("%v", cmd)))
 		})
@@ -493,6 +505,7 @@ func goBuildPreChecks(bc *build.Context, bs *BgoSettings) (err error) {
 	return
 }
 
+//nolint:unparam
 func goBuildPrepareOpts(bc *build.Context, bs *BgoSettings) (opts []exec.Opt, cgo bool, err error) {
 	if bc.HasGoMod {
 		opts = append(opts, exec.WithEnv("GO111MODULE", "on"))
@@ -506,7 +519,7 @@ func goBuildPrepareOpts(bc *build.Context, bs *BgoSettings) (opts []exec.Opt, cg
 	}
 	if bc.GOROOT != "" {
 		opts = append(opts, exec.WithEnv("GOROOT", bc.GOROOT))
-		//WithEnv("GOPATH", os.ExpandEnv("$HOME/go")).
+		// WithEnv("GOPATH", os.ExpandEnv("$HOME/go")).
 	}
 
 	cgo = bc.Cgo
@@ -550,18 +563,18 @@ func okHandler(ec errors.Error, bc *build.Context, bs *BgoSettings) (onOK func(r
 
 		// exec.New().WithCommandString("bash -c 'echo hello world!'", '\'').WithContext(context.Background()).Run()
 
-		return
+		// return
 	}
 }
 
 //goland:noinspection ALL
 func getBuildTargetBinaryPath(bc *build.Context, bs *BgoSettings) (outBinary string, err error) {
-	//var outBinary string
+	// var outBinary string
 	if outBin := cmdr.GetStringR("build.output", bs.Output.NamedAs); outBin != "" {
 		if bs.Scope == "short" {
 			outBin = "{{.AppName}}"
 		}
-		if bc.OS == "windows" {
+		if bc.OS == "windows" { //nolint:goconst
 			outBin += ".exe"
 		}
 
@@ -573,14 +586,14 @@ func getBuildTargetBinaryPath(bc *build.Context, bs *BgoSettings) (outBinary str
 	return
 }
 
-func iaGenerate(bc *build.Context, bs *BgoSettings) (err error) {
+func iaGenerate(bc *build.Context, bs *BgoSettings) (err error) { //nolint
 	logx.Log("         > Run 'go generate' at %q...\n", bc.PackageDir)
 	return exec.New().
 		WithCommand("go", "generate", bc.PackageDir).
 		RunAndCheckError()
 }
 
-func iaInstall(outBinary string, bc *build.Context, bs *BgoSettings) (err error) {
+func iaInstall(outBinary string, bc *build.Context, bs *BgoSettings) (err error) { //nolint
 	if bc.OS == bc.GOOS && bc.ARCH == bc.GOARCH {
 		gopath := os.Getenv("GOPATH")
 		if gopath == "" {
@@ -594,6 +607,7 @@ func iaInstall(outBinary string, bc *build.Context, bs *BgoSettings) (err error)
 	return
 }
 
+//nolint:nakedret
 func iaRunScript(scriptsSource string, scriptsIsFile bool, bc *build.Context, title ...string) (err error) {
 	var ttl = "invoking-shell-scripts"
 	for _, s := range title {
@@ -608,7 +622,7 @@ func iaRunScript(scriptsSource string, scriptsIsFile bool, bc *build.Context, ti
 			if script, err := tplExpand(source, ttl, bc); err == nil {
 				if logx.IsVerboseMode() {
 					logx.Log("         > Invoking %v:\n", ttl)
-					logx.Dim("%v\n", leftPad(script, 7))
+					logx.Dim("%v\n", leftPad(script, 7)) //nolint:gomnd
 				} else {
 					logx.Log("         > Invoking %v...\n", ttl)
 				}
@@ -619,12 +633,12 @@ func iaRunScript(scriptsSource string, scriptsIsFile bool, bc *build.Context, ti
 		exec.WithScriptInvoker(func(command string, args ...string) (err error) {
 			return exec.New().
 				WithCommandArgs(command, args...).
-				WithPadding(7 + 4).
+				WithPadding(7 + 4). //nolint:gomnd
 				RunAndCheckError()
 		}),
 	)
-	//var script string
-	//if script, err = tplExpand(scriptsSource, ttl, bc); err == nil {
+	// var script string
+	// if script, err = tplExpand(scriptsSource, ttl, bc); err == nil {
 	//	if logx.IsVerboseMode() {
 	//		logx.Log("         > Invoking %v:\n", ttl)
 	//		logx.Dim("%v\n", leftPad(script, 7))
@@ -644,7 +658,7 @@ func iaRunScript(scriptsSource string, scriptsIsFile bool, bc *build.Context, ti
 	return
 }
 
-//func iaRunScriptFile(scriptsSource string, bc *build.Context, title ...string) (err error) {
+// func iaRunScriptFile(scriptsSource string, bc *build.Context, title ...string) (err error) {
 //	var ttl = "invoking-shell-scripts"
 //	for _, s := range title {
 //		ttl = s
@@ -667,6 +681,7 @@ func iaRunScript(scriptsSource string, scriptsIsFile bool, bc *build.Context, ti
 //	return
 //}
 
+//nolint:nakedret
 func iaLL(outBinary string, bc *build.Context) (err error) {
 	// ll binary
 
@@ -709,11 +724,11 @@ func iaLL(outBinary string, bc *build.Context) (err error) {
 		err = exec.InvokeShellScripts(sb.String())
 	} else {
 		err = exec.New().
-			WithPadding(7 + 2).
+			WithPadding(7 + 2). //nolint:gomnd
 			WithCommand(cmd...).
 			RunAndCheckError()
-		//err = exec.New().WithPadding(7).WithCommand("gls", "-lh", "--color", targets).RunAndCheckError()
-		//err = exec.New().WithCommand("ls", "-la", c, targets).RunAndCheckError()
+		// err = exec.New().WithPadding(7).WithCommand("gls", "-lh", "--color", targets).RunAndCheckError()
+		// err = exec.New().WithCommand("ls", "-la", c, targets).RunAndCheckError()
 	}
 	return
 }

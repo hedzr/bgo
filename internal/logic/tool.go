@@ -1,5 +1,6 @@
 package logic
 
+//nolint:goimports
 import (
 	"bufio"
 	"fmt"
@@ -35,7 +36,7 @@ func setBuildScope(scope string) {
 
 func buildScopeFromCmdr(cmd *cmdr.Command) string {
 	// ToggleGroup value of building scope is: "Scope"
-	k2 := cmd.GetDottedNamePath() + ".Scope"
+	k2 := cmd.GetDottedNamePath() + ".Scope" // nolint
 	k2 = "bgo.Scope"
 	buildScope := cmdr.GetStringR(k2)
 	// set the choice from command-line option to option store
@@ -102,10 +103,10 @@ func ifLdflags(bc *build.Context) {
 		pairs[str] = bc.GitRevision
 		str = fmt.Sprintf("-X %s.GoVersion=", W)
 		pairs[str] = strings.ReplaceAll(bc.GoVersion, " ", "_")
-		//fmt.Sprintf("-X '%s.AppName=%s'", W,bc.AppName),
+		// fmt.Sprintf("-X '%s.AppName=%s'", W,bc.AppName),
 
 		str = fmt.Sprintf("-X %s.Serial=", W)
-		pairs[str] = strconv.FormatInt(bc.Serial, 10)
+		pairs[str] = strconv.FormatInt(bc.Serial, 10) //nolint:gomnd
 		str = fmt.Sprintf("-X %s.SerialString=", W)
 		pairs[str] = bc.RandomString
 	}
@@ -118,7 +119,7 @@ func ifLdflags(bc *build.Context) {
 			if n == "" || v == "" {
 				continue
 			}
-			if v[0] == v[len(v)-1] && v[0] == '`' {
+			if v[0] == '`' && v[len(v)-1] == '`' {
 				// shell scripts
 				script := v[1 : len(v)-1]
 				if re, err := tplExpand(script, "set-name-and-value-in-package", bc); err == nil {
@@ -164,17 +165,16 @@ func cleanupCommon(c, ref *build.Common) {
 		return
 	}
 
-	//cp:= *cmdr.StandardCopier
-	//cp.ZeroIfEqualsFrom=true
-	//cp.KeepIfFromIsNil=true
-	//cp.KeepIfFromIsZero=true
-	//cp.EachFieldAlways=true
+	// cp:= *cmdr.StandardCopier
+	// cp.ZeroIfEqualsFrom=true
+	// cp.KeepIfFromIsNil=true
+	// cp.KeepIfFromIsZero=true
+	// cp.EachFieldAlways=true
 	cp := *cmdr.GormDefaultCopier
 	cp.IgnoreIfNotEqual = true
 
 	// clear target field if equals to source
 	_ = cp.Copy(c, ref)
-	return
 }
 
 func uniappend(a []string, s string) []string {
@@ -206,7 +206,7 @@ func tplExpand(tpl, name string, bc interface{}) (output string, err error) {
 func yamlText(obj interface{}) string {
 	var sb strings.Builder
 	e := yaml.NewEncoder(&sb)
-	e.SetIndent(2)
+	e.SetIndent(2) //nolint:gomnd
 	err := e.Encode(obj)
 	if err != nil {
 		return ""

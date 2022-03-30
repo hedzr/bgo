@@ -21,7 +21,7 @@ func onUnhandledErrorHandler(err interface{}) {
 		// return
 	}
 
-	//internal.App().Close()
+	// internal.App().Close()
 
 	panic(err)
 }

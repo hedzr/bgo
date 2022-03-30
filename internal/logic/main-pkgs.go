@@ -1,5 +1,6 @@
 package logic
 
+//nolint:goimports
 import (
 	"bufio"
 	"github.com/hedzr/bgo/internal/logic/logx"
@@ -23,6 +24,7 @@ type pkgInfo struct {
 	p                *ProjectWrap
 }
 
+//nolint:nakedret
 func findMainPackages(bs *BgoSettings) (packages map[string]*pkgInfo, err error) {
 	packages = make(map[string]*pkgInfo)
 
@@ -82,8 +84,8 @@ func findMainPackages(bs *BgoSettings) (packages map[string]*pkgInfo, err error)
 	return
 }
 
+//nolint:nakedret
 func scanWorkDir(workdir, scope string, packages map[string]*pkgInfo, bs *BgoSettings) (err error) {
-
 	if len(packages) > 0 && scope == "short" {
 		return
 	}
@@ -95,7 +97,6 @@ func scanWorkDir(workdir, scope string, packages map[string]*pkgInfo, bs *BgoSet
 
 	pd := make(map[string]string) // dir -> package
 	err = dir.ForDir(".", func(depth int, dirname string, fi os.FileInfo) (stop bool, err error) {
-
 		dirName := dirname // path.Join(dirname, fi.Name())
 		logx.Verbose("  >> %v/%v [%v], %v", dirname, fi.Name(), dirName, dir.GetCurrentDir())
 
@@ -106,7 +107,7 @@ func scanWorkDir(workdir, scope string, packages map[string]*pkgInfo, bs *BgoSet
 			if dir.IsWildMatch(fi.Name(), "*.go") {
 				fileName, pn := path.Join(cwd, fi.Name()), ""
 				if pn, err = extractPackageName(fileName); err == nil {
-					if pn == "main" {
+					if pn == "main" { //nolint:goconst
 						logx.Verbose("       > ADD: %v -> %v", pn, dirName)
 						k := path.Clean(dirName)
 						pd[k] = pn
@@ -122,7 +123,6 @@ func scanWorkDir(workdir, scope string, packages map[string]*pkgInfo, bs *BgoSet
 			stop = true
 		}
 		return
-
 	}, ".git", ".svn", ".hg", ".github", ".vscode", ".*")
 
 	if err != nil {
@@ -154,6 +154,7 @@ func dissectTheMainDir(dirname string, packages map[string]*pkgInfo, bs *BgoSett
 	return
 }
 
+//nolint:nakedret
 func dissectTheMainDirImpl(dirname string, packages map[string]*pkgInfo, bs *BgoSettings) (err error) {
 	cmd := []string{"go", "list", "-f", "{{.Name}},{{.ImportPath}}", "."}
 	err = exec.CallSliceQuiet(cmd, func(retCode int, stdoutText string) {
@@ -199,7 +200,6 @@ func dissectTheMainDirImpl(dirname string, packages map[string]*pkgInfo, bs *Bgo
 		if err = scanner.Err(); err != nil {
 			logx.Error("Error: %v", err)
 		}
-		return
 	})
 	if err != nil {
 		// This error can be ignored safety, we will build the

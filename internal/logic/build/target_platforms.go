@@ -1,5 +1,6 @@
 package build
 
+//nolint:goimports
 import (
 	"github.com/hedzr/cmdr"
 	"path"
@@ -38,12 +39,12 @@ func (ss *TargetPlatforms) Init() (err error) {
 	// prepareBuildInfo()
 	err = cmdr.GetSectionFrom("bgo.dists", &ss)
 
-	//cmdr.DebugOutputTildeInfo(true)
+	// cmdr.DebugOutputTildeInfo(true)
 
 	return
 }
 
-func (ss *TargetPlatforms) setSource(pkgName string) {
+func (ss *TargetPlatforms) setSource(pkgName string) { //nolint:unused
 	ss.Sources[pkgName] = &DynBuildInfo{
 		AppName:     path.Base(pkgName),
 		Version:     "",
@@ -72,7 +73,7 @@ func (ss *TargetPlatforms) filterByFor(oamNew *TargetPlatforms, forSlice []strin
 	for _, s := range forSlice {
 		a := strings.Split(s, "/")
 		aos, aarch := a[0], a[1]
-		//if scope == "full" {
+		// if scope == "full" {
 		//	for oss, osv := range ss.OsArchMap {
 		//		for arch, _ := range osv {
 		//			if oss == aos && arch == aarch {
@@ -80,9 +81,9 @@ func (ss *TargetPlatforms) filterByFor(oamNew *TargetPlatforms, forSlice []strin
 		//			}
 		//		}
 		//	}
-		//} else {
+		// } else {
 		//	oamNew.SetOsArch(aos, aarch)
-		//}
+		// }
 		if ss.isValidPair(aos, aarch) {
 			oamNew.SetOsArch(aos, aarch)
 		}
@@ -92,17 +93,17 @@ func (ss *TargetPlatforms) filterByFor(oamNew *TargetPlatforms, forSlice []strin
 func (ss *TargetPlatforms) filterByOs(oamNew *TargetPlatforms, osSlice []string) {
 	for _, aos := range osSlice {
 		if m, ok := ss.OsArchMap[aos]; ok {
-			for aarch, _ := range m {
+			for aarch := range m {
 				oamNew.SetOsArch(aos, aarch)
 			}
 		}
-		//for oss, osv := range ss.OsArchMap {
+		// for oss, osv := range ss.OsArchMap {
 		//	for arch, _ := range osv {
 		//		if oss == aos {
 		//			oamNew.SetOsArch(aos, arch)
 		//		}
 		//	}
-		//}
+		// }
 	}
 }
 
@@ -112,7 +113,7 @@ func (ss *TargetPlatforms) filterByArch(oamNew *TargetPlatforms, archSlice []str
 			if _, ok := osv[aarch]; ok {
 				oamNew.SetOsArch(oss, aarch)
 			}
-			//for arch, _ := range osv {
+			// for arch, _ := range osv {
 			//	if arch == aarch {
 			//		oamNew.SetOsArch(oss, aarch)
 			//	}
@@ -125,7 +126,7 @@ func (ss *TargetPlatforms) filterByOsArchBoth(oamNew *TargetPlatforms, osSlice, 
 	for _, aos := range osSlice {
 		for _, aarch := range archSlice {
 			//// ?? why
-			//if scope == "full" {
+			// if scope == "full" {
 			//	for oss, osv := range ss.OsArchMap {
 			//		for arch, _ := range osv {
 			//			if oss == aos && arch == aarch {
@@ -133,9 +134,9 @@ func (ss *TargetPlatforms) filterByOsArchBoth(oamNew *TargetPlatforms, osSlice, 
 			//			}
 			//		}
 			//	}
-			//} else {
+			// } else {
 			//	oamNew.SetOsArch(aos, aarch)
-			//}
+			// }
 			if ss.isValidPair(aos, aarch) {
 				oamNew.SetOsArch(aos, aarch)
 			}
@@ -152,11 +153,12 @@ func (ss *TargetPlatforms) FilterBy(scope string, forSlice, osSlice, archSlice [
 
 	ss.filterByFor(oamNew, forSlice)
 
-	if len(osSlice) > 0 && len(archSlice) == 0 {
+	switch {
+	case len(osSlice) > 0 && len(archSlice) == 0:
 		ss.filterByOs(oamNew, osSlice)
-	} else if len(osSlice) == 0 && len(archSlice) > 0 {
+	case len(osSlice) == 0 && len(archSlice) > 0:
 		ss.filterByArch(oamNew, archSlice)
-	} else {
+	default:
 		ss.filterByOsArchBoth(oamNew, osSlice, archSlice)
 	}
 

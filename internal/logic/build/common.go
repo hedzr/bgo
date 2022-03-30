@@ -1,5 +1,6 @@
 package build
 
+//nolint:goimports
 import (
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
@@ -8,8 +9,8 @@ import (
 
 type (
 	CommonBase struct {
-		OS   string `yaml:"-" json:"-" toml:"-" json:"-" toml:"-"` // just for string template expansion
-		ARCH string `yaml:"-" json:"-" toml:"-" json:"-" toml:"-"` // just for string template expansion
+		OS   string `yaml:"-" json:"-" toml:"-"` // just for string template expansion
+		ARCH string `yaml:"-" json:"-" toml:"-"` // just for string template expansion
 
 		Ldflags    []string `yaml:"ldflags,omitempty,flow" json:"ldflags,omitempty" toml:"ldflags,omitempty"`          // default ldflags is to get the smaller build for releasing
 		Asmflags   []string `yaml:"asmflags,omitempty,flow" json:"asmflags,omitempty" toml:"asmflags,omitempty"`       //
@@ -39,7 +40,7 @@ type (
 		//    Note that before Go 1.5 this option took two separate arguments.
 		//    Now it takes one argument split on the first = sign.
 		Extends      []PackageNameValues `yaml:"extends,omitempty" json:"extends,omitempty" toml:"extends,omitempty"` //
-		CmdrSpecials bool                `yaml:"cmdr,omitempty" json:"-" toml:"-" json:"cmdr,omitempty" toml:"cmdr,omitempty"`
+		CmdrSpecials bool                `yaml:"cmdr,omitempty" json:"cmdr,omitempty" toml:"cmdr,omitempty"`
 	}
 
 	PackageNameValues struct {
@@ -88,8 +89,8 @@ func NewCommon() *Common {
 			Cgo:           false,
 			Race:          false,
 			Tags:          nil,
-			Asmflags:      nil, //[]string{"-trimpath=$GOPATH"},
-			Gcflags:       nil, //[]string{"-trimpath=$GOPATH"},
+			Asmflags:      nil, // []string{"-trimpath=$GOPATH"},
+			Gcflags:       nil, // []string{"-trimpath=$GOPATH"},
 			Ldflags:       []string{},
 		},
 	}

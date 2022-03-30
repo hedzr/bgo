@@ -1,5 +1,6 @@
 package build
 
+//nolint:goimports
 import (
 	"bufio"
 	"github.com/hedzr/bgo/internal/logic/logx"
@@ -99,7 +100,7 @@ func prepareBuildInfo() {
 		})
 		if err != nil {
 			logx.Warn("No suitable Golang executable 'go' found, use runtime.Version() instead.")
-			//os.Exit(1)
+			// os.Exit(1)
 			gBuildInfo.GoVersion = runtime.Version()
 		} else if logx.CountOfVerbose() > 1 {
 			logx.Warn("is warn ok")
@@ -116,7 +117,7 @@ func prepareBuildInfo() {
 			logx.Warn("No suitable 'git' executable found or cannot git describe.")
 			logx.Log("Error: %v", err)
 			logx.Log("Env:   %v", os.Environ())
-			//os.Exit(1)
+			// os.Exit(1)
 			gBuildInfo.GitVersion = "-unknown-"
 		}
 
@@ -127,7 +128,7 @@ func prepareBuildInfo() {
 		if err != nil {
 			logx.Warn("No suitable 'git' executable found or not a git repo.")
 			logx.Log("%v", err)
-			//os.Exit(1)
+			// os.Exit(1)
 			gBuildInfo.GitRevision = "-unknown-"
 		}
 
@@ -165,7 +166,7 @@ func prepareWithGoEnv() {
 			logx.Fatal("Error: %v", err)
 		}
 
-		//logx.Colored(logx.Green, "git.revision: %v", gBuildInfo.GitRevision)
+		// logx.Colored(logx.Green, "git.revision: %v", gBuildInfo.GitRevision)
 	})
 }
 
@@ -188,7 +189,7 @@ func retrieveGoToolDists() {
 
 		// merge all distros into cmdr Option Store, key path: app.bgo.dists.os-arch-map
 
-		//cmdr.Set("bgo.dists", TargetPlatforms)
+		// cmdr.Set("bgo.dists", TargetPlatforms)
 		err = cmdr.MergeWith(map[string]interface{}{
 			"app": map[string]interface{}{
 				"bgo": map[string]interface{}{
@@ -201,6 +202,6 @@ func retrieveGoToolDists() {
 		if err != nil {
 			logx.Fatal("Error: %v", err)
 		}
-		//logColored(green, "os.arch.map: %v", TargetPlatforms)
+		// logColored(green, "os.arch.map: %v", TargetPlatforms)
 	})
 }

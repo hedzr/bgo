@@ -1,25 +1,13 @@
 package dir
 
+//nolint:goimports
 import (
 	"github.com/hedzr/log"
 	"github.com/hedzr/log/dir"
 	"io/ioutil"
 	"os"
 	"path"
-	"path/filepath"
-	"strings"
 )
-
-func RelativeDir(dirname, base string) string {
-	b := dir.NormalizeDir(base)
-	c := strings.Split(b, string(filepath.Separator))
-	var pre []string
-	for _, _ = range c {
-		pre = append(pre, "..")
-	}
-	pre = append(pre, dirname)
-	return path.Join(pre...)
-}
 
 // ForDir walks on `root` directory and its children
 // fix for log/dir.ForDir
@@ -78,7 +66,7 @@ func forDirMax(
 
 	var stop bool
 
-	//files, err :=os.ReadDir(rootDir)
+	// files, err :=os.ReadDir(rootDir)
 	var fi os.FileInfo
 	fi, err = os.Stat(rootDir)
 	if err != nil {
@@ -88,10 +76,11 @@ func forDirMax(
 		return
 	}
 
-	stop, err = forDirMaxLoops(dirs, rootDir, initialDepth, maxDepth, cb, excludes...)
+	stop, err = forDirMaxLoops(dirs, rootDir, initialDepth, maxDepth, cb, excludes...) //nolint  // :ineffassign, nolint:staticcheck
 	return
 }
 
+//nolint:nakedret
 func forDirMaxLoops(
 	dirs []os.FileInfo,
 	rootDir string,
@@ -101,7 +90,7 @@ func forDirMaxLoops(
 	excludes ...string,
 ) (stop bool, err error) {
 	for _, f := range dirs {
-		//Logger.Printf("  - %v", f.Name())
+		// Logger.Printf("  - %v", f.Name())
 		if err != nil {
 			log.Errorf("error in ForDirMax().cb: %v", err)
 			continue

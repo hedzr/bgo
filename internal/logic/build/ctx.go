@@ -1,5 +1,6 @@
 package build
 
+//nolint:goimports
 import (
 	"github.com/hedzr/bgo/internal/logic/tool"
 	"github.com/hedzr/log/dir"

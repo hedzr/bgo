@@ -1,5 +1,6 @@
 package logic
 
+//nolint:goimports
 import (
 	"fmt"
 	"github.com/hedzr/cmdr"
@@ -34,9 +35,7 @@ metadata:
 	if err != nil {
 		t.Error(err)
 	}
-
 	t.Log("\n", string(out))
-
 }
 
 type (

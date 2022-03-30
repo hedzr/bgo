@@ -1,5 +1,6 @@
 package cmdr
 
+//nolint:goimports
 import (
 	"github.com/hedzr/bgo/internal/logic"
 	"github.com/hedzr/bgo/internal/logic/logx"
@@ -9,6 +10,7 @@ import (
 	"strings"
 )
 
+//nolint:nakedret
 func buildRootCmd() (rootCmd *cmdr.RootCommand) {
 	ver := version
 
@@ -21,7 +23,7 @@ func buildRootCmd() (rootCmd *cmdr.RootCommand) {
 		AddGlobalPreAction(func(cmd *cmdr.Command, args []string) (err error) {
 			// fmt.Printf("# global pre-action 1, curr-dir: %v\n", cmdr.GetCurrentDir())
 			// cmdr.Set("enable-ueh", true)
-			//err = internal.App().Init(cmd, args) // App() will be auto-closed
+			// err = internal.App().Init(cmd, args) // App() will be auto-closed
 
 			logx.LazyInit()
 
@@ -39,16 +41,16 @@ func buildRootCmd() (rootCmd *cmdr.RootCommand) {
 			}
 			return
 		}).
-		//AddGlobalPreAction(func(cmd *cmdr.Command, args []string) (err error) {
+		// AddGlobalPreAction(func(cmd *cmdr.Command, args []string) (err error) {
 		//	//fmt.Printf("# global pre-action 2, exe-path: %v\n", cmdr.GetExecutablePath())
 		//	return
-		//}).
-		//AddGlobalPostAction(func(cmd *cmdr.Command, args []string) {
+		// }).
+		// AddGlobalPostAction(func(cmd *cmdr.Command, args []string) {
 		//	//fmt.Println("# global post-action 1")
-		//}).
-		//AddGlobalPostAction(func(cmd *cmdr.Command, args []string) {
+		// }).
+		// AddGlobalPostAction(func(cmd *cmdr.Command, args []string) {
 		//	//fmt.Println("# global post-action 2")
-		//}).
+		// }).
 		Copyright(copyright, "bgo Authors").
 		Description(desc, longDesc).
 		Examples(examples)
@@ -59,7 +61,7 @@ func buildRootCmd() (rootCmd *cmdr.RootCommand) {
 	logic.AttachToCmdr(root.RootCmdOpt())
 	cmdrMoreCommandsForTest(root.RootCmdOpt())
 
-	//pprof.AttachToCmdr(root.RootCmdOpt())
+	// pprof.AttachToCmdr(root.RootCmdOpt())
 
 	return
 }

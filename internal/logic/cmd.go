@@ -15,13 +15,13 @@ func AttachToCmdr(root *cmdr.RootCmdOpt) {
 	cmdr.NewBool().
 		Titles("dry-run", "dr").
 		Description("Just listing without Go build", "").
-		//ToggleGroup("").
+		// ToggleGroup("").
 		Group("Control").
 		EnvKeys("DRY_RUN").
 		AttachTo(root)
 
-	//cmdrOptsBuildCommons(root)
-	//cmdrOptsBuildControls(root)
+	// cmdrOptsBuildCommons(root)
+	// cmdrOptsBuildControls(root)
 
 	cmdrSubCmdInit(root)
 	cmdrSubCmdBuild(root)
@@ -37,26 +37,26 @@ func cmdrOptsScopes(cmd cmdr.OptCmd) {
 		Titles("short", "s").
 		Description("Build for current CPU and OS Arch ONLY", "").
 		ToggleGroup("Scope").
-		//Group("Build").
+		// Group("Build").
 		EnvKeys("SHORT").
 		AttachTo(cmd)
 	cmdr.NewBool().
 		Titles("full", "f").
 		Description("Build all CLIs under work directory recursively", "").
 		ToggleGroup("Scope").
-		//Group("Build").
+		// Group("Build").
 		EnvKeys("FULL").
 		AttachTo(cmd)
 	cmdr.NewBool(true).
 		Titles("auto", "a").
 		Description("Build all modules defined in .bgo.yaml recursively (auto mode)", "").
 		ToggleGroup("Scope").
-		//Group("Build").
+		// Group("Build").
 		EnvKeys("AUTO").
 		AttachTo(cmd)
 }
 
-func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
+func cmdrOptsBuildCommons(cmd cmdr.OptCmd) { //nolint:funlen
 	cmdr.NewStringSlice().
 		Titles("osarch", "arch", "arch").
 		Description("Specify the CPU-Arch list (comma separated or multi times)", `Specify the CPU-Arch list (comma separated or multi times)
@@ -142,14 +142,14 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
 	cmdr.NewBool().
 		Titles("cgo", "cgo").
 		Description("enable CGO mode", "").
-		//ToggleGroup("").
+		// ToggleGroup("").
 		Group(gnGoBuild).
 		EnvKeys("CGO_ENABLED").
 		AttachTo(cmd)
 	cmdr.NewBool().
 		Titles("race", "race").
 		Description("enable --race building", "").
-		//ToggleGroup("").
+		// ToggleGroup("").
 		Group(gnGoBuild).
 		EnvKeys("RACE").
 		AttachTo(cmd)
@@ -159,7 +159,7 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) {
 		Supported only on linux/amd64, linux/arm64
 		and only with Clang/LLVM as the host C compiler.
 		On linux/arm64, pie build mode will be used.`).
-		//ToggleGroup("").
+		// ToggleGroup("").
 		Group(gnGoBuild).
 		EnvKeys("MSAN").
 		AttachTo(cmd)
@@ -185,7 +185,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 	cmdr.NewBool().
 		Titles("rebuild", "r").
 		Description("Force rebuilding of package that were up to date", "").
-		//ToggleGroup("").
+		// ToggleGroup("").
 		Group(gnControl).
 		EnvKeys("REBUILD").
 		AttachTo(cmd)
@@ -193,12 +193,12 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 	cmdr.NewBool().
 		Titles("no-trimpath", "ntp").
 		Description("Don't use -trimapth", "").
-		//ToggleGroup("").
+		// ToggleGroup("").
 		Group(gnControl).
 		EnvKeys("NO_TRIMPATH").
 		AttachTo(cmd)
 
-	//cmdr.NewString("").
+	// cmdr.NewString("").
 	//	Titles("for", "for").
 	//	Description("Build for os/arch, such as 'linux/riscv64'", "").
 	//	//ToggleGroup("").
@@ -206,7 +206,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 	//	EnvKeys("FOR").
 	//	AttachTo(cmd)
 	//
-	//cmdr.NewString("").
+	// cmdr.NewString("").
 	//	Titles("os", "os").
 	//	Description("Build for os, such as 'linux'", "").
 	//	//ToggleGroup("").
@@ -214,7 +214,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 	//	EnvKeys("OS").
 	//	AttachTo(cmd)
 	//
-	//cmdr.NewString("").
+	// cmdr.NewString("").
 	//	Titles("arch", "arch").
 	//	Description("Build for arch, such as 'riscv64'", "").
 	//	//ToggleGroup("").
@@ -225,7 +225,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 	cmdr.NewString().
 		Titles("project-name", "pn", "name").
 		Description("Build one project with its name", "").
-		//ToggleGroup("").
+		// ToggleGroup("").
 		Group(gnControl).
 		EnvKeys("PROJECT_NAME").
 		AttachTo(cmd)
@@ -233,7 +233,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 	cmdr.NewInt().
 		Titles("parallel", "j").
 		Description("TODO: Use parallel building with CPU Core Count, 0 to Auto", "").
-		//ToggleGroup("").
+		// ToggleGroup("").
 		Group(gnControl).
 		Placeholder("#").
 		Hidden(true). // parallel building not in planning
@@ -243,12 +243,12 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 	cmdr.NewBool().
 		Titles("save", "save").
 		Description("Save this session as a .bgo.yml", "").
-		//ToggleGroup("").
+		// ToggleGroup("").
 		Group(gnControl).
 		EnvKeys("SAVE").
 		AttachTo(cmd)
 
-	//cmdr.NewBool().
+	// cmdr.NewBool().
 	//	Titles("yes", "y").
 	//	Description("Assume 'yes' while sth has been asking", "").
 	//	//ToggleGroup("").
@@ -260,14 +260,14 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 func cmdrSubCmdInit(root cmdr.OptCmd) {
 	initCmd := cmdr.NewSubCmd().Titles("init", "i").
 		Description(`scan folder and save <i>result</i> to <code>bgo.yml</code>, as <mark>project settings</mark>`).
-		//Description(`<del>scan</del> <u><font color="yellow">folder</font></u> and save <i>result</i> to <code>bgo.yml</code>, as <mark>project settings</mark>`).
+		// Description(`<del>scan</del> <u><font color="yellow">folder</font></u> and save <i>result</i> to <code>bgo.yml</code>, as <mark>project settings</mark>`).
 		Action(initAction).
 		AttachTo(root)
 
 	cmdr.NewStringSlice("bgo.yml").
 		Titles("output", "o").
 		Description("filename to be saved setting as", "").
-		//ToggleGroup("").
+		// ToggleGroup("").
 		Group("").
 		AttachTo(initCmd)
 }
@@ -283,14 +283,14 @@ func cmdrSubCmdBuild(root cmdr.OptCmd) {
 		Action(buildAction).
 		AttachTo(root)
 
-	//cmdr.NewString("bgo.yml").
+	// cmdr.NewString("bgo.yml").
 	//	Titles("output", "o").
 	//	Description("filename to be saved setting as", "").
 	//	//ToggleGroup("").
 	//	Group("").
 	//	AttachTo(buildCmd)
 
-	//cmdrOptsScopes(buildCmd)
+	// cmdrOptsScopes(buildCmd)
 
 	cmdrOptsBuildCommons(buildCmd)
 	cmdrOptsBuildControls(buildCmd)
@@ -308,7 +308,7 @@ func cmdrSubCmdList(root cmdr.OptCmd) {
 	cmdr.NewBool().
 		Titles("more", "m").
 		Description("more details", "").
-		//ToggleGroup("").
+		// ToggleGroup("").
 		Group("").
 		VendorHidden(true).
 		AttachTo(listCmd)

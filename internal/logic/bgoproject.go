@@ -5,7 +5,7 @@ import (
 	"github.com/hedzr/bgo/internal/logic/tool"
 )
 
-//const BgoYamlFilename = ".bgo.yml"
+// const BgoYamlFilename = ".bgo.yml"
 
 type (
 	ProjectWrap struct {
@@ -100,7 +100,7 @@ func (p *Project) applyPI(pi *pkgInfo) {
 	}
 }
 
-func (p *Project) inIntSlice(val int, slice []int) (yes bool) {
+func (p *Project) inIntSlice(val int, slice []int) (yes bool) { //nolint
 	for _, v := range slice {
 		if yes = val == v; yes {
 			break
@@ -120,7 +120,7 @@ func (p *Project) inStringSlice(val string, slice []string) (yes bool) {
 
 func (p *Project) overspreadByTP(scope string, tpBase *build.TargetPlatforms) {
 	for os, oss := range tpBase.OsArchMap {
-		for arch, _ := range oss {
+		for arch := range oss {
 			if !p.inStringSlice(os, p.Os) {
 				p.Os = append(p.Os, os)
 			}
@@ -131,8 +131,7 @@ func (p *Project) overspreadByTP(scope string, tpBase *build.TargetPlatforms) {
 	}
 
 	p.tp = build.NewTargetPlatforms()
-	err := p.tp.Init()
-	if err != nil {
+	if err := p.tp.Init(); err != nil {
 		return
 	}
 	p.tp.FilterBy(scope, p.For, p.Os, p.Arch)

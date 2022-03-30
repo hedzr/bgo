@@ -28,13 +28,13 @@ func buildAction(cmd *cmdr.Command, args []string) (err error) {
 func actionGoBuild(buildScope string, cmd *cmdr.Command, args []string) (err error) {
 	logx.Verbose("Build Scope: %v, Using main config: %v\n", buildScope, cmdr.GetUsedConfigFile())
 
-	//var buildSettings = new(BgoSettings)
-	//err = cmdr.GetSectionFrom("bgo.build", &buildSettings)
-	//logDim("build.settings: %+v", buildSettings)
-	//logHiLight("Starting...")
+	// var buildSettings = new(BgoSettings)
+	// err = cmdr.GetSectionFrom("bgo.build", &buildSettings)
+	// logDim("build.settings: %+v", buildSettings)
+	// logHiLight("Starting...")
 
 	switch buildScope {
-	case "short", "current":
+	case "short", "current": //nolint:goconst
 		err = buildCurr(buildScope, cmd, args)
 	case "full":
 		fallthrough
