@@ -1,6 +1,6 @@
 module github.com/hedzr/bgo
 
-go 1.17
+go 1.18
 
 //replace gopkg.in/hedzr/errors.v3 => ../../go-cmdr/05.errors
 
@@ -24,6 +24,7 @@ require (
 require (
 	github.com/BurntSushi/toml v1.0.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
+	github.com/fzipp/gocyclo v0.5.0 // indirect
 	github.com/hedzr/cmdr-base v0.1.3 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/rs/zerolog v1.26.1 // indirect
