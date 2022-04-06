@@ -35,9 +35,9 @@ app:
           echo
           echo
           echo "Command hit: {{.Cmd.GetDottedNamePath}}"
-          echo "fmt {{.ArgsString}}"
+          echo "fmt {{.ArgsString}} ..."
           gofmt -l -s -w {{range .Args}}{{.}}{{end}}
-          echo "lint {{.ArgsString}}"
+          echo "lint {{.ArgsString}} ..."
           golint {{.ArgsString}}
           echo "cyclo ."
           gocyclo -top 13 .
