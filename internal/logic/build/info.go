@@ -183,7 +183,7 @@ func retrieveGoToolDists() {
 			osArchMap[a[0]][a[1]] = true
 		}
 
-		if err := scanner.Err(); err != nil {
+		if err = scanner.Err(); err != nil {
 			logx.Fatal("Error: %v", err)
 		}
 
