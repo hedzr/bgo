@@ -14,17 +14,16 @@ go 1.18
 
 require (
 	github.com/hedzr/cmdr v1.10.35
-	github.com/hedzr/log v1.5.45
+	github.com/hedzr/log v1.5.49
 	github.com/hedzr/logex v1.5.46
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
-	gopkg.in/hedzr/errors.v3 v3.0.17
+	gopkg.in/hedzr/errors.v3 v3.0.19
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
 
 require (
 	github.com/BurntSushi/toml v1.0.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
-	github.com/fzipp/gocyclo v0.5.0 // indirect
 	github.com/hedzr/cmdr-base v0.1.3 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/rs/zerolog v1.26.1 // indirect
