@@ -8,11 +8,11 @@ import (
 	"github.com/hedzr/logex"
 )
 
-func prd(key string, val interface{}, format string, params ...interface{}) { //nolint
+func prd(key string, val interface{}, format string, params ...interface{}) { // nolint
 	fmt.Printf("         [--%v] %v, %v\n", key, val, fmt.Sprintf(format, params...))
 }
 
-func soundex(root cmdr.OptCmd) { //nolint
+func soundex(root cmdr.OptCmd) { // nolint
 	// soundex
 
 	parent := cmdr.NewSubCmd().Titles("soundex", "snd", "sndx", "sound").
@@ -75,44 +75,44 @@ func soundex(root cmdr.OptCmd) { //nolint
 		Group("1000.Integer").
 		EnvKeys("").
 		AttachTo(parent)
-	cmdr.NewInt64(2). //nolint:gomnd
+	cmdr.NewInt64(2). //nolint:gomnd //so what
 				Titles("int64", "i64").
 				Description("A int64 flag", "").
 				Group("1000.Integer").
 				EnvKeys("").
 				AttachTo(parent)
-	cmdr.NewUint(3). //nolint:gomnd
+	cmdr.NewUint(3). //nolint:gomnd //so what
 				Titles("uint", "u", "u32").
 				Description("A uint flag", "").
 				Group("1000.Integer").
 				EnvKeys("").
 				AttachTo(parent)
-	cmdr.NewUint64(4). //nolint:gomnd
+	cmdr.NewUint64(4). //nolint:gomnd //so what
 				Titles("uint64", "u64").
 				Description("A uint64 flag", "").
 				Group("1000.Integer").
 				EnvKeys("").
 				AttachTo(parent)
 
-	cmdr.NewFloat32(2.71828). //nolint:gomnd
+	cmdr.NewFloat32(2.71828). //nolint:gomnd //so what
 					Titles("float32", "f", "float", "f32").
 					Description("A float32 flag with 'e' value", "").
 					Group("2000.Float").
 					EnvKeys("E", "E2").
 					AttachTo(parent)
-	cmdr.NewFloat64(3.14159265358979323846264338327950288419716939937510582097494459230781640628620899). //nolint:gomnd
+	cmdr.NewFloat64(3.14159265358979323846264338327950288419716939937510582097494459230781640628620899). //nolint:gomnd //so what
 														Titles("float64", "f64").
 														Description("A float64 flag with a `PI` value", "").
 														Group("2000.Float").
 														EnvKeys("PI").
 														AttachTo(parent)
-	cmdr.NewComplex64(3.14+9i). //nolint:gomnd
+	cmdr.NewComplex64(3.14+9i). //nolint:gomnd //so what
 					Titles("complex64", "c64").
 					Description("A complex64 flag", "").
 					Group("2010.Complex").
 					EnvKeys("").
 					AttachTo(parent)
-	cmdr.NewComplex128(3.14+9i). //nolint:gomnd
+	cmdr.NewComplex128(3.14+9i). //nolint:gomnd //so what
 					Titles("complex128", "c128").
 					Description("A complex128 flag", "").
 					Group("2010.Complex").
@@ -148,7 +148,7 @@ func soundex(root cmdr.OptCmd) { //nolint
 		AttachTo(parent)
 }
 
-func panicTest(root cmdr.OptCmd) { //nolint
+func panicTest(root cmdr.OptCmd) { // nolint
 	// panic test
 
 	pa := cmdr.NewSubCmd().Titles("panic-test", "pa", "panic").
@@ -182,7 +182,7 @@ func panicTest(root cmdr.OptCmd) { //nolint
 		Description("").
 		Group("Test").
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
-			panic(9) //nolint:gomnd
+			panic(9) //nolint:gomnd //so what
 		}).
 		AttachTo(pa)
 }

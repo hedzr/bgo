@@ -1,6 +1,6 @@
 package logic
 
-//nolint:goimports
+//nolint:goimports // i like it
 import (
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
@@ -29,7 +29,6 @@ func saveNewBgoYamlFile(bs *BgoSettings) (err error) {
 	return saveBgoConfigAs(bsCopy, bs.SavedAs)
 }
 
-//nolint:nakedret
 func saveBgoConfigAs(bs *BgoSettings, savedAs []string) (err error) {
 	bs.SavedAs = nil
 	err = cmdr.MergeWith(map[string]interface{}{
@@ -51,8 +50,8 @@ func saveBgoConfigAs(bs *BgoSettings, savedAs []string) (err error) {
 				err = cmdr.SaveAsToml(fn)
 			case ".json":
 				err = cmdr.SaveAsJSONExt(fn, true)
-			case ".yml", ".yaml":
-				fallthrough
+			// case ".yml", ".yaml":
+			// 	fallthrough
 			default:
 				err = cmdr.SaveAsYaml(fn)
 			}
@@ -69,7 +68,7 @@ func saveBgoConfigAs(bs *BgoSettings, savedAs []string) (err error) {
 // appendComments todo append some sample yaml comments into .bgo.yml when `bgo init`
 func appendComments(file string) (err error) {
 	var f *os.File
-	f, err = os.OpenFile(file, os.O_APPEND|os.O_RDWR, 0644) //nolint:gomnd
+	f, err = os.OpenFile(file, os.O_APPEND|os.O_RDWR, 0o644) //nolint:gomnd //i like it
 	if err == nil {
 		defer func() {
 			err = f.Close()

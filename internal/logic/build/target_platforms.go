@@ -1,6 +1,6 @@
 package build
 
-//nolint:goimports
+//nolint:goimports //so what
 import (
 	"github.com/hedzr/cmdr"
 	"path"
@@ -44,7 +44,7 @@ func (ss *TargetPlatforms) Init() (err error) {
 	return
 }
 
-func (ss *TargetPlatforms) setSource(pkgName string) { //nolint:unused
+func (ss *TargetPlatforms) setSource(pkgName string) {
 	ss.Sources[pkgName] = &DynBuildInfo{
 		AppName:     path.Base(pkgName),
 		Version:     "",
@@ -117,7 +117,7 @@ func (ss *TargetPlatforms) filterByArch(oamNew *TargetPlatforms, archSlice []str
 			//	if arch == aarch {
 			//		oamNew.SetOsArch(oss, aarch)
 			//	}
-			//}
+			// }
 		}
 	}
 }
@@ -125,7 +125,7 @@ func (ss *TargetPlatforms) filterByArch(oamNew *TargetPlatforms, archSlice []str
 func (ss *TargetPlatforms) filterByOsArchBoth(oamNew *TargetPlatforms, osSlice, archSlice []string) {
 	for _, aos := range osSlice {
 		for _, aarch := range archSlice {
-			//// ?? why
+			// // ?? why
 			// if scope == "full" {
 			//	for oss, osv := range ss.OsArchMap {
 			//		for arch, _ := range osv {

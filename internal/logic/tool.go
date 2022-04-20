@@ -1,6 +1,6 @@
 package logic
 
-//nolint:goimports
+//nolint:goimports //i like it
 import (
 	"bufio"
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/log/exec"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -35,9 +35,9 @@ func setBuildScope(scope string) {
 }
 
 func buildScopeFromCmdr(cmd *cmdr.Command) string {
-	// ToggleGroup value of building scope is: "Scope"
-	k2 := cmd.GetDottedNamePath() + ".Scope" // nolint
-	k2 = "bgo.Scope"
+	// ToggleGroup value of building scope is: appName + '.' + "Scope"
+	// k2 := cmd.GetDottedNamePath() + ".Scope"
+	k2 := "bgo.Scope"
 	buildScope := cmdr.GetStringR(k2)
 	// set the choice from command-line option to option store
 	// so that we can retrieve it in extracting BgoSettings
@@ -59,7 +59,7 @@ func findStringInFile(where, what string) (has bool) {
 	}()
 
 	var b []byte
-	if b, err = ioutil.ReadAll(file); err != nil {
+	if b, err = io.ReadAll(file); err != nil {
 		logx.Error("%v", err)
 		return
 	}
@@ -79,6 +79,7 @@ func uniAdd(target []string, item string) []string {
 	return append(target, item)
 }
 
+//nolint:gocognit //needs split
 func ifLdflags(bc *build.Context) {
 	pairs := make(map[string]string)
 
@@ -106,7 +107,7 @@ func ifLdflags(bc *build.Context) {
 		// fmt.Sprintf("-X '%s.AppName=%s'", W,bc.AppName),
 
 		str = fmt.Sprintf("-X %s.Serial=", W)
-		pairs[str] = strconv.FormatInt(bc.Serial, 10) //nolint:gomnd
+		pairs[str] = strconv.FormatInt(bc.Serial, 10) //nolint:gomnd //i like it
 		str = fmt.Sprintf("-X %s.SerialString=", W)
 		pairs[str] = bc.RandomString
 	}
@@ -206,7 +207,7 @@ func tplExpand(tpl, name string, bc interface{}) (output string, err error) {
 func yamlText(obj interface{}) string {
 	var sb strings.Builder
 	e := yaml.NewEncoder(&sb)
-	e.SetIndent(2) //nolint:gomnd
+	e.SetIndent(2) //nolint:gomnd //i like it
 	err := e.Encode(obj)
 	if err != nil {
 		return ""

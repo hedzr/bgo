@@ -1,6 +1,6 @@
 package logic
 
-//nolint:goimports
+//nolint:goimports //so what
 import (
 	"fmt"
 	"github.com/hedzr/cmdr"

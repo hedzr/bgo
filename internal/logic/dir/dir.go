@@ -1,10 +1,9 @@
 package dir
 
-//nolint:goimports
+//nolint:goimports //i like it
 import (
 	"github.com/hedzr/log"
 	"github.com/hedzr/log/dir"
-	"io/ioutil"
 	"os"
 	"path"
 )
@@ -57,8 +56,8 @@ func forDirMax(
 	cb func(depth int, dirname string, fi os.FileInfo) (stop bool, err error),
 	excludes ...string,
 ) (err error) {
-	var dirs []os.FileInfo
-	dirs, err = ioutil.ReadDir(rootDir)
+	var dirs []os.DirEntry
+	dirs, err = os.ReadDir(rootDir)
 	if err != nil {
 		// Logger.Fatalf("error in ForDirMax(): %v", err)
 		return
@@ -66,7 +65,7 @@ func forDirMax(
 
 	var stop bool
 
-	// files, err :=os.ReadDir(rootDir)
+	// files, err := os.ReadDir(rootDir)
 	var fi os.FileInfo
 	fi, err = os.Stat(rootDir)
 	if err != nil {
@@ -76,13 +75,12 @@ func forDirMax(
 		return
 	}
 
-	stop, err = forDirMaxLoops(dirs, rootDir, initialDepth, maxDepth, cb, excludes...) //nolint  // :ineffassign, nolint:staticcheck
+	stop, err = forDirMaxLoops(dirs, rootDir, initialDepth, maxDepth, cb, excludes...) //nolint:ineffassign //stop will be returned
 	return
 }
 
-//nolint:nakedret
 func forDirMaxLoops(
-	dirs []os.FileInfo,
+	dirs []os.DirEntry,
 	rootDir string,
 	initialDepth int,
 	maxDepth int,
@@ -102,10 +100,12 @@ func forDirMaxLoops(
 				continue
 			}
 
-			if stop, err = cb(initialDepth, d, f); stop {
+			var fi os.FileInfo
+			fi, err = f.Info()
+			if stop, err = cb(initialDepth, d, fi); stop {
 				return
 			}
-			if err = ForDirMax(d, initialDepth+1, maxDepth, cb); err != nil {
+			if err = forDirMax(d, initialDepth+1, maxDepth, cb); err != nil {
 				log.Errorf("error in ForDirMax(): %v", err)
 			}
 		}

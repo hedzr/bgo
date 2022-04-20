@@ -118,7 +118,7 @@ func (s *BgoSettings) _init2() {
 	if slice := cmdr.GetStringSliceR("build.os"); len(slice) > 0 {
 		// s.Os = append(s.Os, slice...)
 		manually, os, s.Os = true, true, slice
-	} else if s.Scope != "full" && len(s.Os) == 0 { //nolint:goconst
+	} else if s.Scope != "full" && len(s.Os) == 0 { //nolint:goconst //i like it
 		s.Os = []string{"linux", "darwin", "windows"}
 	}
 	if slice := cmdr.GetStringSliceR("build.osarch"); len(slice) > 0 {

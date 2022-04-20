@@ -10,9 +10,9 @@ import (
 
 var options []cmdr.ExecOption
 
-//nolint:gochecknoinits
+//nolint:gochecknoinits //must have
 func init() {
-	options = append(options, cmdr.WithUnhandledErrorHandler(onUnhandledErrorHandler))
+	options = append(options, cmdr.WithUnhandledErrorHandler(onUnhandledErrorHandler)) //nolint:gocritic
 	// cmdr.WithUnhandledErrorHandler(onUnhandledErrorHandler)
 
 	options = append(options, cmdr.WithLogx(build.New(build.NewLoggerConfigWith(defaultDebugEnabled, defaultLoggerBackend, defaultLoggerLevel, log.WithTimestamp(true, "")))))
@@ -63,7 +63,7 @@ func init() {
 		".$APPNAME.yml",
 	}
 	locations = append(locations, cmdr.GetPredefinedAlterLocations()...)
-	options = append(options, cmdr.WithAlterLocations(locations...))
+	options = append(options, cmdr.WithAlterLocations(locations...)) //nolint:gocritic
 
 	// in our internal build (with -tags="test delve"), those
 	// multi-level sub-commands need the auto default action
@@ -95,4 +95,4 @@ func isDebugBuild() bool { return isdelve.Enabled }
 //	//		Placeholder("PORT").
 //	//		AttachTo(cmdr.NewCmdFrom(serverStartCmd))
 //	//}, nil)
-//}
+// }

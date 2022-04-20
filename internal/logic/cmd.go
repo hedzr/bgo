@@ -56,7 +56,7 @@ func cmdrOptsScopes(cmd cmdr.OptCmd) {
 		AttachTo(cmd)
 }
 
-func cmdrOptsBuildCommons(cmd cmdr.OptCmd) { //nolint:funlen
+func cmdrOptsBuildCommons(cmd cmdr.OptCmd) { //nolint:funlen //so what
 	cmdr.NewStringSlice().
 		Titles("osarch", "arch", "arch").
 		Description("Specify the CPU-Arch list (comma separated or multi times)", `Specify the CPU-Arch list (comma separated or multi times)

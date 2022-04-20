@@ -1,21 +1,17 @@
 package tool
 
-//nolint:goimports
+//nolint:goimports //not an error
 import (
 	"github.com/hedzr/cmdr/tool/randomizer"
 	"regexp"
 )
 
 func StripOrderPrefix(s string) string {
-	if len(s) == 0 {
+	if s == "" {
 		return s
 	}
 	a := xre.FindStringSubmatch(s)
 	return a[2]
-	// if xre.MatchString(s) {
-	//	s = s[strings.Index(s, ".")+1:]
-	// }
-	// return s
 }
 
 // HasOrderPrefix tests whether an order prefix is present or not.

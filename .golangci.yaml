@@ -11,6 +11,8 @@ linters-settings:
       - opinionated
       - performance
       - style
+    disabled-checks:
+      - commentedOutCode
   govet:
     check-shadowing: true
   nolintlint:
@@ -46,26 +48,33 @@ linters:
     - dogsled
     - dupl
     - errcheck
+    - errorlint
+    #- exhaustive
     - exportloopref
-    - exhaustive
+    - funlen
     - goconst
     #- gocritic
     - gofmt
     #- goimports
     #- gomnd
+    - gocognit
+    - gocritic
     - gocyclo
+    - goprintffuncname
     - gosec
     - gosimple
     - govet
     - ineffassign
+    - interfacer
+    #- maligned
     - misspell
     #- nolintlint
     #- nakedret
     - prealloc
     - predeclared
-    #- revive
+    - revive
     - staticcheck
-    - structcheck
+    #- structcheck
     - stylecheck
     #- thelper
     - tparallel
@@ -73,7 +82,7 @@ linters:
     - unconvert
     #- unparam
     - varcheck
-    #- whitespace
+    - whitespace
     #- wsl
 
 #linters:

@@ -53,7 +53,7 @@ func newProject(pkg string, bc *build.Context, bs *BgoSettings) *ProjectWrap {
 	return p
 }
 
-func newProjectClean(pkg string, dir string) *ProjectWrap {
+func newProjectClean(pkg, dir string) *ProjectWrap {
 	p := &ProjectWrap{Project: Project{
 		Name:    "",
 		Dir:     dir,
@@ -100,7 +100,7 @@ func (p *Project) applyPI(pi *pkgInfo) {
 	}
 }
 
-func (p *Project) inIntSlice(val int, slice []int) (yes bool) { //nolint
+func (p *Project) inIntSlice(val int, slice []int) (yes bool) { // nolint
 	for _, v := range slice {
 		if yes = val == v; yes {
 			break

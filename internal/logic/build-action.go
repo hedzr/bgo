@@ -34,10 +34,10 @@ func actionGoBuild(buildScope string, cmd *cmdr.Command, args []string) (err err
 	// logHiLight("Starting...")
 
 	switch buildScope {
-	case "short", "current": //nolint:goconst
+	case "short", "current": //nolint:goconst //i like it
 		err = buildCurr(buildScope, cmd, args)
-	case "full":
-		fallthrough
+	// case "full":
+	// 	fallthrough
 	default:
 		err = buildAuto(buildScope, cmd, args)
 	}

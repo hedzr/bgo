@@ -1,6 +1,6 @@
 package logic
 
-//nolint:goimports
+//nolint:goimports //i like it
 import (
 	"bufio"
 	"github.com/hedzr/bgo/internal/logic/logx"
@@ -24,12 +24,11 @@ type pkgInfo struct {
 	p                *ProjectWrap
 }
 
-//nolint:nakedret
 func findMainPackages(bs *BgoSettings) (packages map[string]*pkgInfo, err error) {
 	packages = make(map[string]*pkgInfo)
 
 	keys := make([]string, 0, len(bs.Projects))
-	{
+	{ //nolint:gocritic
 		for k := range bs.Projects {
 			keys = append(keys, k)
 		}
@@ -39,7 +38,7 @@ func findMainPackages(bs *BgoSettings) (packages map[string]*pkgInfo, err error)
 	for _, groupKey := range keys {
 		group := bs.Projects[groupKey]
 		kps := make([]string, 0, len(group.Items))
-		{
+		{ //nolint:gocritic
 			for k := range group.Items {
 				kps = append(kps, k)
 			}
@@ -73,7 +72,7 @@ func findMainPackages(bs *BgoSettings) (packages map[string]*pkgInfo, err error)
 				packages[k].groupLeadingText = group.LeadingText
 				packages[k].projectName = projectKey
 				packages[k].appName = p.Name
-				// err = fmp(bs, p.Dir, packages)
+				// err = fmp(bs, p.Dir, packages) //nolint:gocritic
 				logx.Trace("groupKey: %v, projKey: %v", groupKey, projectKey)
 				if bs.Scope == "short" {
 					return
@@ -84,7 +83,6 @@ func findMainPackages(bs *BgoSettings) (packages map[string]*pkgInfo, err error)
 	return
 }
 
-//nolint:nakedret
 func scanWorkDir(workdir, scope string, packages map[string]*pkgInfo, bs *BgoSettings) (err error) {
 	if len(packages) > 0 && scope == "short" {
 		return
@@ -97,7 +95,7 @@ func scanWorkDir(workdir, scope string, packages map[string]*pkgInfo, bs *BgoSet
 
 	pd := make(map[string]string) // dir -> package
 	err = dir.ForDir(".", func(depth int, dirname string, fi os.FileInfo) (stop bool, err error) {
-		dirName := dirname // path.Join(dirname, fi.Name())
+		dirName := dirname // path.Join(dirname, fi.Name()) //nolint:gocritic
 		logx.Verbose("  >> %v/%v [%v], %v", dirname, fi.Name(), dirName, dir.GetCurrentDir())
 
 		var mainFound bool
@@ -107,7 +105,7 @@ func scanWorkDir(workdir, scope string, packages map[string]*pkgInfo, bs *BgoSet
 			if dir.IsWildMatch(fi.Name(), "*.go") {
 				fileName, pn := path.Join(cwd, fi.Name()), ""
 				if pn, err = extractPackageName(fileName); err == nil {
-					if pn == "main" { //nolint:goconst
+					if pn == "main" { //nolint:goconst //not required put a const
 						logx.Verbose("       > ADD: %v -> %v", pn, dirName)
 						k := path.Clean(dirName)
 						pd[k] = pn
@@ -154,7 +152,7 @@ func dissectTheMainDir(dirname string, packages map[string]*pkgInfo, bs *BgoSett
 	return
 }
 
-//nolint:nakedret
+//nolint:gocognit //needs split
 func dissectTheMainDirImpl(dirname string, packages map[string]*pkgInfo, bs *BgoSettings) (err error) {
 	cmd := []string{"go", "list", "-f", "{{.Name}},{{.ImportPath}}", "."}
 	err = exec.CallSliceQuiet(cmd, func(retCode int, stdoutText string) {
@@ -225,7 +223,7 @@ func extractPackageName(fileName string) (pn string, err error) {
 			r := rePackageName.FindAllStringSubmatch(scanner.Text(), -1)
 			for _, r1 := range r {
 				pn = r1[1]
-				// pd[pn] = fullName
+				// pd[pn] = fullName //nolint:gocritic
 			}
 		}
 		if err = scanner.Err(); err != nil {

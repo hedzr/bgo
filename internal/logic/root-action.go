@@ -1,13 +1,12 @@
 package logic
 
-import (
-	"fmt" //nolint:goimports
+import ( //nolint:goimports //so what
+	"fmt"
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 )
 
-//nolint:nakedret
-func rootAction(cmd *cmdr.Command, args []string) (err error) { //nolint
+func rootAction(cmd *cmdr.Command, args []string) (err error) { // nolint
 	if cmdr.GetTraceMode() {
 		cmdr.DebugOutputTildeInfo(true)
 

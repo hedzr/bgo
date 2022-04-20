@@ -1,6 +1,6 @@
 package build
 
-//nolint:goimports
+//nolint:goimports //so what
 import (
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/log/closers"
@@ -10,7 +10,7 @@ import (
 
 var TempDir string
 
-//nolint:gochecknoinits
+//nolint:gochecknoinits //so what
 func init() {
 	var err error
 	TempDir, err = ioutil.TempDir("", "bgo")

@@ -1,6 +1,6 @@
 package samples
 
-//nolint:goimports
+//nolint:goimports //so what
 import (
 	errors2 "errors"
 	"gopkg.in/hedzr/errors.v3"

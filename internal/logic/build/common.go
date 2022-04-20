@@ -1,6 +1,6 @@
 package build
 
-//nolint:goimports
+//nolint:goimports //so what
 import (
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
@@ -69,15 +69,15 @@ func NewCommon() *Common {
 	return &Common{
 		Disabled: false,
 		For:      nil,
-		//Os:            nil,
-		//Arch:          nil,
+		// Os:            nil,
+		// Arch:          nil,
 		PreAction:  "",
 		PostAction: "",
-		//Ldflags:       "",
-		//Asmflags:      nil,
-		//Gcflags:       nil,
-		//Tags:          nil,
-		//Cgo:           false,
+		// Ldflags:       "",
+		// Asmflags:      nil,
+		// Gcflags:       nil,
+		// Tags:          nil,
+		// Cgo:           false,
 
 		Os:   []string{runtime.GOOS},
 		Arch: []string{runtime.GOARCH},

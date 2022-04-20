@@ -1,6 +1,6 @@
 package build
 
-//nolint:goimports
+//nolint:goimports //so what
 import (
 	"bufio"
 	"github.com/hedzr/bgo/internal/logic/logx"

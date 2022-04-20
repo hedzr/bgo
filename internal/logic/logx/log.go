@@ -1,6 +1,6 @@
 package logx
 
-//nolint:goimports
+//nolint:goimports //i like it
 import (
 	"fmt"
 	"github.com/hedzr/cmdr"
@@ -37,7 +37,7 @@ func IsVerboseMode() bool { return cmdr.GetVerboseMode() }
 func CountOfVerbose() int { return cmdr.GetVerboseModeHitCount() }
 
 // Error outputs formatted message to stderr.
-func Error(format string, args ...interface{}) { //nolint:goprintffuncname
+func Error(format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	_internalLogTo(func(sb strings.Builder, ln bool) {
 		if ln {
 			_, _ = fmt.Fprint(os.Stderr, sb.String())
@@ -49,7 +49,7 @@ func Error(format string, args ...interface{}) { //nolint:goprintffuncname
 }
 
 // Fatal outputs formatted message to stderr.
-func Fatal(format string, args ...interface{}) { //nolint:goprintffuncname
+func Fatal(format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	_internalLogTo(func(sb strings.Builder, ln bool) {
 		if ln {
 			lx.Fatalf("%v", sb.String())
@@ -62,7 +62,7 @@ func Fatal(format string, args ...interface{}) { //nolint:goprintffuncname
 // Warn outputs formatted message to stderr while logger level
 // less than log.WarnLevel.
 // For log.SetLevel(log.ErrorLevel), the text will be discarded.
-func Warn(format string, args ...interface{}) { //nolint:goprintffuncname
+func Warn(format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	// for the key scene who want quiet output, we may disable
 	// most of the messages by cmdr.SetLogLevel(log.ErrorLevel)
 	if log.GetLevel() < log.WarnLevel {
@@ -90,7 +90,7 @@ func Warn(format string, args ...interface{}) { //nolint:goprintffuncname
 // Log outputs formatted message to stdout while logger level
 // less than log.WarnLevel.
 // For log.SetLevel(log.ErrorLevel), the text will be discarded.
-func Log(format string, args ...interface{}) { //nolint:goprintffuncname
+func Log(format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	// for the key scene who want quiet output, we may disable
 	// most of the messages by cmdr.SetLogLevel(log.ErrorLevel)
 	if log.GetLevel() < log.WarnLevel {
@@ -110,7 +110,7 @@ func Log(format string, args ...interface{}) { //nolint:goprintffuncname
 // Verbose outputs formatted message to stdout while cmdr is in
 // VERBOSE mode.
 // For log.SetLevel(log.ErrorLevel), the text will be discarded.
-func Verbose(format string, args ...interface{}) { //nolint:goprintffuncname
+func Verbose(format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	if IsVerboseMode() {
 		_internalLogTo(func(sb strings.Builder, ln bool) {
 			if ln {
@@ -126,7 +126,7 @@ func Verbose(format string, args ...interface{}) { //nolint:goprintffuncname
 // Trace outputs formatted message to stdout while logger level
 // is log.TraceLevel, or cmdr is in TRACE mode or trace module
 // is enabled.
-func Trace(format string, args ...interface{}) { //nolint:goprintffuncname
+func Trace(format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	if log.GetLevel() == log.TraceLevel || !cmdr.GetTraceMode() {
 		return
 	}
@@ -144,7 +144,7 @@ func Trace(format string, args ...interface{}) { //nolint:goprintffuncname
 // Hilight outputs formatted message to stdout while logger level
 // less than log.WarnLevel.
 // For log.SetLevel(log.ErrorLevel), the text will be discarded.
-func Hilight(format string, args ...interface{}) { //nolint:goprintffuncname
+func Hilight(format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	// for the key scene who want quiet output, we may disable
 	// most of the messages by cmdr.SetLogLevel(log.ErrorLevel)
 	if log.GetLevel() < log.WarnLevel {
@@ -162,7 +162,7 @@ func Hilight(format string, args ...interface{}) { //nolint:goprintffuncname
 // DimV outputs formatted message to stdout while logger level less
 // than log.WarnLevel and cmdr is in verbose mode.
 // For log.SetLevel(log.ErrorLevel), the text will be discarded.
-func DimV(format string, args ...interface{}) { //nolint:goprintffuncname
+func DimV(format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	// for the key scene who want quiet output, we may disable
 	// most of the messages by cmdr.SetLogLevel(log.ErrorLevel)
 	if log.GetLevel() < log.WarnLevel {
@@ -182,7 +182,7 @@ func DimV(format string, args ...interface{}) { //nolint:goprintffuncname
 // Dim outputs formatted message to stdout while logger level
 // less than log.WarnLevel.
 // For log.SetLevel(log.ErrorLevel), the text will be discarded.
-func Dim(format string, args ...interface{}) { //nolint:goprintffuncname
+func Dim(format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	// for the key scene who want quiet output, we may disable
 	// most of the messages by cmdr.SetLogLevel(log.ErrorLevel)
 	if log.GetLevel() < log.WarnLevel {
@@ -211,7 +211,7 @@ func ToColor(clr Color, format string, args ...interface{}) string {
 
 // ColoredV outputs formatted message to stdout while logger level
 // less than log.WarnLevel and cmdr is in VERBOSE mode.
-func ColoredV(clr Color, format string, args ...interface{}) { //nolint:goprintffuncname
+func ColoredV(clr Color, format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	// for the key scene who want quiet output, we may disable
 	// most of the messages by cmdr.SetLogLevel(log.ErrorLevel)
 	if log.GetLevel() < log.WarnLevel {
@@ -232,7 +232,7 @@ func ColoredV(clr Color, format string, args ...interface{}) { //nolint:goprintf
 // Colored outputs formatted message to stdout while logger level
 // less than log.WarnLevel.
 // For log.SetLevel(log.ErrorLevel), the text will be discarded.
-func Colored(clr Color, format string, args ...interface{}) { //nolint:goprintffuncname
+func Colored(clr Color, format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	// for the key scene who want quiet output, we may disable
 	// most of the messages by cmdr.SetLogLevel(log.ErrorLevel)
 	if log.GetLevel() < log.WarnLevel {
@@ -252,11 +252,11 @@ func color(c Color) {
 	_, _ = fmt.Fprintf(os.Stdout, "\x1b[%dm", c)
 }
 
-func resetColor(c Color) { //nolint
+func resetColor(c Color) { // nolint
 	_, _ = fmt.Fprint(os.Stdout, "\x1b[0m")
 }
 
-func _internalLogTo(tofn func(sb strings.Builder, ln bool), format string, args ...interface{}) { //nolint:goprintffuncname
+func _internalLogTo(tofn func(sb strings.Builder, ln bool), format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf(format, args...))
 	tofn(sb, strings.HasSuffix(sb.String(), "\n"))

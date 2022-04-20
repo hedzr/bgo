@@ -1,6 +1,6 @@
 package cmdr
 
-//nolint:goimports
+//nolint:goimports //so what
 import (
 	"github.com/hedzr/bgo/internal/logic"
 	"github.com/hedzr/bgo/internal/logic/logx"
@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-//nolint:nakedret
+//nolint:nakedret //so what
 func buildRootCmd() (rootCmd *cmdr.RootCommand) {
 	ver := version
 
