@@ -1,0 +1,5 @@
+{
+    "go.buildTags": "-tags='hzstudio'",
+    // "go.buildFlags": ["-tags=hzstudio"],
+    "go.testTags": "hzstudio,unit,integration,verbose"
+}
