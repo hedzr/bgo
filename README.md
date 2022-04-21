@@ -28,7 +28,7 @@ All things you need to do is entering the golang project directory and entering 
     -   multiple targets, cross compiling
     -   etc.
 
-    have a try `bgo`.
+    have a try with `bgo`.
 
 ## History
 
