@@ -2,22 +2,22 @@ module github.com/hedzr/bgo
 
 go 1.18
 
-//replace gopkg.in/hedzr/errors.v3 => ../../go-cmdr/05.errors
+// replace gopkg.in/hedzr/errors.v3 => ../../go-cmdr/05.errors
 
-//replace github.com/hedzr/log => ../../go-cmdr/10.log
+// replace github.com/hedzr/log => ../../go-cmdr/10.log
 
-//replace github.com/hedzr/logex => ../../go-cmdr/15.logex
+// replace github.com/hedzr/logex => ../../go-cmdr/15.logex
 
-//replace github.com/hedzr/cmdr => ../../go-cmdr/50.cmdr
+// replace github.com/hedzr/cmdr => ../../go-cmdr/50.cmdr
 
-//replace github.com/hedzr/cmdr-addons => ../53.cmdr-addons
+// replace github.com/hedzr/cmdr-addons => ../53.cmdr-addons
 
 require (
-	github.com/hedzr/cmdr v1.10.35
-	github.com/hedzr/log v1.5.49
-	github.com/hedzr/logex v1.5.46
+	github.com/hedzr/cmdr v1.10.40
+	github.com/hedzr/log v1.5.50
+	github.com/hedzr/logex v1.5.50
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
-	gopkg.in/hedzr/errors.v3 v3.0.19
+	gopkg.in/hedzr/errors.v3 v3.0.20
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
 
