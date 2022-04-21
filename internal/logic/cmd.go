@@ -67,9 +67,25 @@ func sbomOne(file string) (err error) {
 		return
 	}
 
-	fmt.Printf("SBOM of %q\n%#v\n\n", file, inf)
+	fmt.Printf(`SBOM of %q ----------
+     Go Version: %v
+           Path: %v
+    Module.Path: %v
+ Module.Version: %v
+     Module.Sum: %v
+ Module.Replace: <ignored>
+       Settings:
+`,
+		file, inf.GoVersion, inf.Path,
+		inf.Main.Path, inf.Main.Version, inf.Main.Sum,
+	)
+
+	for _, d := range inf.Settings {
+		fmt.Printf("         - %q: %v\n", d.Key, d.Value)
+	}
+	fmt.Println("       Depends:")
 	for _, d := range inf.Deps {
-		fmt.Printf("%#v\n", *d)
+		fmt.Printf("         - %#v\n", *d)
 	}
 	return
 }
