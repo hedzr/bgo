@@ -1,6 +1,6 @@
 package cmdr
 
-//goland:noinspection GoNameStartsWithPackageName
+//goland:noinspection GoNameStartsWithPackageName,GoUnusedConst
 const (
 	appName   = "bgo"
 	version   = "0.3.21"
@@ -24,7 +24,7 @@ $ {{.AppName}} --for linux/riscv64 --for linux/386
   run 'go build' for specified os/arch list
 $ {{.AppName}} --help
   show help screen.`
-	//nolint
+	//nolint:unused,varcheck //like it
 	examplesLong = `
 $ {{.AppName}} gen shell [--bash|--zsh|--auto]
   generate bash/shell completion scripts
@@ -33,12 +33,12 @@ $ {{.AppName}} gen man
 $ {{.AppName}} --help
   show help screen.
 `
-	//nolint
+	//nolint:unused,varcheck //like it
 	overview = ``
 
 	zero = 0
 
-	//nolint
+	//nolint:unused,varcheck //like it
 	defaultTraceEnabled  = true
 	defaultDebugEnabled  = false
 	defaultLoggerLevel   = "info"

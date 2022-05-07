@@ -28,6 +28,8 @@ type (
 		//		and only with Clang/LLVM as the host C compiler.
 		//		On linux/arm64, pie build mode will be used.
 		Msan          bool   `yaml:",omitempty" json:"msan,omitempty" toml:"msan,omitempty"`                                   //
+		Mod           string `yaml:",omitempty" json:"mod,omitempty" toml:"mod,omitempty"`                                     // -mod reaonly,vendor,mod
+		Amd64         string `yaml:",omitempty" json:"goamd64,omitempty" toml:"goamd64,omitempty"`                             // GOAMD64 v1,v2,v3,v4
 		Gocmd         string `yaml:",omitempty" json:"gocmd,omitempty" toml:"gocmd,omitempty"`                                 // -gocmd go
 		Gen           bool   `yaml:",omitempty" json:"gen,omitempty" toml:"gen,omitempty"`                                     // go generate at first?
 		Install       bool   `yaml:",omitempty" json:"install,omitempty" toml:"install,omitempty"`                             // install binary to $GOPATH/bin like 'go install' ?

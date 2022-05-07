@@ -397,7 +397,7 @@ func prepareCommandLine(bc *build.Context, bs *BgoSettings) (cmd []interface{}, 
 }
 
 func pclMore1(bc *build.Context, bs *BgoSettings) (cmd []interface{}) { // nolint
-	if str := cmdr.GetStringR("build.mod"); str != "" {
+	if str := cmdr.GetStringR("build.mod", bc.Mod); str != "" {
 		cmd = append(cmd, "-mod", str)
 	}
 
@@ -451,7 +451,7 @@ func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error)
 		return
 	}
 
-	ec := errors.New("go build has errors")
+	ec := errors.New("go build have errors")
 	defer ec.Defer(&err)
 	c := exec.New(opts...).
 		WithCommand(cmd...).
@@ -513,8 +513,15 @@ func goBuildPrepareOpts(bc *build.Context, bs *BgoSettings) (opts []exec.Opt, cg
 		// WithEnv("GOPATH", os.ExpandEnv("$HOME/go")).
 	}
 
+	if bc.Amd64 == "" {
+		bc.Amd64 = os.Getenv("GOAMD64")
+	}
+	if goamd64 := cmdr.GetStringR("build.goamd64", bc.Amd64); goamd64 != "" {
+		opts = append(opts, exec.WithEnv("GOAMD64", goamd64))
+	}
+
 	cgo = bc.Cgo
-	if cgo && runtime.GOOS != bc.OS || runtime.GOARCH != bc.ARCH {
+	if cgo && (runtime.GOOS != bc.OS || runtime.GOARCH != bc.ARCH) {
 		cgo = false
 	}
 
