@@ -18,8 +18,6 @@ linters-settings:
   nolintlint:
     require-explanation: true
     require-specific: true
-  govet:
-    check-shadowing: true
   golint:
     min-confidence: 0
   gocyclo:
@@ -42,7 +40,7 @@ run:
 linters:
   disable-all: true
   enable:
-    - bodyclose
+    #/- bodyclose
     #- deadcode
     - depguard
     - dogsled
@@ -62,10 +60,10 @@ linters:
     - gocyclo
     - goprintffuncname
     - gosec
-    - gosimple
+    #/- gosimple
     - govet
     - ineffassign
-    - interfacer
+    #/- interfacer
     #- maligned
     - misspell
     #- nolintlint
@@ -73,11 +71,11 @@ linters:
     - prealloc
     - predeclared
     - revive
-    - staticcheck
+    #/- staticcheck
     #- structcheck
-    - stylecheck
+    #/- stylecheck
     #- thelper
-    - tparallel
+    #/- tparallel
     #- typecheck
     - unconvert
     #- unparam
