@@ -32,24 +32,28 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
--   v0.3.21
+- v0.3.23
+
+    - add support to GOAMD64
+
+- v0.3.21
 
     -   add SBOM support: `bgo sbom <executable>`
     -   what is SBOM: [here](https://www.argon.io/blog/guide-to-sbom/), and [here](https://blog.sonatype.com/sbom-from-the-idea-of-transparency-to-the-reality-of-code).
 
--   v0.3.18
+- v0.3.18
 
     -   code reviewd
 
--   v0.3.17
+- v0.3.17
 
     -   upgrade log,errors
 
--   v0.3.15
+- v0.3.15
 
     -   fix: version command and help screen not work
 
--   v0.3.13
+- v0.3.13
 
     -   fix: script-file not work (pre/post-action-file)
     -   fix: --auto/--short get wrong target platforms matrix sometimes
@@ -58,7 +62,7 @@ All things you need to do is entering the golang project directory and entering 
     -   imp: more shell completions supported (bash, zsh, fish-shell, etc)
     -   fix/imp: .bgo.yml for myself has wrong params (such as .randomString in extends section, or wrong githash, version)
 
--   v0.3.12
+- v0.3.12
 
     -   temporary build
     -   fea: `bgo init -o bgo.{yml,yaml,json,toml}`
@@ -77,7 +81,7 @@ All things you need to do is entering the golang project directory and entering 
     -   imp: logx - LazyInit() and better performance
     -   imp: review codes
 
--   v0.3.3
+- v0.3.3
 
     -   fea: **Aliases** definitions in primary config directory can be merged into `bgo` command system now
         -   fea: `check-code-qualities` alias command added and play `gofmt`, `golint` and `golint` at once.
@@ -89,12 +93,12 @@ All things you need to do is entering the golang project directory and entering 
     -   CHANGE: `$HOME/.bgo` and `conf.d` subdirectory is primary config files now
     -   CHANGE: primary config files will be distributed with binary executable
 
--   v0.3.0
+- v0.3.0
 
     -   fix: `bgo init` not work
     -   fix: zsh completion file not fully written
 
--   v0.2.17 and older
+- v0.2.17 and older
     -   pre-releases
 
 ## Getting Started
