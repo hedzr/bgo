@@ -12,8 +12,10 @@ import (
 
 func cmdrSubCmdSBOM(root cmdr.OptCmd) {
 	sbom := cmdr.NewSubCmd().Titles("sbom", "s").
-		Description("show SBOM of executable", `
-			show SBOM of executable.
+		Description("Print SBOM information of this or specified executable", `
+			Print SBOM information of this or specified executable(s).
+			
+			The outputs is YAML compliant.
 			
 			Just like 'go version -m' but no need to install Go Runtime.`).
 		Action(sbomAction).
