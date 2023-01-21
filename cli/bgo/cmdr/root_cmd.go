@@ -25,6 +25,7 @@ func buildRootCmd() (rootCmd *cmdr.RootCommand) {
 			// cmdr.Set("enable-ueh", true)
 			// err = internal.App().Init(cmd, args) // App() will be auto-closed
 
+			// our local logx initialize itself here. logx is an enhancement and wrapper for hedzr/log(ex)
 			logx.LazyInit()
 
 			logx.Verbose("VERBOSE: %v, DEBUG: %v", logx.ToDim("%v", logx.IsVerboseMode()), logx.ToDim("%v", cmdr.GetDebugMode()))
