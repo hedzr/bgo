@@ -3,6 +3,13 @@ package logic
 //nolint:goimports //i like it
 import (
 	"fmt"
+	"os"
+	"path"
+	"path/filepath"
+	"runtime"
+	"strconv"
+	"strings"
+
 	"github.com/hedzr/bgo/internal/logic/build"
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/bgo/internal/logic/tool"
@@ -10,12 +17,6 @@ import (
 	"github.com/hedzr/log/dir"
 	"github.com/hedzr/log/exec"
 	"gopkg.in/hedzr/errors.v3"
-	"os"
-	"path"
-	"path/filepath"
-	"runtime"
-	"strconv"
-	"strings"
 )
 
 func buildCurr(buildScope string, cmd *cmdr.Command, args []string) (err error) {

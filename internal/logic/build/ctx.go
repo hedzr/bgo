@@ -2,9 +2,10 @@ package build
 
 //nolint:goimports //so what
 import (
+	"path"
+
 	"github.com/hedzr/bgo/internal/logic/tool"
 	"github.com/hedzr/log/dir"
-	"path"
 )
 
 type (

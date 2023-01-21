@@ -2,11 +2,12 @@ package logic
 
 //nolint:goimports // i like it
 import (
+	"os"
+	"path"
+
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/log/dir"
-	"os"
-	"path"
 )
 
 func saveNewBgoYamlFile(bs *BgoSettings) (err error) {

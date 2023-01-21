@@ -2,6 +2,7 @@ package logic
 
 import ( //nolint:goimports //so what
 	"fmt"
+
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 )

@@ -2,10 +2,11 @@ package build
 
 //nolint:goimports //so what
 import (
-	"github.com/hedzr/bgo/internal/logic/logx"
-	"github.com/hedzr/log/closers"
 	"io/ioutil"
 	"os"
+
+	"github.com/hedzr/bgo/internal/logic/logx"
+	"github.com/hedzr/log/closers"
 )
 
 var TempDir string

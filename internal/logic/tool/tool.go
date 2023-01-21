@@ -2,8 +2,9 @@ package tool
 
 //nolint:goimports //not an error
 import (
-	"github.com/hedzr/cmdr/tool/randomizer"
 	"regexp"
+
+	"github.com/hedzr/cmdr/tool/randomizer"
 )
 
 func StripOrderPrefix(s string) string {

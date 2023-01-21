@@ -3,9 +3,10 @@ package samples
 //nolint:goimports //so what
 import (
 	errors2 "errors"
-	"gopkg.in/hedzr/errors.v3"
 	"strconv"
 	"testing"
+
+	"gopkg.in/hedzr/errors.v3"
 )
 
 // TestErrorsIs _

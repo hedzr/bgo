@@ -2,9 +2,10 @@ package build
 
 //nolint:goimports //so what
 import (
-	"github.com/hedzr/log/dir"
 	"path"
 	"path/filepath"
+
+	"github.com/hedzr/log/dir"
 )
 
 type PathPieces struct {

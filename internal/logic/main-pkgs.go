@@ -3,15 +3,16 @@ package logic
 //nolint:goimports //i like it
 import (
 	"bufio"
-	"github.com/hedzr/bgo/internal/logic/logx"
-	"github.com/hedzr/log"
-	"github.com/hedzr/log/dir"
-	"github.com/hedzr/log/exec"
 	"os"
 	"path"
 	"regexp"
 	"sort"
 	"strings"
+
+	"github.com/hedzr/bgo/internal/logic/logx"
+	"github.com/hedzr/log"
+	"github.com/hedzr/log/dir"
+	"github.com/hedzr/log/exec"
 )
 
 type pkgInfo struct {

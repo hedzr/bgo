@@ -4,16 +4,17 @@ package logic
 import (
 	"bufio"
 	"fmt"
-	"github.com/hedzr/bgo/internal/logic/build"
-	"github.com/hedzr/bgo/internal/logic/logx"
-	"github.com/hedzr/cmdr"
-	"github.com/hedzr/log/exec"
-	"gopkg.in/yaml.v3"
 	"io"
 	"os"
 	"strconv"
 	"strings"
 	"text/template"
+
+	"github.com/hedzr/bgo/internal/logic/build"
+	"github.com/hedzr/bgo/internal/logic/logx"
+	"github.com/hedzr/cmdr"
+	"github.com/hedzr/log/exec"
+	"gopkg.in/yaml.v3"
 )
 
 func setSaveMode(b bool) {

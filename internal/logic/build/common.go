@@ -2,9 +2,10 @@ package build
 
 //nolint:goimports //so what
 import (
+	"runtime"
+
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
-	"runtime"
 )
 
 type (

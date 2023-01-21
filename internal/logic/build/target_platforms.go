@@ -2,10 +2,11 @@ package build
 
 //nolint:goimports //so what
 import (
-	"github.com/hedzr/cmdr"
 	"path"
 	"runtime"
 	"strings"
+
+	"github.com/hedzr/cmdr"
 )
 
 type TargetPlatforms struct {

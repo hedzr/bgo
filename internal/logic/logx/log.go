@@ -3,11 +3,12 @@ package logx
 //nolint:goimports //i like it
 import (
 	"fmt"
-	"github.com/hedzr/cmdr"
-	"github.com/hedzr/log"
 	"os"
 	"strings"
 	"sync"
+
+	"github.com/hedzr/cmdr"
+	"github.com/hedzr/log"
 )
 
 type lxS struct {

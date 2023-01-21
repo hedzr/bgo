@@ -2,10 +2,11 @@ package dir
 
 //nolint:goimports //i like it
 import (
-	"github.com/hedzr/log"
-	"github.com/hedzr/log/dir"
 	"os"
 	"path"
+
+	"github.com/hedzr/log"
+	"github.com/hedzr/log/dir"
 )
 
 // ForDir walks on `root` directory and its children
@@ -23,13 +24,13 @@ func ForDir(
 //
 // Example - discover folder just one level
 //
-//      _ = ForDirMax(dir, 0, 1, func(depth int, dirname string, fi os.FileInfo) (stop bool, err error) {
-//			if fi.IsDir() {
+//	     _ = ForDirMax(dir, 0, 1, func(depth int, dirname string, fi os.FileInfo) (stop bool, err error) {
+//				if fi.IsDir() {
+//					return
+//				}
+//	         // ... doing something for a file,
 //				return
-//			}
-//          // ... doing something for a file,
-//			return
-//		})
+//			})
 //
 // maxDepth = -1: no limit.
 // initialDepth: 0 if no idea.

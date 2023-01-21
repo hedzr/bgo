@@ -3,15 +3,16 @@ package build
 //nolint:goimports //so what
 import (
 	"bufio"
-	"github.com/hedzr/bgo/internal/logic/logx"
-	"github.com/hedzr/cmdr"
-	"github.com/hedzr/log/exec"
 	"os"
 	"runtime"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/hedzr/bgo/internal/logic/logx"
+	"github.com/hedzr/cmdr"
+	"github.com/hedzr/log/exec"
 )
 
 type (

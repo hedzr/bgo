@@ -3,11 +3,12 @@ package logic
 //nolint:goimports //so what
 import (
 	"fmt"
-	"github.com/hedzr/cmdr"
-	"gopkg.in/yaml.v3"
 	"reflect"
 	"strconv"
 	"testing"
+
+	"github.com/hedzr/cmdr"
+	"gopkg.in/yaml.v3"
 )
 
 func TestDottedKeyInYaml(t *testing.T) {

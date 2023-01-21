@@ -1,11 +1,12 @@
 package logic
 
 import (
+	"runtime"
+
 	"github.com/hedzr/bgo/internal/logic/build"
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/bgo/internal/logic/tool"
 	"github.com/hedzr/log/dir"
-	"runtime"
 )
 
 //nolint:gocognit //needs split
