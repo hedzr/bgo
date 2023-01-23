@@ -31,6 +31,7 @@ All things you need to do is entering the golang project directory and entering 
   - etc.
 
     have a try with `bgo`.
+- [Extensible Commands](#extensible-commands)
 
 ## History
 
@@ -258,7 +259,176 @@ bgo sbom   # show sbom of bgo itself
 bgo sbom ~/go/bin/gopls ~/go/bin/golangci-lint
 ```
 
+### Extensible Commands
+
+The commands system of `bgo` can be extensible by editing `.bgo.yaml`.
+
+#### Config Files of `bgo`
+
+`bgo` loads all `bgo.yaml` as its configurations from these locations:
+
+1. Main Config Files:
+   - `/etc/bgo/bgo.yml` and `conf.d/*.yml`
+   - `/usr/local/etc/bgo/bgo.yml` and `conf.d/*.yml`
+   Any of them will be loaded as default config set.
+2. Secondary Config Files:
+   - `$HOME/.bgo/bgo.yml` and `conf.d/*.yml`
+   - `$HOME/.config/bgo/bgo.yml` and `conf.d/*.yml`
+   Any of them will be loaded as extensible config set.
+3. Alternative Config File:
+   - `./.bgo.yaml`
+   This config file is used to current building project by `bgo`.
+   The scanning results of golang CLI apps from current directory will be written into this file.
+
+
+#### Customize the extensible commands in Main/Secondary Config Files
+
+The extensible commands from config file is a feature of `hedzr/cmdr`. It generally looks like:
+
+
+<details>
+  <summary> Expand to source codes of `80.aliases.yml` </summary>
+
+```yaml
+# ~/.config/bgo/conf.d/80.aliases.yml
+app:
+    aliases:
+        # group:                                  # group-name (optional). such as: "别名".
+        commands:
+            # - title: list
+            #   short-name: ls
+            #   # aliases: []
+            #   # name: ""
+            #   invoke-sh: ls -la -G                # for macOS, -G = --color; for linux: -G = --no-group
+            #   # invoke: "another cmdr command"
+            #   # invoke-proc: "..." # same with invoke-sh
+            #   desc: list the current directory
+
+            # - title: echo
+            #   invoke-sh: |
+            #     # pwd
+            #     echo "{{$flg := index .Cmd.Flags 0}}{{$path :=$flg.GetDottedNamePath}} {{$fullpath := .Store.Wrap $path}} {{$fullpath}} | {{.Store.GetString $fullpath}}"
+            #   desc: print the name
+            #   flags:
+            #     - title: name
+            #       default:              # default value
+            #       type: string          # bool, string, duration, int, uint, ...
+            #       group:
+            #       toggle-group:
+            #       desc: specify the name to be printed
+
+            - title: check-code-qualities
+              short-name: chk
+                # aliases: [check]
+                # name: ""
+              invoke-sh: |
+                  which golint || go install golang.org/x/lint/golint
+                  which gocyclo || go install github.com/fzipp/gocyclo
+                  echo
+                  echo
+                  echo "Command hit: {{.Cmd.GetDottedNamePath}}"
+                  echo "fmt {{.ArgsString}} ..."
+                  gofmt -l -s -w {{range .Args}}{{.}}{{end}}
+                  echo "lint {{.ArgsString}} ..."
+                  golint {{.ArgsString}}
+                  echo "cyclo ."
+                  gocyclo -top 13 .
+                # invoke: "another cmdr command"
+                # invoke-proc: "..." # same with invoke-sh
+              shell: /usr/bin/env bash # optional, default is /bin/bash
+              desc: pre-options before releasing. typically fmt,lint,cyclo,...
+
+            - title: coverage
+              short-name: cov
+              invoke-sh: |
+                  # pwd
+                  # echo "{{$flg := index .Cmd.Flags 0}}{{$path := $flg.GetDottedNamePath}} {{$fullpath := .Store.Wrap $path}} {{$fullpath}} | {{.Store.GetString $fullpath}}"
+                  # echo "{{$flg = index .Cmd.Flags 1}}{{$path = $flg.GetDottedNamePath}} {{$fullpath2 := .Store.Wrap $path}} {{$fullpath2}} | {{.Store.GetString $fullpath2}}"
+                  # echo "{{$flg = index .Cmd.Flags 2}}{{$path = $flg.GetDottedNamePath}} {{$fullpath3 := .Store.Wrap $path}} {{$fullpath3}} | {{.Store.GetString $fullpath3}}"
+                  go test -v -race \
+                    -coverprofile={{.Store.GetString $fullpath2}} \
+                    -covermode=atomic -timeout=20m \
+                    {{if not .Args}}.{{else}}{{.ArgsString}}{{end}} \
+                    | tee {{.Store.GetString $fullpath3}}
+                  go tool cover \
+                    -html={{.Store.GetString $fullpath2}} \
+                    -o={{.Store.GetString $fullpath}}
+              desc: run coverage, produce coverage.txt and cover.html
+              examples: bgo cov ./... or bgo cov
+              flags:
+                  - title: html
+                    default: cover.html # default value
+                    default-placeholder: FILE
+                    type: string # bool, string, duration, int, uint, ...
+                    group:
+                    toggle-group:
+                    desc: specify the html filename to be output
+                  - title: text
+                    default: coverage.txt # default value
+                    default-placeholder: FILE
+                    type: string # bool, string, duration, int, uint, ...
+                    group:
+                    toggle-group:
+                    desc: specify the coverprofile filename
+                  - title: log
+                    default: coverage.log # default value
+                    default-placeholder: FILE
+                    type: string # bool, string, duration, int, uint, ...
+                    group:
+                    toggle-group:
+                    desc: specify the name to be logged
+```
+
+</details>
+
+The config adds two top-level subcommands: `chk`(`check-code-qualities`) and `cov`(`coverage`)
+
+Another sample is the bundled `91.more.aliases.yml`:
+
+
+<details>
+  <summary> Expand to source codes of `91.more.aliases.yml`</summary>
+
+```yaml
+app:
+  aliases:
+    # group:                                  # group-name (optional). such as: "别名".
+    commands:
+      # - title: list
+      #   short-name: ls
+      #   # aliases: []
+      #   # name: ""
+      #   invoke-sh: ls -la -G                # for macOS, -G = --color; for linux: -G = --no-group
+      #   # invoke: "another cmdr command"
+      #   # invoke-proc: "..." # same with invoke-sh
+      #   desc: list the current directory
+
+      - title: yolo
+        short-name: y
+        invoke-sh: |
+          which yolo || { echo "installing yolo..." && go install -v github.com/azer/yolo; }
+          yolo -i *.go -c 'go build' -a localhost:8080 {{.ArgsString}}
+        desc: print the name
+
+      - title: echo
+        invoke-sh: |
+          # pwd
+          echo "{{$flg := index .Cmd.Flags 0}}{{$path :=$flg.GetDottedNamePath}} {{$fullpath := .Store.Wrap $path}} {{$fullpath}} | {{.Store.GetString $fullpath}}"
+        desc: print the name
+        flags:
+          - title: name
+            default: # default value
+            type: string # bool, string, duration, int, uint, ...
+            group:
+            toggle-group:
+            desc: specify the name to be printed
+```
+
+</details>
+
 ## Inspired By
+
+`bgo` building subcommand was inspired by many tools:
 
 - <https://github.com/mitchellh/gox>
 - <https://dave.cheney.net/2015/08/22/cross-compilation-with-go-1-5>
