@@ -180,6 +180,11 @@ func DimV(format string, args ...interface{}) { //nolint:goprintffuncname //so w
 	}
 }
 
+// Text prints formatted message without any predefined ansi escaping.
+func Text(format string, args ...interface{}) { //nolint:goprintffuncname //so what
+	_, _ = fmt.Fprintf(os.Stdout, format, args...)
+}
+
 // Dim outputs formatted message to stdout while logger level
 // less than log.WarnLevel.
 // For log.SetLevel(log.ErrorLevel), the text will be discarded.
