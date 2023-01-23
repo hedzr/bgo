@@ -38,88 +38,23 @@ All things you need to do is entering the golang project directory and entering 
 - v0.5.0
 
   - Deep Reduce Building: new option `reduce: true` in `.bgo.yaml` to enable `-gcflags=all=-l -B`
-  - Special Post-process via `upx`: new options `upx: { enable:true, params:[] }` in `.bgo.yaml` 
+  - Special Post-process via `upx`: new options `upx: { enable:true, params:[] }` in `.bgo.yaml`
   - added new subcommand `run` to forward arguments to `go run`:  
     `bgo run -- ./...` => `go run ./...`
   - support more building args since [cmdr](https://github.com/hedzr/cmdr) 1.11.1: `BuilderComments`, `GitSummary` and `GitDesc`. See also changes in `.bgo.yaml`:
+
     ```yaml
               extends:
                 - pkg: "github.com/hedzr/cmdr/conf"
                   values:
                     BuilderComments: "" # yes you can
     ```
+
     `GitSummary` and `GitDesc` will be fetched automatically if you're using [cmdr](https://github.com/hedzr/cmdr).
   - improved `bgo -#` build-info screen.
   - improved and fixed subcommand `bgo sbom`.
 
-- v0.3.23
-
-  - add support to GOAMD64
-
-- v0.3.21
-
-  - add SBOM support: `bgo sbom <executable>`
-  - what is SBOM: [here](https://www.argon.io/blog/guide-to-sbom/), and [here](https://blog.sonatype.com/sbom-from-the-idea-of-transparency-to-the-reality-of-code).
-
-- v0.3.18
-
-  - code reviewd
-
-- v0.3.17
-
-  - upgrade log,errors
-
-- v0.3.15
-
-  - fix: version command and help screen not work
-
-- v0.3.13
-
-  - fix: script-file not work (pre/post-action-file)
-  - fix: --auto/--short get wrong target platforms matrix sometimes
-  - fix; cross-platform ls
-  - imp: `bgo` has been adapted onto **Windows 11** (should work for winx too)
-  - imp: more shell completions supported (bash, zsh, fish-shell, etc)
-  - fix/imp: .bgo.yml for myself has wrong params (such as .randomString in extends section, or wrong githash, version)
-
-- v0.3.12
-
-  - temporary build
-  - fea: `bgo init -o bgo.{yml,yaml,json,toml}`
-    - imp: optimized json and toml outputting
-    - fea: support bgo init multiple outputs once: `bgo init -o=a.{yml,toml}`, an inessential feature
-    - imp: better json, toml outputting
-  - fix: the wrong template expansion in post/preAction was covered silently; and fixed the typo in postAction
-  - .bgo.yml: bgo - linux+darwin in auto mode.
-  - args:
-    - move `--dry-run` up to root level
-    - fix: buildtags might not work
-    - **fixed**: `-os` `-arch` and more `build` options cannot work in root command level  
-        **TEMP WORKAROUND for older versions**  
-        uses full path command `bgo build -os linux` instead of `bgo -os linux` till our new release arrive.
-  - imp: build - rewrite loopAllPackages, enable leadingText field
-  - imp: logx - LazyInit() and better performance
-  - imp: review codes
-
-- v0.3.3
-
-  - fea: **Aliases** definitions in primary config directory can be merged into `bgo` command system now
-    - fea: `check-code-qualities` alias command added and play `gofmt`, `golint` and `golint` at once.
-    - fea: Extend `bgo` command system with Aliases definitions.
-  - fea: `bgo init -o bgo.{yml,yaml,json,toml}` writes different config file formats with giving suffix
-  - fix: TargetPlatforms.FilterBy not very ok
-  - imp: added cmdr global pre-action: verbose info for debugging
-  - CHANGE: `.bgo.yml` is loaded as an alternative config file now
-  - CHANGE: `$HOME/.bgo` and `conf.d` subdirectory is primary config files now
-  - CHANGE: primary config files will be distributed with binary executable
-
-- v0.3.0
-
-  - fix: `bgo init` not work
-  - fix: zsh completion file not fully written
-
-- v0.2.17 and older
-  - pre-releases
+- Older releases [CHANGELOG](./CHANGELOG)
 
 ## Getting Started
 
@@ -242,6 +177,7 @@ Nothing needs to do if installed via brew (since v0.3.3+).
 ```bash
 bgo run -- ./...
 ```
+
 The underlying real command will be run:
 
 ```bash
@@ -280,11 +216,9 @@ The commands system of `bgo` can be extensible by editing `.bgo.yaml`.
    This config file is used to current building project by `bgo`.
    The scanning results of golang CLI apps from current directory will be written into this file.
 
-
 #### Customize the extensible commands in Main/Secondary Config Files
 
 The extensible commands from config file is a feature of `hedzr/cmdr`. It generally looks like:
-
 
 <details>
   <summary> Expand to source codes of `80.aliases.yml` </summary>
@@ -384,7 +318,6 @@ app:
 The config adds two top-level subcommands: `chk`(`check-code-qualities`) and `cov`(`coverage`)
 
 Another sample is the bundled `91.more.aliases.yml`:
-
 
 <details>
   <summary> Expand to source codes of `91.more.aliases.yml`</summary>
