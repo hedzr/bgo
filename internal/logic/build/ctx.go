@@ -52,6 +52,8 @@ func (bc *Context) CalcVersion() (ver string) {
 		ver = bc.GitRevision
 	} else if bc.GitVersion[0] == 'v' {
 		ver = bc.GitVersion
+	} else if bc.GitSummary[0] == 'v' {
+		ver = bc.GitSummary
 	}
 	return
 }

@@ -89,6 +89,7 @@ app:
                     AppName: "{{.AppName}}"
                     Version: "`git describe --tags --abbrev=16`" # "{{.Version}}"
                     Buildstamp: "{{.BuildTime}}" # or shell it
+                    BuilderComments: "" # yes you can
                     Githash: "`git rev-parse --short HEAD`"
                     # Githash: "{{.GitRevision}}"  # or shell it: "`git describe --tags --abbrev=9`"
                     GoVersion: "{{.GoVersion}}"  # or shell it

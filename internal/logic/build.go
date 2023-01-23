@@ -435,7 +435,7 @@ func pclMore1(bc *build.Context, bs *BgoSettings) (cmd []interface{}) { // nolin
 	ifLdflags(bc)
 
 	if len(bc.Ldflags) > 0 {
-		cmd = append(cmd, "-ldflags="+strings.Join(bc.Ldflags, " "))
+		cmd = append(cmd, "-ldflags="+strings.TrimSpace(strings.Join(bc.Ldflags, " ")))
 	}
 
 	return
@@ -456,8 +456,8 @@ func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error)
 	defer ec.Defer(&err)
 	c := exec.New(opts...).
 		WithCommand(cmd...).
-		WithEnv("GOOS", bc.OS).
-		WithEnv("GOARCH", bc.ARCH).
+		//WithEnv("GOOS", bc.OS).
+		//WithEnv("GOARCH", bc.ARCH).
 		WithEnv("CGO_ENABLED", boolToString(cgo)).
 		// WithStdoutCaught(). // can be removed
 		// WithStderrCaught(). // can be removed
@@ -524,6 +524,13 @@ func goBuildPrepareOpts(bc *build.Context, bs *BgoSettings) (opts []exec.Opt, cg
 	cgo = bc.Cgo
 	if cgo && (runtime.GOOS != bc.OS || runtime.GOARCH != bc.ARCH) {
 		cgo = false
+	}
+
+	if runtime.GOOS != bc.OS {
+		opts = append(opts, exec.WithEnv("GOOS", bc.OS))
+	}
+	if runtime.GOARCH != bc.ARCH {
+		opts = append(opts, exec.WithEnv("GOARCH", bc.ARCH))
 	}
 
 	return

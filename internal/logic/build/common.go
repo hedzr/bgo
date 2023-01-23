@@ -44,6 +44,7 @@ type (
 		//    Now it takes one argument split on the first = sign.
 		Extends      []PackageNameValues `yaml:"extends,omitempty" json:"extends,omitempty" toml:"extends,omitempty"` //
 		CmdrSpecials bool                `yaml:"cmdr,omitempty" json:"cmdr,omitempty" toml:"cmdr,omitempty"`
+		CmdrVersion  string              `yaml:"cmdr-version,omitempty" json:"cmdr-version,omitempty" toml:"cmdr-version,omitempty"`
 	}
 
 	PackageNameValues struct {

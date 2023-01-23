@@ -32,9 +32,12 @@ type (
 		GoVersion      string // the result from 'go version'
 		GoVersionMajor int    // 1
 		GoVersionMinor int    // 17
-		GitVersion     string // the result from 'git describe --tags --abbrev=0'
-		GitRevision    string // revision, git hash code, from 'git rev-parse --short HEAD'
-		BuildTime      string //
+		GitVersion     string // the result from `git describe --tags --abbrev=0`
+		GitRevision    string // revision, git hash code, from `git rev-parse --short HEAD`
+		GitSummary     string // `git describe --tags --dirty --always`
+		GitDesc        string // `git log --online -1`
+		BuilderComment string //
+		BuildTime      string // format is like '2023-01-22T09:26:07+08:00'
 		GOOS           string // a copy from runtime.GOOS
 		GOARCH         string // a copy from runtime.GOARCH
 		GOVERSION      string // a copy from runtime.Version()
@@ -131,6 +134,28 @@ func prepareBuildInfo() {
 			logx.Log("%v", err)
 			// os.Exit(1)
 			gBuildInfo.GitRevision = "-unknown-"
+		}
+
+		err = exec.CallQuiet("git describe --tags --dirty --always", func(retCode int, stdoutText string) {
+			gBuildInfo.GitSummary = strings.TrimSuffix(stdoutText, "\n")
+			logx.Colored(logx.Green, "git.summary: %v", gBuildInfo.GitSummary)
+		})
+		if err != nil {
+			logx.Warn("No suitable 'git' executable found or not a git repo.")
+			logx.Log("%v", err)
+			// os.Exit(1)
+			gBuildInfo.GitSummary = ""
+		}
+
+		err = exec.CallQuiet("git log --oneline -1", func(retCode int, stdoutText string) {
+			gBuildInfo.GitDesc = strings.TrimSuffix(stdoutText, "\n")
+			logx.Colored(logx.Green, "git.description: %v", gBuildInfo.GitDesc)
+		})
+		if err != nil {
+			logx.Warn("No suitable 'git' executable found or not a git repo.")
+			logx.Log("%v", err)
+			// os.Exit(1)
+			gBuildInfo.GitDesc = ""
 		}
 
 		gBuildInfo.BuildTime = time.Now().Format(time.RFC3339)
