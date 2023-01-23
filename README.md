@@ -21,6 +21,7 @@ All things you need to do is entering the golang project directory and entering 
 - `bgo` or `bgo build`: Run go building with or without a config file `.bgo.yml`
 - `bgo run -- ...`: Forward command-line to `go run` as is
 - `bgo init`: Scan the directory to grab all main packages and initial `.bgo.yml`
+- `bgo sbom`: dump SBOM information itself or specified executables
 - While
 
   - you have lots of small cli apps in many sub-directories
@@ -32,6 +33,23 @@ All things you need to do is entering the golang project directory and entering 
     have a try with `bgo`.
 
 ## History
+
+- v0.5.0
+
+  - Deep Reduce Building: new option `reduce: true` in `.bgo.yaml` to enable `-gcflags=all=-l -B`
+  - Special Post-process via `upx`: new options `upx: { enable:true, params:[] }` in `.bgo.yaml` 
+  - added new subcommand `run` to forward arguments to `go run`:  
+    `bgo run -- ./...` => `go run ./...`
+  - support more building args since [cmdr](https://github.com/hedzr/cmdr) 1.11.1: `BuilderComments`, `GitSummary` and `GitDesc`. See also changes in `.bgo.yaml`:
+    ```yaml
+              extends:
+                - pkg: "github.com/hedzr/cmdr/conf"
+                  values:
+                    BuilderComments: "" # yes you can
+    ```
+    `GitSummary` and `GitDesc` will be fetched automatically if you're using [cmdr](https://github.com/hedzr/cmdr).
+  - improved `bgo -#` build-info screen.
+  - improved and fixed subcommand `bgo sbom`.
 
 - v0.3.23
 
@@ -111,7 +129,16 @@ Download the prebuilt binaries from Release page.
 Or Built from source code:
 
 ```bash
-git clone http://github.com/hedzr/bgo.git
+go install github.com/hedzr/bgo@latest
+bgo --help
+bgo --version
+bgo --build-info
+```
+
+You may clone and compile `bgo` from source code:
+
+```bash
+git clone https://github.com/hedzr/bgo.git
 cd bgo
 go run . -s
 ```
@@ -146,7 +173,7 @@ To work without `.bgo.yml`, simply go into a folder and run bgo, the cli apps un
 
 ```bash
 cd my-projects
-bgo
+bgo  # start `bgo` in auto mode, see Scopes chapter below
 ```
 
 ![image-20220128104835837](https://cdn.jsdelivr.net/gh/hzimg/blog-pics@master/uPic/image-20220128104835837.png)
@@ -204,6 +231,32 @@ mv bgo.bash /etc/bash-completion.d/bgo
 ```
 
 Nothing needs to do if installed via brew (since v0.3.3+).
+
+### Others Subcommands
+
+#### `run`
+
+`bgo run` can forward arguments to `go run`. For the command line
+
+```bash
+bgo run -- ./...
+```
+The underlying real command will be run:
+
+```bash
+go run ./...
+```
+
+### `SBOM`
+
+Checking executable's [SBOM (`Software Bill Of Materials`)](ttps://www.argon.io/blog/guide-to-sbom/) without golang installed:
+
+```bash
+bgo sbom   # show sbom of bgo itself
+
+# Show these executables
+bgo sbom ~/go/bin/gopls ~/go/bin/golangci-lint
+```
 
 ## Inspired By
 
