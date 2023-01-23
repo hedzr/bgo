@@ -28,6 +28,8 @@ func AttachToCmdr(root *cmdr.RootCmdOpt) {
 	cmdrSubCmdList(root)
 
 	cmdrSubCmdSBOM(root)
+
+	cmdrSubCmdRun(root)
 }
 
 const gnBuild = "Build Target"
