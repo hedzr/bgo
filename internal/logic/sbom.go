@@ -3,10 +3,11 @@ package logic
 import (
 	"debug/buildinfo"
 	"fmt"
+	"github.com/hedzr/bgo/internal/logic/logx"
+	"os"
+	"path/filepath"
 
 	"github.com/hedzr/cmdr"
-	"github.com/hedzr/log"
-	"github.com/hedzr/log/exec"
 	"gopkg.in/hedzr/errors.v3"
 )
 
@@ -32,15 +33,20 @@ func cmdrSubCmdSBOM(root cmdr.OptCmd) {
 }
 
 func sbomAction(cmd *cmdr.Command, args []string) (err error) {
-	var ec = errors.New("processing executables")
 	var caught bool
+	var ec = errors.New("processing executables")
+	defer ec.Defer(&err)
 	for _, file := range args {
+		logx.Colored(logx.Green, "checking %v ...", file)
 		ec.Attach(sbomOne(file))
 		caught = true
 	}
 	if !caught {
-		file := exec.GetExecutablePath()
-		log.Infof("SBOM on %v", file)
+		p, _ := os.Executable()
+		p, _ = filepath.Abs(p)
+		file := p
+		//file := exec.GetExecutablePath()
+		logx.Colored(logx.Green, "SBOM on %v", file)
 		ec.Attach(sbomOne(file))
 	}
 	return
