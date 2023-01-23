@@ -16,10 +16,11 @@ All things you need to do is entering the golang project directory and entering 
 
 ## Features
 
-`bgo` makes your golang building life easier, it's an efficent and extensible build tool.
+`bgo` makes your golang building life easier, it's an efficient and extensible build tool.
 
-- Run go building with or without a config file `.bgo.yml`
-- Scan the directory to grab all main packages and initial `.bgo.yml`
+- `bgo` or `bgo build`: Run go building with or without a config file `.bgo.yml`
+- `bgo run -- ...`: Forward command-line to `go run` as is
+- `bgo init`: Scan the directory to grab all main packages and initial `.bgo.yml`
 - While
 
   - you have lots of small cli apps in many sub-directories

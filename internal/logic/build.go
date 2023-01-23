@@ -432,6 +432,10 @@ func pclMore1(bc *build.Context, bs *BgoSettings) (cmd []interface{}) { // nolin
 		cmd = append(cmd, "-tags="+strings.Join(bc.Tags, " "))
 	}
 
+	if bc.DeepReduce {
+		cmd = append(cmd, `-gcflags=all=-l -B`) // disable function inlining, bounds checks
+	}
+
 	ifLdflags(bc)
 
 	if len(bc.Ldflags) > 0 {
@@ -539,6 +543,9 @@ func goBuildPrepareOpts(bc *build.Context, bs *BgoSettings) (opts []exec.Opt, cg
 func okHandler(ec errors.Error, bc *build.Context, bs *BgoSettings) (onOK func(retCode int, stdoutText string)) {
 	return func(retCode int, stdoutText string) {
 		var err error
+
+		ec.Attach(compressExecutable(bc))
+
 		if bc.Install {
 			if err = iaInstall(bc.Output.Path, bc, bs); err != nil {
 				ec.Attach(err)
@@ -557,6 +564,7 @@ func okHandler(ec errors.Error, bc *build.Context, bs *BgoSettings) (onOK func(r
 				return
 			}
 		}
+
 		if !bc.DisableResult {
 			if err = iaLL(bc.Output.Path, bc); err != nil {
 				ec.Attach(err)
@@ -571,6 +579,35 @@ func okHandler(ec errors.Error, bc *build.Context, bs *BgoSettings) (onOK func(r
 
 		// return
 	}
+}
+
+func compressExecutable(bc *build.Context) (err error) {
+	if !bc.Upx.Enable {
+		return
+	}
+
+	if !commandExists("upx") {
+		return
+	}
+
+	var cmds = []interface{}{"upx", "--ultra-brute", "--best", bc.Output.Path}
+	if len(bc.Upx.Params) > 0 {
+		cmds = append(cmds, "upx")
+		for _, s := range bc.Upx.Params {
+			cmds = append(cmds, s)
+		}
+		cmds = append(cmds, bc.Output.Path)
+	}
+
+	c := exec.New().
+		WithCommand(cmds...)
+	err = c.RunAndCheckError()
+	return
+}
+
+func commandExists(cmd string) bool {
+	_, err := exec.LookPath(cmd)
+	return err == nil
 }
 
 //goland:noinspection ALL

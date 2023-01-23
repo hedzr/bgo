@@ -1,6 +1,5 @@
 package logic
 
-//nolint:goimports //i like it
 import (
 	"bufio"
 	"fmt"
@@ -10,9 +9,12 @@ import (
 	"strings"
 	"text/template"
 
+	"golang.org/x/mod/semver"
+
 	"github.com/hedzr/bgo/internal/logic/build"
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
+	"github.com/hedzr/cmdr/conf"
 	"github.com/hedzr/log/exec"
 	"gopkg.in/yaml.v3"
 )
@@ -91,6 +93,90 @@ func ifLdflags(bc *build.Context) {
 
 	for k, v := range pairs {
 		bc.Ldflags = append(bc.Ldflags, k+v)
+	}
+}
+
+func ifLdflagsReduce(bc *build.Context, pairs map[string]string) {
+	if bc.DeepReduce {
+		// somethings
+	}
+}
+
+func ifLdflagsExtends(bc *build.Context, pairs map[string]string) {
+	for _, pnv := range bc.Common.Extends {
+		if pnv.Package == "" {
+			continue
+		}
+		for n, v := range pnv.Values {
+			if n == "" || v == "" {
+				continue
+			}
+			if v[0] == '`' && v[len(v)-1] == '`' {
+				// shell scripts
+				script := v[1 : len(v)-1]
+				if re, err := tplExpand(script, "set-name-and-value-in-package", bc); err == nil {
+					script = re
+				}
+				if err := exec.New().
+					WithCommand("bash", "-c", script).
+					WithOnOK(func(retCode int, stdoutText string) {
+						v = strings.ReplaceAll(strings.TrimSuffix(stdoutText, "\n"), " ", "_")
+					}).RunAndCheckError(); err != nil {
+					continue
+				}
+			} else {
+				if re, err := tplExpand(v, "set-name-and-value-in-package", bc); err == nil {
+					v = re
+				}
+			}
+			str := fmt.Sprintf(`-X "%s.%s=`, pnv.Package, n)
+			pairs[str] = v + `"`
+		}
+	}
+}
+
+func ifLdflagsCmdrSpecials(bc *build.Context, pairs map[string]string) {
+	if bc.HasGoMod {
+		const CMDR = "github.com/hedzr/cmdr"
+		where, what := bc.GoModFile, CMDR
+		bc.CmdrSpecials, bc.CmdrVersion = findStringInFile(where, what)
+	} else {
+		bc.CmdrSpecials = false
+	}
+
+	if bc.CmdrSpecials {
+		const W = "github.com/hedzr/cmdr/conf"
+		var str string
+		str = fmt.Sprintf(`-X "%s.AppName=`, W)
+		pairs[str] = bc.AppName + `"`
+		str = fmt.Sprintf(`-X "%s.Version=`, W)
+		ver := bc.CalcVersion() + `"`
+		pairs[str] = strings.TrimPrefix(ver, "v")
+		str = fmt.Sprintf(`-X "%s.Buildstamp=`, W)
+		pairs[str] = bc.BuildTime + `"`
+		str = fmt.Sprintf(`-X "%s.Githash=`, W)
+		pairs[str] = bc.GitRevision + `"`
+		str = fmt.Sprintf(`-X "%s.GoVersion=`, W)
+		pairs[str] = strings.ReplaceAll(bc.GoVersion, " ", "_") + `"`
+		// fmt.Sprintf("-X '%s.AppName=%s'", W,bc.AppName),
+
+		if semver.Compare(bc.CmdrVersion, "1.11.1") >= 0 {
+			str = fmt.Sprintf(`-X "%s.GitSummary=`, W)
+			pairs[str] = bc.GitSummary + `"`
+			str = fmt.Sprintf(`-X "%s.GitDesc=`, W)
+			pairs[str] = strings.ReplaceAll(bc.GitDesc, "'", "`") + `"`
+			str = fmt.Sprintf(`-X "%s.BuilderComments=`, W)
+			if bc.BuilderComment != "" {
+				pairs[str] = strings.ReplaceAll(bc.BuilderComment, "'", "`") + `"`
+			} else {
+				pairs[str] = fmt.Sprintf(`via bgo v%v"`, strings.TrimPrefix(conf.Version, "v"))
+			}
+		}
+
+		str = fmt.Sprintf(`-X "%s.Serial=`, W)
+		pairs[str] = strconv.FormatInt(bc.Serial, 10) + `"` //nolint:gomnd //i like it
+		str = fmt.Sprintf(`-X "%s.SerialString=`, W)
+		pairs[str] = bc.RandomString + `"`
 	}
 }
 

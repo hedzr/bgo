@@ -37,6 +37,9 @@ type (
 		Debug         bool   `yaml:",omitempty" json:"debug,omitempty" toml:"debug,omitempty"`                                 // true to produce a larger build with debug info
 		DisableResult bool   `yaml:"disable-result,omitempty" json:"disable_result,omitempty" toml:"disable_result,omitempty"` // no ll (Shell list) building result
 
+		DeepReduce bool `yaml:"reduce,omitempty" json:"reduce,omitempty" toml:"reduce,omitempty"`
+		Upx        Upx  `yaml:",omitempty" json:"upx,omitempty" toml:"upx,omitempty"`
+
 		// -X for -ldflags,
 		// -X importpath.name=value
 		//    Set the value of the string variable in importpath named name to value.
@@ -45,6 +48,12 @@ type (
 		Extends      []PackageNameValues `yaml:"extends,omitempty" json:"extends,omitempty" toml:"extends,omitempty"` //
 		CmdrSpecials bool                `yaml:"cmdr,omitempty" json:"cmdr,omitempty" toml:"cmdr,omitempty"`
 		CmdrVersion  string              `yaml:"cmdr-version,omitempty" json:"cmdr-version,omitempty" toml:"cmdr-version,omitempty"`
+	}
+
+	// Upx params package
+	Upx struct {
+		Enable bool     `yaml:",omitempty" json:"enable,omitempty" toml:"enable,omitempty"`
+		Params []string `yaml:",omitempty" json:"params,omitempty" toml:"params,omitempty"`
 	}
 
 	PackageNameValues struct {

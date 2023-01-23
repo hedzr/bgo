@@ -79,6 +79,10 @@ app:
               race: false
               keep-workdir: false   # true: don't switch workdir to 'dir'
               use-workdir:          # specify a special workdir
+              reduce: true          # enable deep reduce building: disable function inlining, bounds checks
+              upx:
+                enable: true
+                params: []
               os: [ "linux","darwin" ]
               arch: [ "amd64" ]
               for: [ "windows/amd64" ]
