@@ -13,9 +13,10 @@ go 1.18
 // replace github.com/hedzr/cmdr-addons => ../53.cmdr-addons
 
 require (
-	github.com/hedzr/cmdr v1.10.50
+	github.com/hedzr/cmdr v1.11.1
 	github.com/hedzr/log v1.5.56
 	github.com/hedzr/logex v1.5.56
+	github.com/rogpeppe/go-internal v1.8.0
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 	gopkg.in/hedzr/errors.v3 v3.0.23
 	gopkg.in/yaml.v3 v3.0.1
