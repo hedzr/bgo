@@ -10,13 +10,14 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/hedzr/log/dir"
+	"github.com/hedzr/log/exec"
+	"gopkg.in/hedzr/errors.v3"
+
 	"github.com/hedzr/bgo/internal/logic/build"
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/bgo/internal/logic/tool"
 	"github.com/hedzr/cmdr"
-	"github.com/hedzr/log/dir"
-	"github.com/hedzr/log/exec"
-	"gopkg.in/hedzr/errors.v3"
 )
 
 func buildCurr(buildScope string, cmd *cmdr.Command, args []string) (err error) {
@@ -63,6 +64,12 @@ func buildFor(buildScope string, tp *build.TargetPlatforms,
 		tp.FilterBy(bs.Scope, bs.For, bs.Os, bs.Arch)
 	} else {
 		logx.Fatal("BAD, bgoSettings == nil!!")
+	}
+
+	bgoYamlFileDir := dir.AbsPath(path.Dir(cmdr.GetUsedAlterConfigFile()))
+	if dir.GetCurrentDir() != bgoYamlFileDir {
+		defer dir.PushDir(bgoYamlFileDir)()
+		logx.Log("Changed to directory: %q", bgoYamlFileDir)
 	}
 
 	err = buildProjects(tp, bc, bs, cmd, args)
@@ -206,24 +213,20 @@ func buildPackages(tpBase *build.TargetPlatforms, bc *build.Context, bs *BgoSett
 		// }
 	}
 
-	err = loopAllProjects(tpBase, bc, bs, buildProject)
+	// err = loopAllProjects(tpBase, bc, bs, buildProject)
+	err = loopTargetPlatforms(tpBase, func(os, arch string) (stop bool, err error) {
+		if cmdr.GetTraceMode() {
+			logx.Dim("%v\n", leftPad(yamlText(pi.p.Common), 5))
+		}
 
-	// STOP:
-	//	for oss, osv := range tp.OsArchMap {
-	//		for arch, _ := range osv {
-	//			if cmdr.GetTraceMode() {
-	//				logx.Dim("%v\n", leftPad(yamlText(pi.p.Common), 5))
-	//			}
-	//
-	//			prepareBuildContextForEachProjectTarget(bc, oss, arch, pi.p,
-	//				pi.projectName, pi.groupKey, pi.groupLeadingText)
-	//
-	//			err = buildProject(bc, bs)
-	//			if err != nil {
-	//				break STOP
-	//			}
-	//		}
-	//	}
+		prepareBuildContextForEachProjectTarget(bc, os, arch,
+			pi.p, pi.projectName, pi.groupKey, pi.groupLeadingText)
+
+		if err = buildProject(bc, bs); err != nil {
+			stop = true
+		}
+		return
+	})
 	return
 }
 
@@ -300,7 +303,7 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 			wd = bc.UseWorkDir
 		}
 
-		dir.PushDir(wd)()
+		defer dir.PushDir(wd)()
 		// if c, e := dir.PushDirEx(wd); e != nil {
 		//	logx.Warn("%v\n", logx.ToColor(logx.LightRed, "         The project ignored since not exists."))
 		//	return nil
@@ -467,8 +470,8 @@ func goBuild(bc *build.Context, bs *BgoSettings, cmd ...interface{}) (err error)
 	defer ec.Defer(&err)
 	c := exec.New(opts...).
 		WithCommand(cmd...).
-		//WithEnv("GOOS", bc.OS).
-		//WithEnv("GOARCH", bc.ARCH).
+		// WithEnv("GOOS", bc.OS).
+		// WithEnv("GOARCH", bc.ARCH).
 		WithEnv("CGO_ENABLED", boolToString(cgo)).
 		// WithStdoutCaught(). // can be removed
 		// WithStderrCaught(). // can be removed
