@@ -13,6 +13,7 @@ type (
 		OS   string `yaml:"-" json:"-" toml:"-"` // just for string template expansion
 		ARCH string `yaml:"-" json:"-" toml:"-"` // just for string template expansion
 
+		Args       []string `yaml:"args,omitempty,flow" json:"args,omitempty" toml:"args,omitempty"`
 		Ldflags    []string `yaml:"ldflags,omitempty,flow" json:"ldflags,omitempty" toml:"ldflags,omitempty"`          // default ldflags is to get the smaller build for releasing
 		Asmflags   []string `yaml:"asmflags,omitempty,flow" json:"asmflags,omitempty" toml:"asmflags,omitempty"`       //
 		Gcflags    []string `yaml:"gcflags,omitempty,flow" json:"gcflags,omitempty" toml:"gcflags,omitempty"`          //
@@ -28,7 +29,13 @@ type (
 		//		Supported only on linux/amd64, linux/arm64
 		//		and only with Clang/LLVM as the host C compiler.
 		//		On linux/arm64, pie build mode will be used.
-		Msan          bool   `yaml:",omitempty" json:"msan,omitempty" toml:"msan,omitempty"`                                   //
+		Msan bool `yaml:",omitempty" json:"msan,omitempty" toml:"msan,omitempty"` //
+		// Asan enables interoperation with address sanitizer.
+		//		Supported only on linux/arm64, linux/amd64.
+		//		Supported only on linux/amd64 or linux/arm64 and only with GCC 7 and higher
+		//		or Clang/LLVM 9 and higher.
+		Asan bool `yaml:",omitempty" json:"asan,omitempty" toml:"asan,omitempty"` //
+		//
 		Mod           string `yaml:",omitempty" json:"mod,omitempty" toml:"mod,omitempty"`                                     // -mod reaonly,vendor,mod
 		Amd64         string `yaml:",omitempty" json:"goamd64,omitempty" toml:"goamd64,omitempty"`                             // GOAMD64 v1,v2,v3,v4
 		Gocmd         string `yaml:",omitempty" json:"gocmd,omitempty" toml:"gocmd,omitempty"`                                 // -gocmd go

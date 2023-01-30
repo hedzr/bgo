@@ -409,6 +409,13 @@ func pclMore1(bc *build.Context, bs *BgoSettings) (cmd []interface{}) { // nolin
 	if bc.Msan {
 		cmd = append(cmd, "-msan")
 	}
+	if bc.Asan {
+		cmd = append(cmd, "-asan")
+	}
+
+	if len(bc.Args) > 0 {
+		cmd = append(cmd, strings.Join(bc.Args, " "))
+	}
 
 	if len(bc.Asmflags) > 0 {
 		if !bc.Debug && !cmdr.GetBoolR("build.no-trimpath") &&
