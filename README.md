@@ -35,7 +35,7 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
-- v0.5.1
+- v0.5.6
 
   - added `args: [ ]` and `asan: false`
   - fixed the duplicated loops of building projects
@@ -43,6 +43,7 @@ All things you need to do is entering the golang project directory and entering 
   - using `hedzr/evendeep`
   - improve code style
   - upgrade deps
+  - .1 -> .6
 
 - v0.5.0
 
