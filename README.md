@@ -35,6 +35,15 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
+- v0.5.1
+
+  - added `args: [ ]` and `asan: false`
+  - fixed the duplicated loops of building projects
+  - upgrade `hedzr/cmdr` to latest
+  - using `hedzr/evendeep`
+  - improve code style
+  - upgrade deps
+
 - v0.5.0
 
   - Deep Reduce Building: new option `reduce: true` in `.bgo.yaml` to enable `-gcflags=all=-l -B`
