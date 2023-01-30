@@ -4,6 +4,8 @@ package build
 import (
 	"runtime"
 
+	"github.com/hedzr/evendeep"
+
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 )
@@ -117,21 +119,23 @@ func NewCommon() *Common {
 }
 
 func (c *CommonBase) CloneFrom(from *CommonBase) {
-	cc := cmdr.StandardCopier
-	cc.KeepIfFromIsNil = true
-	cc.KeepIfFromIsZero = true
-	cc.EachFieldAlways = true
-	if err := cc.Copy(c, from); err != nil {
+	cc := evendeep.New()
+	// cc := cmdr.StandardCopier
+	// cc.KeepIfFromIsNil = true
+	// cc.KeepIfFromIsZero = true
+	// cc.EachFieldAlways = true
+	if err := cc.CopyTo(from, c); err != nil {
 		logx.Error("CommonBase.CloneFrom failed: %v", err)
 	}
 }
 
 func (c *Common) CloneFrom(from *Common) {
-	cc := cmdr.StandardCopier
-	cc.KeepIfFromIsNil = true
-	cc.KeepIfFromIsZero = true
-	cc.EachFieldAlways = true
-	if err := cc.Copy(c, from); err != nil {
+	cc := evendeep.New()
+	// cc := cmdr.StandardCopier
+	// cc.KeepIfFromIsNil = true
+	// cc.KeepIfFromIsZero = true
+	// cc.EachFieldAlways = true
+	if err := cc.CopyTo(from, c); err != nil {
 		logx.Error("Common.CloneFrom failed: %v", err)
 	}
 }

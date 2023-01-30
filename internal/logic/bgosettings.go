@@ -3,6 +3,7 @@ package logic
 import (
 	"github.com/hedzr/bgo/internal/logic/build"
 	"github.com/hedzr/cmdr"
+	"github.com/hedzr/evendeep"
 )
 
 type (
@@ -146,11 +147,12 @@ func (s *BgoSettings) _init2() {
 }
 
 func (s *BgoSettings) PullDownCommonSettings() {
-	c := cmdr.StandardCopier // make a copy
-	c.KeepIfFromIsNil = true
-	c.KeepIfFromIsZero = true
-	c.EachFieldAlways = true
-	c.IgnoreIfNotEqual = true
+	c := evendeep.New(evendeep.WithCopyStrategyOpt, evendeep.WithWipeTargetSliceFirstOpt)
+	// c := cmdr.StandardCopier // make a copy
+	// c.KeepIfFromIsNil = true
+	// c.KeepIfFromIsZero = true
+	// c.EachFieldAlways = true
+	// c.IgnoreIfNotEqual = true
 
 	// Copying the common settings from the up level if necessary.
 	// It means:
@@ -161,8 +163,8 @@ func (s *BgoSettings) PullDownCommonSettings() {
 			if prj.Common == nil {
 				prj.Common = build.NewCommon()
 			}
-			_ = c.Copy(prj.Common, s.Common)
-			_ = c.Copy(prj.Common, grp.Common)
+			_ = c.CopyTo(s.Common, prj.Common)
+			_ = c.CopyTo(grp.Common, prj.Common)
 			s.Projects[gn].Items[pn] = prj
 		}
 	}

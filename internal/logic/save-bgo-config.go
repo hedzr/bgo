@@ -7,6 +7,8 @@ import (
 
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
+	"github.com/hedzr/evendeep"
+
 	"github.com/hedzr/log/dir"
 )
 
@@ -14,9 +16,12 @@ func saveNewBgoYamlFile(bs *BgoSettings) (err error) {
 	makeCopyOf := func(bs *BgoSettings) *BgoSettings {
 		var bsCopy = new(BgoSettings)
 
-		if err = cmdr.CloneViaGob(bsCopy, bs); err != nil {
+		if err = evendeep.DefaultCopyController.CopyTo(bsCopy, bs); err != nil {
 			return nil
 		}
+		// if err = cmdr.CloneViaGob(bsCopy, bs); err != nil {
+		// 	return nil
+		// }
 
 		cleanupBs(bsCopy)
 		return bsCopy

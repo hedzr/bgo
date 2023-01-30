@@ -11,12 +11,15 @@ import (
 
 	"golang.org/x/mod/semver"
 
+	"github.com/hedzr/log/exec"
+	"gopkg.in/yaml.v3"
+
 	"github.com/hedzr/bgo/internal/logic/build"
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/cmdr/conf"
-	"github.com/hedzr/log/exec"
-	"gopkg.in/yaml.v3"
+	"github.com/hedzr/evendeep"
+	"github.com/hedzr/evendeep/flags/cms"
 )
 
 func setSaveMode(b bool) {
@@ -198,16 +201,21 @@ func cleanupCommon(c, ref *build.Common) {
 		return
 	}
 
-	// cp:= *cmdr.StandardCopier
-	// cp.ZeroIfEqualsFrom=true
-	// cp.KeepIfFromIsNil=true
-	// cp.KeepIfFromIsZero=true
-	// cp.EachFieldAlways=true
-	cp := *cmdr.GormDefaultCopier
-	cp.IgnoreIfNotEqual = true
+	// // cp:= *cmdr.StandardCopier
+	// // cp.ZeroIfEqualsFrom=true
+	// // cp.KeepIfFromIsNil=true
+	// // cp.KeepIfFromIsZero=true
+	// // cp.EachFieldAlways=true
+	// cp := *cmdr.GormDefaultCopier
+	// cp.IgnoreIfNotEqual = true
+	//
+	// // clear target field if equals to source
+	// _ = cp.Copy(c, ref)
 
-	// clear target field if equals to source
-	_ = cp.Copy(c, ref)
+	_ = evendeep.DefaultCopyController.CopyTo(c, ref,
+		evendeep.WithByOrdinalStrategyOpt,
+		evendeep.WithCleanStrategies(cms.KeepIfNotEq),
+	)
 }
 
 func uniappend(a []string, s string) []string {
