@@ -74,7 +74,7 @@ func saveBgoConfigAs(bs *BgoSettings, savedAs []string) (err error) {
 // appendComments todo append some sample yaml comments into .bgo.yml when `bgo init`
 func appendComments(file string) (err error) {
 	var f *os.File
-	f, err = os.OpenFile(file, os.O_APPEND|os.O_RDWR, 0o644) //nolint:gomnd //i like it
+	f, err = os.OpenFile(file, os.O_APPEND|os.O_RDWR, 0o644)
 	if err == nil {
 		defer func() {
 			err = f.Close()

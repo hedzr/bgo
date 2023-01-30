@@ -87,7 +87,7 @@ func buildProjects(tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings
 
 	if bs.Scope != "auto" || cmdr.GetUsedAlterConfigFile() == "" {
 		if (singleProjectOrPackage == nil && projectName != "") || projectName == "" {
-			err = scanWorkDir(bc.WorkDir, bs.Scope, packages, bs) // nolint
+			_ = scanWorkDir(bc.WorkDir, bs.Scope, packages, bs)
 
 			for _, pi := range packages {
 				ensureProject(pi, bc, bs)
@@ -108,7 +108,7 @@ func buildProjects(tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings
 func buildProjectsImpl(
 	packages map[string]*pkgInfo,
 	tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings,
-	cmd *cmdr.Command, args []string, // nolint
+	cmd *cmdr.Command, args []string,
 ) (err error) {
 	if cmd.GetTitleName() == "list" {
 		err = listPackages(tp, bc, bs, packages)
@@ -125,6 +125,7 @@ func buildProjectsImpl(
 	return
 }
 
+//nolint:gocognit,lll //no
 func checkSingleProjectNameSpecified(packages map[string]*pkgInfo, bs *BgoSettings) (projectName string, singleProjectOrPackage *pkgInfo) {
 	projectName = cmdr.GetStringR("build.project-name")
 	if projectName != "" {
@@ -163,6 +164,7 @@ func ensureProject(pi *pkgInfo, bc *build.Context, bs *BgoSettings) {
 	pi.p = p
 }
 
+//nolint:gocognit //no
 func saveBackToBs(packages map[string]*pkgInfo, bs *BgoSettings) (err error) {
 	for _, pi := range packages {
 		var found bool
@@ -216,7 +218,7 @@ func buildPackages(tpBase *build.TargetPlatforms, bc *build.Context, bs *BgoSett
 	// err = loopAllProjects(tpBase, bc, bs, buildProject)
 	err = loopTargetPlatforms(tpBase, func(os, arch string) (stop bool, err error) {
 		if cmdr.GetTraceMode() {
-			logx.Dim("%v\n", leftPad(yamlText(pi.p.Common), 5))
+			logx.Dim("%v\n", leftPad(yamlText(pi.p.Common), 5)) //nolint:gomnd //no
 		}
 
 		prepareBuildContextForEachProjectTarget(bc, os, arch,
@@ -280,7 +282,7 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 		return
 	}
 
-	if bc.KeepWorkdir {
+	if bc.KeepWorkdir { //nolint:nestif //no
 		// wd := bc.WorkDir
 		if !dir.FileExists(bc.Dir) {
 			return
@@ -334,7 +336,7 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 	logx.Verbose("         PWD: %v\n", logx.ToDim(dir.GetCurrentDir()))
 	logx.Verbose("         OUT: %v\n", logx.ToDim(bc.Output.Path))
 	logx.Verbose("         Go.mod: %v\n", logx.ToColor(logx.Cyan, bc.GoModFile))
-	logx.Verbose("         CommandLine: %v\n", logx.ToDim("%v", cmd))
+	logx.Verbose("         CommandLine: %v\n", logx.ToDim("%v", cmd)) //nolint:asasalint //no
 
 	if isDryRunMode() {
 		logx.Colored(logx.Yellow, "         STOP since dry-run mode specified,\n")
@@ -349,7 +351,7 @@ func buildProject(bc *build.Context, bs *BgoSettings) (err error) {
 	return
 }
 
-func prepareCommandLine(bc *build.Context, bs *BgoSettings) (cmd []interface{}, err error) { // nolint
+func prepareCommandLine(bc *build.Context, bs *BgoSettings) (cmd []interface{}, err error) {
 	cmd = []interface{}{"go", "build"}
 
 	st := path.Join(bc.Dir, "go.mod")
@@ -400,7 +402,7 @@ func prepareCommandLine(bc *build.Context, bs *BgoSettings) (cmd []interface{}, 
 	return
 }
 
-func pclMore1(bc *build.Context, bs *BgoSettings) (cmd []interface{}) { // nolint
+func pclMore1(bc *build.Context, bs *BgoSettings) (cmd []interface{}) {
 	if str := cmdr.GetStringR("build.mod", bc.Mod); str != "" {
 		cmd = append(cmd, "-mod", str)
 	}
@@ -550,6 +552,7 @@ func goBuildPrepareOpts(bc *build.Context, bs *BgoSettings) (opts []exec.Opt, cg
 	return
 }
 
+//nolint:gocognit //no
 func okHandler(ec errors.Error, bc *build.Context, bs *BgoSettings) (onOK func(retCode int, stdoutText string)) {
 	return func(retCode int, stdoutText string) {
 		var err error
@@ -639,14 +642,14 @@ func getBuildTargetBinaryPath(bc *build.Context, bs *BgoSettings) (outBinary str
 	return
 }
 
-func iaGenerate(bc *build.Context, bs *BgoSettings) (err error) { // nolint
+func iaGenerate(bc *build.Context, bs *BgoSettings) (err error) {
 	logx.Log("         > Run 'go generate' at %q...\n", bc.PackageDir)
 	return exec.New().
 		WithCommand("go", "generate", bc.PackageDir).
 		RunAndCheckError()
 }
 
-func iaInstall(outBinary string, bc *build.Context, bs *BgoSettings) (err error) { // nolint
+func iaInstall(outBinary string, bc *build.Context, bs *BgoSettings) (err error) {
 	if bc.OS == bc.GOOS && bc.ARCH == bc.GOARCH {
 		gopath := os.Getenv("GOPATH")
 		if gopath == "" {
@@ -671,7 +674,7 @@ func iaRunScript(scriptsSource string, scriptsIsFile bool, bc *build.Context, ti
 		exec.WithScriptShell(""), // auto-detect os shell
 		exec.WithScriptIsFile(scriptsIsFile),
 		exec.WithScriptExpander(func(source string) string {
-			if script, err := tplExpand(source, ttl, bc); err == nil {
+			if script, err1 := tplExpand(source, ttl, bc); err1 == nil {
 				if logx.IsVerboseMode() {
 					logx.Log("         > Invoking %v:\n", ttl)
 					logx.Dim("%v\n", leftPad(script, 7)) //nolint:gomnd //so what
@@ -679,6 +682,8 @@ func iaRunScript(scriptsSource string, scriptsIsFile bool, bc *build.Context, ti
 					logx.Log("         > Invoking %v...\n", ttl)
 				}
 				return script
+			} else { //nolint:revive //no
+				err = err1
 			}
 			return source
 		}),

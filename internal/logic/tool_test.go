@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/hedzr/cmdr"
+	"github.com/hedzr/evendeep"
 	"gopkg.in/yaml.v3"
 )
 
@@ -62,7 +63,7 @@ func TestEmbedStruct0(t *testing.T) {
 
 	tgt := new(SB)
 
-	_ = cmdr.CloneViaGob(tgt, sb)
+	_ = evendeep.Copy(tgt, sb)
 }
 
 func TestEmbedStruct1(t *testing.T) {

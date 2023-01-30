@@ -38,7 +38,7 @@ $ {{.AppName}} --help
 
 	zero = 0
 
-	//nolint:unused,varcheck //like it
+	//nolint:varcheck //like it
 	defaultTraceEnabled  = true
 	defaultDebugEnabled  = false
 	defaultLoggerLevel   = "info"

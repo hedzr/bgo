@@ -7,10 +7,10 @@ import (
 	"github.com/hedzr/evendeep"
 
 	"github.com/hedzr/bgo/internal/logic/logx"
-	"github.com/hedzr/cmdr"
 )
 
 type (
+	//nolint:lll //no
 	CommonBase struct {
 		OS   string `yaml:"-" json:"-" toml:"-"` // just for string template expansion
 		ARCH string `yaml:"-" json:"-" toml:"-"` // just for string template expansion
@@ -46,9 +46,6 @@ type (
 		Debug         bool   `yaml:",omitempty" json:"debug,omitempty" toml:"debug,omitempty"`                                 // true to produce a larger build with debug info
 		DisableResult bool   `yaml:"disable-result,omitempty" json:"disable_result,omitempty" toml:"disable_result,omitempty"` // no ll (Shell list) building result
 
-		DeepReduce bool `yaml:"reduce,omitempty" json:"reduce,omitempty" toml:"reduce,omitempty"`
-		Upx        Upx  `yaml:",omitempty" json:"upx,omitempty" toml:"upx,omitempty"`
-
 		// -X for -ldflags,
 		// -X importpath.name=value
 		//    Set the value of the string variable in importpath named name to value.
@@ -59,7 +56,7 @@ type (
 		CmdrVersion  string              `yaml:"cmdr-version,omitempty" json:"cmdr-version,omitempty" toml:"cmdr-version,omitempty"`
 	}
 
-	// Upx params package
+	// Upx params package.
 	Upx struct {
 		Enable bool     `yaml:",omitempty" json:"enable,omitempty" toml:"enable,omitempty"`
 		Params []string `yaml:",omitempty" json:"params,omitempty" toml:"params,omitempty"`
@@ -70,6 +67,7 @@ type (
 		Values  map[string]string `yaml:"values,omitempty" json:"values,omitempty" toml:"values,omitempty"`
 	}
 
+	//nolint:lll //no
 	Common struct {
 		CommonBase `yaml:",omitempty,inline,flow" json:",omitempty" toml:""`
 
@@ -84,6 +82,9 @@ type (
 		PostAction     string   `yaml:"post-action,omitempty" json:"post_action,omitempty" toml:"post_action,omitempty"`                // bash script
 		PreActionFile  string   `yaml:"pre-action-file,omitempty" json:"pre_action_file,omitempty" toml:"pre_action_file,omitempty"`    // bash script
 		PostActionFile string   `yaml:"post-action-file,omitempty" json:"post_action_file,omitempty" toml:"post_action_file,omitempty"` // bash script
+
+		DeepReduce bool `yaml:"reduce,omitempty" json:"reduce,omitempty" toml:"reduce,omitempty"`
+		Upx        Upx  `yaml:",omitempty" json:"upx,omitempty" toml:"upx,omitempty"`
 	}
 )
 

@@ -10,7 +10,7 @@ import (
 )
 
 // ForDir walks on `root` directory and its children
-// fix for log/dir.ForDir
+// fix for log/dir.ForDir.
 func ForDir(
 	root string,
 	cb func(depth int, dirname string, fi os.FileInfo) (stop bool, err error),
@@ -76,11 +76,11 @@ func forDirMax(
 		return
 	}
 
-	stop, err = forDirMaxLoops(dirs, rootDir, initialDepth, maxDepth, cb, excludes...) //nolint:ineffassign //stop will be returned
+	stop, err = forDirMaxLoops(dirs, rootDir, initialDepth, maxDepth, cb, excludes...) //nolint:ineffassign,lll,staticcheck //stop will be returned
 	return
 }
 
-func forDirMaxLoops(
+func forDirMaxLoops( //nolint:gocognit //no
 	dirs []os.DirEntry,
 	rootDir string,
 	initialDepth int,
@@ -102,7 +102,7 @@ func forDirMaxLoops(
 			}
 
 			var fi os.FileInfo
-			fi, err = f.Info()
+			fi, _ = f.Info()
 			if stop, err = cb(initialDepth, d, fi); stop {
 				return
 			}

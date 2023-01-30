@@ -15,8 +15,8 @@ type lxS struct {
 	log.Logger
 }
 
-var onceLxInitializer sync.Once
-var lx *lxS
+var onceLxInitializer sync.Once //nolint:gochecknoglobals //no
+var lx *lxS                     //nolint:gochecknoglobals //no
 
 const extrasLogSkip = 4
 
@@ -72,7 +72,7 @@ func Warn(format string, args ...interface{}) { //nolint:goprintffuncname //so w
 
 	_internalLogTo(func(sb strings.Builder, ln bool) {
 		if ln {
-			print(ToColor(Yellow, sb.String()))
+			print(ToColor(Yellow, sb.String())) //nolint:forbidigo //no
 		} else {
 			// println(sb.String())
 			lx.Warnf("%v", ToColor(Yellow, sb.String()))
@@ -100,7 +100,7 @@ func Log(format string, args ...interface{}) { //nolint:goprintffuncname //so wh
 
 	_internalLogTo(func(sb strings.Builder, ln bool) {
 		if ln {
-			print(sb.String())
+			print(sb.String()) //nolint:forbidigo //no
 		} else {
 			// println(sb.String())
 			lx.Printf("%v", sb.String())
@@ -115,7 +115,7 @@ func Verbose(format string, args ...interface{}) { //nolint:goprintffuncname //s
 	if IsVerboseMode() {
 		_internalLogTo(func(sb strings.Builder, ln bool) {
 			if ln {
-				print(sb.String())
+				print(sb.String()) //nolint:forbidigo //no
 			} else {
 				// println(sb.String())
 				lx.Printf("%v", sb.String())
@@ -155,7 +155,7 @@ func Hilight(format string, args ...interface{}) { //nolint:goprintffuncname //s
 	_internalLogTo(func(sb strings.Builder, ln bool) {
 		_, _ = fmt.Fprintf(os.Stdout, "\x1b[0;1m%v\x1b[0m", sb.String())
 		if !ln {
-			println()
+			println() //nolint:forbidigo //no
 		}
 	}, format, args...)
 }
@@ -174,7 +174,7 @@ func DimV(format string, args ...interface{}) { //nolint:goprintffuncname //so w
 		_internalLogTo(func(sb strings.Builder, ln bool) {
 			_, _ = fmt.Fprintf(os.Stdout, "\x1b[2m\x1b[37m%v\x1b[0m", sb.String())
 			if !ln {
-				println()
+				println() //nolint:forbidigo //no
 			}
 		}, format, args...)
 	}
@@ -198,7 +198,7 @@ func Dim(format string, args ...interface{}) { //nolint:goprintffuncname //so wh
 	_internalLogTo(func(sb strings.Builder, ln bool) {
 		_, _ = fmt.Fprintf(os.Stdout, "\x1b[2m\x1b[37m%v\x1b[0m", sb.String())
 		if !ln {
-			println()
+			println() //nolint:forbidigo //no
 		}
 	}, format, args...)
 }
@@ -229,7 +229,7 @@ func ColoredV(clr Color, format string, args ...interface{}) { //nolint:goprintf
 			color(clr)
 			_, _ = fmt.Fprintf(os.Stdout, "%v\x1b[0m", sb.String())
 			if !ln {
-				println()
+				println() //nolint:forbidigo //no
 			}
 		}, format, args...)
 	}
@@ -249,7 +249,7 @@ func Colored(clr Color, format string, args ...interface{}) { //nolint:goprintff
 		color(clr)
 		_, _ = fmt.Fprintf(os.Stdout, "%v\x1b[0m", sb.String())
 		if !ln {
-			println()
+			println() //nolint:forbidigo //no
 		}
 	}, format, args...)
 }
@@ -258,10 +258,11 @@ func color(c Color) {
 	_, _ = fmt.Fprintf(os.Stdout, "\x1b[%dm", c)
 }
 
-func resetColor(c Color) { // nolint
+func resetColor(c Color) { //nolint:unused //no
 	_, _ = fmt.Fprint(os.Stdout, "\x1b[0m")
 }
 
+//nolint:lll //no
 func _internalLogTo(tofn func(sb strings.Builder, ln bool), format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf(format, args...))

@@ -2,19 +2,18 @@ package build
 
 //nolint:goimports //so what
 import (
-	"io/ioutil"
 	"os"
 
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/log/closers"
 )
 
-var TempDir string
+var TempDir string //nolint:gochecknoglobals //no
 
 //nolint:gochecknoinits //so what
 func init() {
 	var err error
-	TempDir, err = ioutil.TempDir("", "bgo")
+	TempDir, err = os.MkdirTemp("", "bgo")
 	if err != nil {
 		logx.Error("%v", err)
 		return

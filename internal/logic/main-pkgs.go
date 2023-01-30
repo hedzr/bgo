@@ -25,11 +25,11 @@ type pkgInfo struct {
 	p                *ProjectWrap
 }
 
-func findMainPackages(bs *BgoSettings) (packages map[string]*pkgInfo, err error) {
+func findMainPackages(bs *BgoSettings) (packages map[string]*pkgInfo, err error) { //nolint:gocognit //no
 	packages = make(map[string]*pkgInfo)
 
 	keys := make([]string, 0, len(bs.Projects))
-	{ //nolint:gocritic
+	{ //nolint:gocritic //no
 		for k := range bs.Projects {
 			keys = append(keys, k)
 		}
@@ -39,7 +39,7 @@ func findMainPackages(bs *BgoSettings) (packages map[string]*pkgInfo, err error)
 	for _, groupKey := range keys {
 		group := bs.Projects[groupKey]
 		kps := make([]string, 0, len(group.Items))
-		{ //nolint:gocritic
+		{ //nolint:gocritic //no
 			for k := range group.Items {
 				kps = append(kps, k)
 			}
@@ -50,6 +50,7 @@ func findMainPackages(bs *BgoSettings) (packages map[string]*pkgInfo, err error)
 		for _, projectKey := range kps {
 			p := group.Items[projectKey]
 			if p.Disabled || !dir.FileExists(p.Dir) {
+				//nolint:lll //no
 				logx.Verbose("lookup group %v, project %v, disabled: %v, dir %q NOT EXISTS, ignored.", groupKey, projectKey, p.Disabled, p.Dir)
 				continue
 			}
@@ -84,6 +85,7 @@ func findMainPackages(bs *BgoSettings) (packages map[string]*pkgInfo, err error)
 	return
 }
 
+//nolint:gocognit //no
 func scanWorkDir(workdir, scope string, packages map[string]*pkgInfo, bs *BgoSettings) (err error) {
 	if len(packages) > 0 && scope == "short" {
 		return
@@ -160,7 +162,7 @@ func dissectTheMainDirImpl(dirname string, packages map[string]*pkgInfo, bs *Bgo
 		scanner := bufio.NewScanner(bufio.NewReader(strings.NewReader(stdoutText)))
 		for scanner.Scan() {
 			a := strings.Split(scanner.Text(), ",")
-			if a[0] == "main" {
+			if a[0] == "main" { //nolint:nestif //no
 				k := path.Clean(dirname)
 				if _, ok := packages[k]; ok {
 					packages[k].packageName = a[1]

@@ -86,7 +86,6 @@ func uniAdd(target []string, item string) []string {
 	return append(target, item)
 }
 
-//nolint:gocognit //needs split
 func ifLdflags(bc *build.Context) {
 	pairs := make(map[string]string)
 
@@ -100,12 +99,12 @@ func ifLdflags(bc *build.Context) {
 }
 
 func ifLdflagsReduce(bc *build.Context, pairs map[string]string) {
-	if bc.DeepReduce {
-		// somethings
-	}
+	// if bc.DeepReduce {
+	// 	// somethings
+	// }
 }
 
-func ifLdflagsExtends(bc *build.Context, pairs map[string]string) {
+func ifLdflagsExtends(bc *build.Context, pairs map[string]string) { //nolint:gocognit //no
 	for _, pnv := range bc.Common.Extends {
 		if pnv.Package == "" {
 			continue
@@ -140,7 +139,7 @@ func ifLdflagsExtends(bc *build.Context, pairs map[string]string) {
 
 func ifLdflagsCmdrSpecials(bc *build.Context, pairs map[string]string) {
 	if bc.HasGoMod {
-		const CMDR = "github.com/hedzr/cmdr"
+		const CMDR = "github.com/hedzr/cmdr" //nolint:gocritic //no
 		where, what := bc.GoModFile, CMDR
 		bc.CmdrSpecials, bc.CmdrVersion = findStringInFile(where, what)
 	} else {
@@ -148,7 +147,7 @@ func ifLdflagsCmdrSpecials(bc *build.Context, pairs map[string]string) {
 	}
 
 	if bc.CmdrSpecials {
-		const W = "github.com/hedzr/cmdr/conf"
+		const W = "github.com/hedzr/cmdr/conf" //nolint:gocritic //no
 		var str string
 		str = fmt.Sprintf(`-X "%s.AppName=`, W)
 		pairs[str] = bc.AppName + `"`
@@ -177,7 +176,7 @@ func ifLdflagsCmdrSpecials(bc *build.Context, pairs map[string]string) {
 		}
 
 		str = fmt.Sprintf(`-X "%s.Serial=`, W)
-		pairs[str] = strconv.FormatInt(bc.Serial, 10) + `"` //nolint:gomnd //i like it
+		pairs[str] = strconv.FormatInt(bc.Serial, 10) + `"`
 		str = fmt.Sprintf(`-X "%s.SerialString=`, W)
 		pairs[str] = bc.RandomString + `"`
 	}

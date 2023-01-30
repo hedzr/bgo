@@ -63,15 +63,16 @@ func newDynBuildInfo() *DynBuildInfo {
 	}
 }
 
+//nolint:gochecknoglobals //no
 var (
 	gBuildInfo    *Info
 	onceBuildInfo sync.Once
 )
 
 func (c *Info) VersionIsGreaterThan(major, minor int) bool {
-	if major > c.GoVersionMajor {
+	if c.GoVersionMajor > major {
 		return true
-	} else if major == c.GoVersionMajor && minor > c.GoVersionMinor {
+	} else if major == c.GoVersionMajor && c.GoVersionMinor > minor {
 		return true
 	}
 	return false
@@ -130,7 +131,7 @@ func prepareBuildInfo() {
 			logx.Colored(logx.Green, "git.revision: %v", gBuildInfo.GitRevision)
 		})
 		if err != nil {
-			logx.Warn("No suitable 'git' executable found or not a git repo.")
+			logx.Warn("Cannot get revision from git commits. No suitable 'git' executable found or not a git repo?")
 			logx.Log("%v", err)
 			// os.Exit(1)
 			gBuildInfo.GitRevision = "-unknown-"
@@ -141,7 +142,7 @@ func prepareBuildInfo() {
 			logx.Colored(logx.Green, "git.summary: %v", gBuildInfo.GitSummary)
 		})
 		if err != nil {
-			logx.Warn("No suitable 'git' executable found or not a git repo.")
+			logx.Warn("Cannot git describe. No suitable 'git' executable found or not a git repo?")
 			logx.Log("%v", err)
 			// os.Exit(1)
 			gBuildInfo.GitSummary = ""
@@ -152,7 +153,7 @@ func prepareBuildInfo() {
 			logx.Colored(logx.Green, "git.description: %v", gBuildInfo.GitDesc)
 		})
 		if err != nil {
-			logx.Warn("No suitable 'git' executable found or not a git repo.")
+			logx.Warn("Cannot retrieve last commit detail. No suitable 'git' executable found or not a git repo?")
 			logx.Log("%v", err)
 			// os.Exit(1)
 			gBuildInfo.GitDesc = ""
@@ -188,7 +189,7 @@ func prepareWithGoEnv() {
 			}
 		}
 
-		if err := scanner.Err(); err != nil {
+		if err = scanner.Err(); err != nil {
 			logx.Fatal("Error: %v", err)
 		}
 

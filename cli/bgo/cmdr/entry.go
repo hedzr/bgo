@@ -1,8 +1,6 @@
 package cmdr
 
 import (
-	"fmt"
-
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/log"
 	"gopkg.in/hedzr/errors.v3"
@@ -27,5 +25,6 @@ func onUnhandledErrorHandler(err interface{}) {
 }
 
 func dumpStacks() {
-	fmt.Printf("\n\n=== BEGIN goroutine stack dump ===\n%s\n=== END goroutine stack dump ===\n\n", errors.DumpStacksAsString(true))
+	//nolint:lll //no
+	log.Printf("\n\n=== BEGIN goroutine stack dump ===\n%s\n=== END goroutine stack dump ===\n\n", errors.DumpStacksAsString(true))
 }

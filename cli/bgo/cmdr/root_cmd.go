@@ -2,12 +2,13 @@ package cmdr
 
 //nolint:goimports //so what
 import (
+	"os"
+	"strings"
+
 	"github.com/hedzr/bgo/internal/logic"
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/cmdr/conf"
-	"os"
-	"strings"
 )
 
 //nolint:nakedret //so what

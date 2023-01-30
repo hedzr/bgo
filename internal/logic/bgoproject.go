@@ -11,7 +11,7 @@ type (
 	ProjectWrap struct {
 		Project `yaml:",omitempty,inline,flow" json:"project" toml:"project,omitempty"`
 	}
-
+	//nolint:lll //no
 	Project struct {
 		Name    string `yaml:"name,omitempty" json:"name,omitempty" toml:"name,omitempty"`          // appName if specified
 		Dir     string `yaml:"dir" json:"dir" toml:"dir"`                                           // root dir of this module/cli-app
@@ -100,7 +100,7 @@ func (p *Project) applyPI(pi *pkgInfo) {
 	}
 }
 
-func (p *Project) inIntSlice(val int, slice []int) (yes bool) { // nolint
+func (p *Project) inIntSlice(val int, slice []int) (yes bool) { //nolint:unused //no
 	for _, v := range slice {
 		if yes = val == v; yes {
 			break

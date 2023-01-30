@@ -2,17 +2,18 @@ package cmdr
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/cmdr/tool"
 	"github.com/hedzr/logex"
 )
 
-func prd(key string, val interface{}, format string, params ...interface{}) { // nolint
-	fmt.Printf("         [--%v] %v, %v\n", key, val, fmt.Sprintf(format, params...))
+func prdf(key string, val interface{}, format string, params ...interface{}) { //nolint:unused //future
+	log.Printf("         [--%v] %v, %v\n", key, val, fmt.Sprintf(format, params...))
 }
 
-func soundex(root cmdr.OptCmd) { // nolint
+func soundex(root cmdr.OptCmd) { //nolint:unused,funlen //future
 	// soundex
 
 	parent := cmdr.NewSubCmd().Titles("soundex", "snd", "sndx", "sound").
@@ -20,13 +21,13 @@ func soundex(root cmdr.OptCmd) { // nolint
 		Group("Test").
 		TailPlaceholder("[text1, text2, ...]").
 		PreAction(func(cmd *cmdr.Command, remainArgs []string) (err error) {
-			fmt.Printf("[PRE] DebugMode=%v, TraceMode=%v. InDebugging/IsDebuggerAttached=%v\n",
+			log.Printf("[PRE] DebugMode=%v, TraceMode=%v. InDebugging/IsDebuggerAttached=%v\n",
 				cmdr.GetDebugMode(), logex.GetTraceMode(), cmdr.InDebugging())
 			for ix, s := range remainArgs {
-				fmt.Printf("[PRE] %5d. %s\n", ix, s)
+				log.Printf("[PRE] %5d. %s\n", ix, s)
 			}
 
-			fmt.Printf("[PRE] Debug=%v, Trace=%v\n", cmdr.GetDebugMode(), cmdr.GetTraceMode())
+			log.Printf("[PRE] Debug=%v, Trace=%v\n", cmdr.GetDebugMode(), cmdr.GetTraceMode())
 
 			// return nil to be continue,
 			// return cmdr.ErrShouldBeStopException to stop the following actions without error
@@ -35,29 +36,29 @@ func soundex(root cmdr.OptCmd) { // nolint
 		}).
 		Action(func(cmd *cmdr.Command, remainArgs []string) (err error) {
 			for ix, s := range remainArgs {
-				// fmt.Printf("[ACTION] %5d. %s\n", ix, s)
-				fmt.Printf("[ACTION] %5d. %s => %s\n", ix, s, tool.Soundex(s))
+				// log.Printf("[ACTION] %5d. %s\n", ix, s)
+				log.Printf("[ACTION] %5d. %s => %s\n", ix, s, tool.Soundex(s))
 			}
 
-			prd("bool", cmdr.GetBoolR("soundex.bool"), "")
-			prd("int", cmdr.GetIntR("soundex.int"), "")
-			prd("int64", cmdr.GetInt64R("soundex.int64"), "")
-			prd("uint", cmdr.GetUintR("soundex.uint"), "")
-			prd("uint64", cmdr.GetUint64R("soundex.uint64"), "")
-			prd("float32", cmdr.GetFloat32R("soundex.float32"), "")
-			prd("float64", cmdr.GetFloat64R("soundex.float64"), "")
-			prd("complex64", cmdr.GetComplex64R("soundex.complex64"), "")
-			prd("complex128", cmdr.GetComplex128R("soundex.complex128"), "")
+			prdf("bool", cmdr.GetBoolR("soundex.bool"), "")
+			prdf("int", cmdr.GetIntR("soundex.int"), "")
+			prdf("int64", cmdr.GetInt64R("soundex.int64"), "")
+			prdf("uint", cmdr.GetUintR("soundex.uint"), "")
+			prdf("uint64", cmdr.GetUint64R("soundex.uint64"), "")
+			prdf("float32", cmdr.GetFloat32R("soundex.float32"), "")
+			prdf("float64", cmdr.GetFloat64R("soundex.float64"), "")
+			prdf("complex64", cmdr.GetComplex64R("soundex.complex64"), "")
+			prdf("complex128", cmdr.GetComplex128R("soundex.complex128"), "")
 
-			prd("single", cmdr.GetBoolR("soundex.single"), "")
-			prd("double", cmdr.GetBoolR("soundex.double"), "")
-			prd("norway", cmdr.GetBoolR("soundex.norway"), "")
-			prd("mongo", cmdr.GetBoolR("soundex.mongo"), "")
+			prdf("single", cmdr.GetBoolR("soundex.single"), "")
+			prdf("double", cmdr.GetBoolR("soundex.double"), "")
+			prdf("norway", cmdr.GetBoolR("soundex.norway"), "")
+			prdf("mongo", cmdr.GetBoolR("soundex.mongo"), "")
 			return
 		}).
 		PostAction(func(cmd *cmdr.Command, remainArgs []string) {
 			for ix, s := range remainArgs {
-				fmt.Printf("[POST] %5d. %s\n", ix, s)
+				log.Printf("[POST] %5d. %s\n", ix, s)
 			}
 		}).
 		AttachTo(root)
@@ -100,7 +101,8 @@ func soundex(root cmdr.OptCmd) { // nolint
 					Group("2000.Float").
 					EnvKeys("E", "E2").
 					AttachTo(parent)
-	cmdr.NewFloat64(3.14159265358979323846264338327950288419716939937510582097494459230781640628620899). //nolint:gomnd //so what
+
+	cmdr.NewFloat64(3.14159265358979323846264338327950288419716939937510582097494459230781640628620899). //nolint:gomnd,lll //so what
 														Titles("float64", "f64").
 														Description("A float64 flag with a `PI` value", "").
 														Group("2000.Float").
@@ -148,7 +150,7 @@ func soundex(root cmdr.OptCmd) { // nolint
 		AttachTo(parent)
 }
 
-func panicTest(root cmdr.OptCmd) { // nolint
+func panicTest(root cmdr.OptCmd) { //nolint:unused //future
 	// panic test
 
 	pa := cmdr.NewSubCmd().Titles("panic-test", "pa", "panic").
@@ -164,7 +166,7 @@ func panicTest(root cmdr.OptCmd) { // nolint
 		Description("").
 		Group("Test").
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
-			fmt.Println(slice1[100])
+			println(slice1[100])
 			return
 		}).
 		AttachTo(pa)
@@ -173,7 +175,7 @@ func panicTest(root cmdr.OptCmd) { // nolint
 		Description("").
 		Group("Test").
 		Action(func(cmd *cmdr.Command, args []string) (err error) {
-			fmt.Println(val / zeroVal)
+			println(val / zeroVal)
 			return
 		}).
 		AttachTo(pa)

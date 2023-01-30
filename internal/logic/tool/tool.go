@@ -22,16 +22,17 @@ func HasOrderPrefix(s string) bool {
 	return xre.MatchString(s)
 }
 
-// NextIn returns a random number with upper bound 'max'
+// NextIn returns a random number with upper bound 'max'.
 func NextIn(max int) int {
 	return rr.NextIn(max)
 }
 
-// NextString returns a random string with max length 'length'
+// NextString returns a random string with max length 'length'.
 func NextString(length int) string {
 	return rr.AsStrings().NextString(length)
 }
 
+//nolint:gochecknoglobals //no
 var (
 	xre = regexp.MustCompile(`^([0-9A-Za-z]+[.-])?(.+)$`)
 	rr  = randomizer.New()

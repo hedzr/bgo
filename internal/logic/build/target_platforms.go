@@ -45,7 +45,7 @@ func (ss *TargetPlatforms) Init() (err error) {
 	return
 }
 
-func (ss *TargetPlatforms) setSource(pkgName string) {
+func (ss *TargetPlatforms) setSource(pkgName string) { //nolint:unused //no
 	ss.Sources[pkgName] = &DynBuildInfo{
 		AppName:     path.Base(pkgName),
 		Version:     "",

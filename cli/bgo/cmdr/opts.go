@@ -8,13 +8,14 @@ import (
 	"github.com/hedzr/logex/build"
 )
 
-var options []cmdr.ExecOption
+var options []cmdr.ExecOption //nolint:gochecknoglobals //future
 
 //nolint:gochecknoinits //must have
 func init() {
-	options = append(options, cmdr.WithUnhandledErrorHandler(onUnhandledErrorHandler)) //nolint:gocritic
+	options = append(options, cmdr.WithUnhandledErrorHandler(onUnhandledErrorHandler)) //nolint:gocritic //no
 	// cmdr.WithUnhandledErrorHandler(onUnhandledErrorHandler)
 
+	//nolint:lll //future
 	options = append(options, cmdr.WithLogx(build.New(build.NewLoggerConfigWith(defaultDebugEnabled, defaultLoggerBackend, defaultLoggerLevel, log.WithTimestamp(true, "")))))
 
 	options = append(options, cmdr.WithHelpTailLine(`
@@ -63,7 +64,7 @@ func init() {
 		".$APPNAME.yml",
 	}
 	locations = append(locations, cmdr.GetPredefinedAlterLocations()...)
-	options = append(options, cmdr.WithAlterLocations(locations...)) //nolint:gocritic
+	options = append(options, cmdr.WithAlterLocations(locations...)) //nolint:gocritic //no
 
 	// in our internal build (with -tags="test delve"), those
 	// multi-level sub-commands need the auto default action

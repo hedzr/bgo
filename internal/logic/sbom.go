@@ -2,13 +2,15 @@ package logic
 
 import (
 	"debug/buildinfo"
-	"fmt"
-	"github.com/hedzr/bgo/internal/logic/logx"
+	"log"
 	"os"
 	"path/filepath"
 
-	"github.com/hedzr/cmdr"
+	"github.com/hedzr/bgo/internal/logic/logx"
+
 	"gopkg.in/hedzr/errors.v3"
+
+	"github.com/hedzr/cmdr"
 )
 
 func cmdrSubCmdSBOM(root cmdr.OptCmd) {
@@ -45,7 +47,7 @@ func sbomAction(cmd *cmdr.Command, args []string) (err error) {
 		p, _ := os.Executable()
 		p, _ = filepath.Abs(p)
 		file := p
-		//file := exec.GetExecutablePath()
+		// file := exec.GetExecutablePath()
 		logx.Colored(logx.Green, "SBOM on %v", file)
 		ec.Attach(sbomOne(file))
 	}
@@ -58,7 +60,7 @@ func sbomOne(file string) (err error) {
 		return
 	}
 
-	fmt.Printf(`SBOM:
+	log.Printf(`SBOM:
   executable: %q
   go-version: %v
   path: %v
@@ -73,12 +75,13 @@ func sbomOne(file string) (err error) {
 	)
 
 	for _, d := range inf.Settings {
-		fmt.Printf("    - %q: %v\n", d.Key, d.Value)
+		log.Printf("    - %q: %v\n", d.Key, d.Value)
 	}
-	fmt.Println("  depends:")
+	log.Println("  depends:")
 	for _, d := range inf.Deps {
 		// str := fmt.Sprintf("%#v", *d)
-		fmt.Printf("    - debug-module: { path: %q, version: %q, sum: %q, replace: %#v } \n", d.Path, d.Version, d.Sum, d.Replace)
+		log.Printf("    - debug-module: { path: %q, version: %q, sum: %q, replace: %#v } \n",
+			d.Path, d.Version, d.Sum, d.Replace)
 	}
 	return
 }

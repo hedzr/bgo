@@ -63,6 +63,7 @@ func cmdrOptsScopes(cmd cmdr.OptCmd) {
 func cmdrOptsBuildCommons(cmd cmdr.OptCmd) { //nolint:funlen //so what
 	cmdr.NewStringSlice().
 		Titles("osarch", "arch", "arch").
+		//nolint:lll //no
 		Description("Specify the CPU-Arch list (comma separated or multi times)", `Specify the CPU-Arch list (comma separated or multi times)
 		Such as '--arch arm64 --arch amd64,386'.
 		The available list can be dumped by 'go tool dist list'`).
@@ -73,6 +74,7 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) { //nolint:funlen //so what
 		AttachTo(cmd)
 	cmdr.NewStringSlice().
 		Titles("os", "os").
+		//nolint:lll //no
 		Description("Specify the OS list (comma separated or multi times)", `Specify the OS list (comma separated or multi times)
 		Such as '--os linux --os plan9 --os darwin,windows'.
 		The available list can be dumped by 'go tool dist list'`).
@@ -83,6 +85,7 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) { //nolint:funlen //so what
 		AttachTo(cmd)
 	cmdr.NewStringSlice().
 		Titles("for", "for").
+		//nolint:lll //no
 		Description("Specify the OS/arch list (comma separated or multi times)", `Specify the OS list (comma separated or multi times)
 		Such as '--for linux/arm64 --os plan9/amd64'.
 		The available list can be dumped by 'go tool dist list'`).
@@ -94,6 +97,7 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) { //nolint:funlen //so what
 
 	cmdr.NewStringSlice().
 		Titles("tags", "tags").
+		//nolint:lll //no
 		Description("Additional '-tags' value to pass to go build (comma separated or multi times)", `Additional '-tags' value to pass to go build (comma separated or multi times)
 		Such as '--tags isdelve --tags private --os aws-build,lan-build'.`).
 		ToggleGroup("").
@@ -169,6 +173,7 @@ func cmdrOptsBuildCommons(cmd cmdr.OptCmd) { //nolint:funlen //so what
 		AttachTo(cmd)
 	cmdr.NewBool().
 		Titles("msan", "msan").
+		//nolint:lll //no
 		Description("enable --msan building (enable interoperation with memory sanitizer)", `enable --msan building (enable interoperation with memory sanitizer).
 		Supported only on linux/amd64, linux/arm64
 		and only with Clang/LLVM as the host C compiler.
@@ -274,6 +279,7 @@ func cmdrOptsBuildControls(cmd cmdr.OptCmd) {
 func cmdrSubCmdInit(root cmdr.OptCmd) {
 	initCmd := cmdr.NewSubCmd().Titles("init", "i").
 		Description(`scan folder and save <i>result</i> to <code>bgo.yml</code>, as <mark>project settings</mark>`).
+		//nolint:lll //no
 		// Description(`<del>scan</del> <u><font color="yellow">folder</font></u> and save <i>result</i> to <code>bgo.yml</code>, as <mark>project settings</mark>`).
 		Action(initAction).
 		AttachTo(root)

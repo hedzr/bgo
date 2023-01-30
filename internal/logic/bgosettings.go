@@ -22,6 +22,7 @@ type (
 		SavedAs []string `yaml:"saved-as,omitempty" json:"saved_as,omitempty" toml:"saved_as,omitempty"`
 	}
 
+	//nolint:lll //no
 	Output struct {
 		Dir         string `yaml:",omitempty" json:"dir,omitempty" toml:"dir,omitempty"`                   // Base Dir
 		SplitTo     string `yaml:"split-to,omitempty" json:"split_to,omitempty" toml:"split_to,omitempty"` // see build.Context, Group, Project, ... | see also BuildContext struct
@@ -31,7 +32,7 @@ type (
 	}
 
 	ProjectGroup struct {
-		LeadingText   string                  `yaml:"leading-text,omitempty" json:"leading_text,omitempty" toml:"leading_text,omitempty"`
+		LeadingText   string                  `yaml:"leading-text,omitempty" json:"leading_text,omitempty" toml:"leading_text,omitempty"` //nolint:lll //no
 		Items         map[string]*ProjectWrap `yaml:"items" json:"items,omitempty" toml:"items,omitempty"`
 		*build.Common `yaml:",omitempty,inline" json:",omitempty" toml:",omitempty"`
 	}

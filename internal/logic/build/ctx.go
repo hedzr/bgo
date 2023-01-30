@@ -48,7 +48,7 @@ func (bc *Context) FindAppName(knownName, knownProjectName, knownPackageName str
 
 func (bc *Context) CalcVersion() (ver string) {
 	ver = bc.Version
-	if bc.GitRevision[0] == 'v' {
+	if bc.GitRevision[0] == 'v' { //nolint:gocritic //no
 		ver = bc.GitRevision
 	} else if bc.GitVersion[0] == 'v' {
 		ver = bc.GitVersion
