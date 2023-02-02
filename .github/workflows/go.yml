@@ -76,7 +76,7 @@ jobs:
   release-build:
     needs: coverage
     env:
-      ACTOR_EMAIL: hedzrz@gmail.com
+      ACTOR_EMAIL: hedzr@duck.com
       BUMPER_VER: v0.2.0
       HOMEBREW_TAP: hedzr/homebrew-brew
       BINARIES_ASC: ./bin/binaries.asc
@@ -235,6 +235,7 @@ jobs:
             --sha $BINARIES_ASC \
             --token ${GH_TOKEN} \
             --push
+
       - name: bump launchpad
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
