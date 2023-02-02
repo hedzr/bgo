@@ -23,11 +23,11 @@ app:
 
       ldflags: [ "-s", "-w" ]
 
-      reduce: true          # enable deep reduce building: disable function inlining, bounds checks
+      reduce: true                                      # enable deep reduce building: disable function inlining, bounds checks
       # strip.runtime-pclntab: true
       upx:
         enable: false
-        params: [ "-9" ]          # you can override default params of upx: `upx --ultra-brute --best`
+        params: [ "-9" ]                                # you can override default params of upx: `upx --ultra-brute --best`
 
       # build scopes: auto, full, short
       #
@@ -56,7 +56,7 @@ app:
         - "study*"
         - "test*"
 
-      goproxy:                # optional, string,
+      goproxy:                          # optional, string,
 
       projects:
         000-default-group:
@@ -68,28 +68,28 @@ app:
               gocmd: go1.18beta1
               os: [ "darwin" ]
               arch: [ "amd64" ]
-              version:   # if git revision cannot be retrieved, or just a fixed version be set here
+              version:                  # if git revision cannot be retrieved, or just a fixed version be set here
               disable: true
 
-            009-bgo-disabled: # <- form: sortingKey-projectName
+            009-bgo-disabled:           # <- form: sortingKey-projectName
               dir: cli/bgo
               disabled: true
 
-            001-bgo: # <- form: sortingKey-projectName
-              name:      # <- app name
-              version: 1.0.0   # this field could be replaced with current git-revision
+            001-bgo:                    # <- form: sortingKey-projectName
+              name:                     # <- app name
+              version: 1.0.0            # this field could be replaced with current git-revision
               dir: .
               gen: false
               install: true
               cgo: false
               race: false
-              keep-workdir: false   # true: don't switch workdir to 'dir'
-              use-workdir:          # specify a special workdir
-              # reduce: true          # enable deep reduce building: disable function inlining, bounds checks
+              keep-workdir: false       # true: don't switch workdir to 'dir'
+              use-workdir:              # specify a special workdir
+              # reduce: true            # enable deep reduce building: disable function inlining, bounds checks
               # # strip.runtime-pclntab: true
               # upx:
               #   enable: true
-              #   params: []          # you can override default params of upx: `upx --ultra-brute --best`
+              #   params: []            # you can override default params of upx: `upx --ultra-brute --best`
               os: [ "linux","darwin" ]
               arch: [ "amd64" ]
               for: [ "windows/amd64" ]
@@ -99,14 +99,14 @@ app:
                   values:
                     AppName: "{{.AppName}}"
                     Version: "`git describe --tags --abbrev=16`" # "{{.Version}}"
-                    Buildstamp: "{{.BuildTime}}" # or shell it
-                    BuilderComments: "" # yes you can
+                    Buildstamp: "{{.BuildTime}}"        # or shell it
+                    BuilderComments: ""                 # yes you can
                     Githash: "`git rev-parse --short HEAD`"
-                    # Githash: "{{.GitRevision}}"  # or shell it: "`git describe --tags --abbrev=9`"
-                    GoVersion: "{{.GoVersion}}"  # or shell it
+                    # Githash: "{{.GitRevision}}"       # or shell it: "`git describe --tags --abbrev=9`"
+                    GoVersion: "{{.GoVersion}}"         # or shell it
                     ServerID: "{{.RandomString}}" #
-                    SerialString: "{{.RandomString}}" # since cmdr v1.10.23+
-                    Serial: "{{.Serial}}" # since cmdr v1.10.23+
+                    SerialString: "{{.RandomString}}"   # since cmdr v1.10.23+
+                    Serial: "{{.Serial}}"               # since cmdr v1.10.23+
               # NOTE that post-action and pre-action will be interpreted
               # by /bin/bash or powershell.exe
               # BUT, these following codes just works for bash shell.
@@ -127,11 +127,11 @@ app:
                 fi
                 echo "OS: $OSTYPE / {{.Info.GOOS}}, Arch: {{.Info.GOARCH}}"
 
-              ldflags: [ "-s", "-w" ] # default ldflags is to get the smaller build for releasing
+              ldflags: [ "-s", "-w" ]                   # default ldflags is to get the smaller build for releasing
               asmflags: [ ]
               gcflags: [ ]
               gccgoflags: [ ]
-              args: [ ] # these args will be passed to `go build`. such as "-a", "-v"
+              args: [ ]                                 # these args will be passed to `go build`. such as "-a", "-v"
 
               # msan: false
               # asan: false
