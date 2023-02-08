@@ -30,17 +30,27 @@ app:
         # aliases: [check]
         # name: ""
         invoke-sh: |
-          # which golint >/dev/null || go install golang.org/x/lint/golint
-          # which gocyclo >/dev/null || go install github.com/fzipp/gocyclo
+          # which golint >/dev/null      || go install golang.org/x/lint/golint
+          # which gocyclo >/dev/null     || go install github.com/fzipp/gocyclo
+          which govulncheck >/dev/null   || go install -v golang.org/x/vuln/cmd/govulncheck@latest
+          which golangci-lint >/dev/null || go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+          which gofumpt >/dev/null       || go install mvdan.cc/gofumpt@latest
           echo
           echo
           echo "Command hit: {{.Cmd.GetDottedNamePath}}"
           echo "fmt {{.ArgsString}} ..."
-          gofmt -l -s -w {{range .Args}}{{.}}{{end}}
+          gofumpt -l -w {{range .Args}}{{.}}{{end}}
+          echo
+          echo
           echo "lint {{.ArgsString}} ..."
-          golint {{.ArgsString}}
-          echo "cyclo ."
-          gocyclo -top 13 .
+          golangci-lint {{.ArgsString}}
+          # echo
+          # echo "cyclo ."
+          # gocyclo -top 13 .
+          echo
+          echo
+          echo "vuln-check {{.ArgsString}} ..."
+          gpvulncheck ./...
         # invoke: "another cmdr command"
         # invoke-proc: "..." # same with invoke-sh
         # shell: /usr/bin/env bash  # optional, default is /bin/bash. Or 'powershell.exe' for windows
