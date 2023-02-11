@@ -2,7 +2,6 @@ package logic
 
 import (
 	"debug/buildinfo"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -38,8 +37,10 @@ func sbomAction(cmd *cmdr.Command, args []string) (err error) {
 	var caught bool
 	var ec = errors.New("processing executables")
 	defer ec.Defer(&err)
+
+	logx.Log("SBOM-LIST:\n")
 	for _, file := range args {
-		logx.Colored(logx.Green, "checking %v ...", file)
+		logx.Colored(logx.Green, "  # Checking %v ...", file)
 		ec.Attach(sbomOne(file))
 		caught = true
 	}
@@ -48,7 +49,7 @@ func sbomAction(cmd *cmdr.Command, args []string) (err error) {
 		p, _ = filepath.Abs(p)
 		file := p
 		// file := exec.GetExecutablePath()
-		logx.Colored(logx.Green, "SBOM on %v", file)
+		logx.Colored(logx.Green, `  # EXECUTABLE: "%v"`, file)
 		ec.Attach(sbomOne(file))
 	}
 	return
@@ -60,28 +61,36 @@ func sbomOne(file string) (err error) {
 		return
 	}
 
-	log.Printf(`SBOM:
-  executable: %q
-  go-version: %v
-  path: %v
-  module-path: %v
-  module-version: %v
-  module-sum: %v
-  module-replace: <ignored>
-  settings:
+	var defaultForeColor = logx.LightGray
+	var valColor = func(v any) string {
+		return logx.ToColor(logx.White, "%v", v)
+	}
+	var valSharpColor = func(v any) string {
+		return logx.ToColor(logx.White, "%#v", v)
+	}
+	logx.Colored(defaultForeColor, `  - SBOM:
+    executable: "%v"
+    go-version: %v
+    path: %v
+    module-path: %v
+    module-version: %v
+    module-sum: %v
+    module-replace: <ignored>
+    settings:
 `,
-		file, inf.GoVersion, inf.Path,
-		inf.Main.Path, inf.Main.Version, inf.Main.Sum,
+		valColor(file), valColor(inf.GoVersion), valColor(inf.Path),
+		valColor(inf.Main.Path), valColor(inf.Main.Version), valColor(inf.Main.Sum),
 	)
 
 	for _, d := range inf.Settings {
-		log.Printf("    - %q: %v\n", d.Key, d.Value)
+		logx.Colored(defaultForeColor, "      - %q: %v\n", d.Key, valColor(d.Value))
 	}
-	log.Println("  depends:")
+	logx.Colored(defaultForeColor, "    depends:")
 	for _, d := range inf.Deps {
 		// str := fmt.Sprintf("%#v", *d)
-		log.Printf("    - debug-module: { path: %q, version: %q, sum: %q, replace: %#v } \n",
-			d.Path, d.Version, d.Sum, d.Replace)
+		logx.Colored(defaultForeColor, `      - debug-module: { path: "%v", version: "%v", sum: "%v", replace: "%v" }
+`,
+			valColor(d.Path), valColor(d.Version), valColor(d.Sum), valSharpColor(d.Replace))
 	}
 	return
 }
