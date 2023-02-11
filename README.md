@@ -37,7 +37,7 @@ All things you need to do is entering the golang project directory and entering 
 
 - v0.5.7
 
-  - fixed wrong loops when `bgo` in auto mode: `bgo -s`
+  - fixed wrong loops when `bgo` in auto mode: `bgo -a`/`bgo`/`bgo build`
   - reviewed and clear the codes for merging sub-configs
   - code style
   - more subtests
