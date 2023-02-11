@@ -6,8 +6,9 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
+
+	"github.com/hedzr/bgo/internal/logic/logx"
 )
 
 type TargetPlatforms struct {
@@ -18,6 +19,9 @@ type TargetPlatforms struct {
 	// Sources is a map by key PackageName
 	// key: packageName
 	Sources map[string]*DynBuildInfo `yaml:"sources"`
+	// Locked identify only os,arch pairs in OsArchMap should
+	// be applied for building.
+	Locked bool
 }
 
 func NewTargetPlatforms() *TargetPlatforms {

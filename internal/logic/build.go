@@ -14,15 +14,17 @@ import (
 	"github.com/hedzr/log/exec"
 	"gopkg.in/hedzr/errors.v3"
 
+	"github.com/hedzr/cmdr"
+
 	"github.com/hedzr/bgo/internal/logic/build"
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/bgo/internal/logic/tool"
-	"github.com/hedzr/cmdr"
 )
 
 func buildCurr(buildScope string, cmd *cmdr.Command, args []string) (err error) {
 	tp := build.NewTargetPlatforms()
 	tp.SetOsArch(runtime.GOOS, runtime.GOARCH)
+	tp.Locked = true
 	err = buildFor(buildScope, tp, nil, nil, cmd, args)
 	return
 }
@@ -215,6 +217,23 @@ func buildPackages(tpBase *build.TargetPlatforms, bc *build.Context, bs *BgoSett
 		// }
 	}
 
+	if tpBase.Locked {
+		err = loopTargetPlatforms(tpBase, func(os, arch string) (stop bool, err error) {
+			if cmdr.GetTraceMode() {
+				logx.Dim("%v\n", leftPad(yamlText(pi.p.Common), 5)) //nolint:gomnd //no
+			}
+
+			prepareBuildContextForEachProjectTarget(bc, os, arch,
+				pi.p, pi.projectName, pi.groupKey, pi.groupLeadingText)
+
+			if err = buildProject(bc, bs); err != nil {
+				stop = true
+			}
+			return
+		})
+		return
+	}
+
 	err = loopAllProjects(tpBase, bc, bs, func(bc *build.Context, bs *BgoSettings) (err error) {
 		if cmdr.GetTraceMode() {
 			logx.Dim("%v\n", leftPad(yamlText(pi.p.Common), 5)) //nolint:gomnd //no
@@ -232,19 +251,6 @@ func buildPackages(tpBase *build.TargetPlatforms, bc *build.Context, bs *BgoSett
 		return
 	})
 
-	// err = loopTargetPlatforms(tpBase, func(os, arch string) (stop bool, err error) {
-	// 	if cmdr.GetTraceMode() {
-	// 		logx.Dim("%v\n", leftPad(yamlText(pi.p.Common), 5)) //nolint:gomnd //no
-	// 	}
-	//
-	// 	prepareBuildContextForEachProjectTarget(bc, os, arch,
-	// 		pi.p, pi.projectName, pi.groupKey, pi.groupLeadingText)
-	//
-	// 	if err = buildProject(bc, bs); err != nil {
-	// 		stop = true
-	// 	}
-	// 	return
-	// })
 	return
 }
 
