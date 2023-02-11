@@ -215,20 +215,36 @@ func buildPackages(tpBase *build.TargetPlatforms, bc *build.Context, bs *BgoSett
 		// }
 	}
 
-	// err = loopAllProjects(tpBase, bc, bs, buildProject)
-	err = loopTargetPlatforms(tpBase, func(os, arch string) (stop bool, err error) {
+	err = loopAllProjects(tpBase, bc, bs, func(bc *build.Context, bs *BgoSettings) (err error) {
 		if cmdr.GetTraceMode() {
 			logx.Dim("%v\n", leftPad(yamlText(pi.p.Common), 5)) //nolint:gomnd //no
 		}
 
-		prepareBuildContextForEachProjectTarget(bc, os, arch,
-			pi.p, pi.projectName, pi.groupKey, pi.groupLeadingText)
-
-		if err = buildProject(bc, bs); err != nil {
-			stop = true
+		var ec = errors.New("error occured when building all projects:")
+		defer ec.Defer(&err)
+		for _, os := range bs.Common.Os {
+			for _, arch := range bs.Common.Arch {
+				prepareBuildContextForEachProjectTarget(bc, os, arch,
+					pi.p, pi.projectName, pi.groupKey, pi.groupLeadingText)
+				ec.Attach(buildProject(bc, bs))
+			}
 		}
 		return
 	})
+
+	// err = loopTargetPlatforms(tpBase, func(os, arch string) (stop bool, err error) {
+	// 	if cmdr.GetTraceMode() {
+	// 		logx.Dim("%v\n", leftPad(yamlText(pi.p.Common), 5)) //nolint:gomnd //no
+	// 	}
+	//
+	// 	prepareBuildContextForEachProjectTarget(bc, os, arch,
+	// 		pi.p, pi.projectName, pi.groupKey, pi.groupLeadingText)
+	//
+	// 	if err = buildProject(bc, bs); err != nil {
+	// 		stop = true
+	// 	}
+	// 	return
+	// })
 	return
 }
 

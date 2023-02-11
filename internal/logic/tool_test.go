@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/hedzr/cmdr"
-	"github.com/hedzr/evendeep"
 	"gopkg.in/yaml.v3"
+
+	"github.com/hedzr/evendeep"
 )
 
 func TestDottedKeyInYaml(t *testing.T) {
@@ -63,7 +63,8 @@ func TestEmbedStruct0(t *testing.T) {
 
 	tgt := new(SB)
 
-	_ = evendeep.Copy(tgt, sb)
+	_ = evendeep.Copy(sb, tgt)
+	t.Logf("tgt: %v", *tgt)
 }
 
 func TestEmbedStruct1(t *testing.T) {
@@ -77,7 +78,8 @@ func TestEmbedStruct1(t *testing.T) {
 
 	tgt := new(SB)
 
-	_ = cmdr.Clone(tgt, sb)
+	_ = evendeep.Copy(sb, tgt)
+	t.Logf("tgt: %v", *tgt)
 }
 
 func TestEmbedStruct2(t *testing.T) {
