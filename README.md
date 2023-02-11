@@ -35,6 +35,12 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
+- v0.5.8
+
+  - fixed wrong loops when `bgo` in short mode: `bgo -s`
+  - improved subcmd `sbom` to produce pretty yaml format directly
+  - improved logx to recognize `--no-color`/`-nc`/`NO_COLOR=1`/`NOCOLOR=1` mode so that `bgo sbom -nc` can produce yaml outputs without ANSI Color Escape Sequences.
+
 - v0.5.7
 
   - fixed wrong loops when `bgo` in auto mode: `bgo -a`/`bgo`/`bgo build`

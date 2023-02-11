@@ -1,3 +1,4 @@
+// Package logx provides a wrapped standard output device like printf but with colored enhancements.
 package logx
 
 //nolint:goimports //i like it
