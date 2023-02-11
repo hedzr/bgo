@@ -7,8 +7,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/hedzr/cmdr"
 	"github.com/hedzr/log"
+
+	"github.com/hedzr/cmdr"
 )
 
 type lxS struct {
@@ -162,7 +163,10 @@ func Hilight(format string, args ...interface{}) { //nolint:goprintffuncname //s
 
 // DimV outputs formatted message to stdout while logger level less
 // than log.WarnLevel and cmdr is in verbose mode.
-// For log.SetLevel(log.ErrorLevel), the text will be discarded.
+//
+// For example, after log.SetLevel(log.ErrorLevel), the text via DimV will be discarded.
+//
+// While env-var VERBOSE=1, the text via DimV will be shown.
 func DimV(format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	// for the key scene who want quiet output, we may disable
 	// most of the messages by cmdr.SetLogLevel(log.ErrorLevel)
@@ -187,7 +191,8 @@ func Text(format string, args ...interface{}) { //nolint:goprintffuncname //so w
 
 // Dim outputs formatted message to stdout while logger level
 // less than log.WarnLevel.
-// For log.SetLevel(log.ErrorLevel), the text will be discarded.
+//
+// For example, after log.SetLevel(log.ErrorLevel), the text via Dim will be discarded.
 func Dim(format string, args ...interface{}) { //nolint:goprintffuncname //so what
 	// for the key scene who want quiet output, we may disable
 	// most of the messages by cmdr.SetLogLevel(log.ErrorLevel)
