@@ -5,8 +5,11 @@ app:
       # the predefined limitations
       # for guiding which os and arch will be building in auto scope.
       #
-      # If 'bgo.build.for' is empty slice, the whole available 'go tool dist list'
-      # will be used.
+      # If both 'bgo.build.for', 'bgo.build.os' and 'bgo.build.arch' are
+      # empty slices, all of available 'go tool dist list' will be used.
+      #
+      # If 'bgo.build.for' is defined and nonempty, 'os' and 'arch' will
+      # be ignored.
       #
       #for:
       #  - "linux/amd64"
@@ -92,7 +95,7 @@ app:
               #   params: []            # you can override default params of upx: `upx --ultra-brute --best`
               os: [ "linux","darwin" ]
               arch: [ "amd64" ]
-              for: [ "windows/amd64" ]
+              # for: ["windows/amd64"]
               tags: [ "test" ]
               extends:
                 - pkg: "github.com/hedzr/cmdr/conf"
