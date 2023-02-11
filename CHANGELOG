@@ -1,5 +1,13 @@
 # CHANGELOG
 
+- v0.5.7
+
+  - fixed wrong loops when `bgo` in auto mode: `bgo -s`
+  - reviewed and clear the codes for merging sub-configs
+  - code style
+  - more subtests
+  - upgrade deps
+
 - v0.5.6
 
   - added `args: [ ]` and `asan: false`

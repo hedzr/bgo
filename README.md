@@ -35,36 +35,15 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
-- v0.5.6
+- v0.5.7
 
-  - added `args: [ ]` and `asan: false`
-  - fixed the duplicated loops of building projects
-  - upgrade `hedzr/cmdr` to latest
-  - using `hedzr/evendeep`
-  - improve code style
+  - fixed wrong loops when `bgo` in auto mode: `bgo -s`
+  - reviewed and clear the codes for merging sub-configs
+  - code style
+  - more subtests
   - upgrade deps
-  - .1 -> .6
 
-- v0.5.0
-
-  - Deep Reduce Building: new option `reduce: true` in `.bgo.yaml` to enable `-gcflags=all=-l -B`
-  - Special Post-process via `upx`: new options `upx: { enable:true, params:[] }` in `.bgo.yaml`
-  - added new subcommand `run` to forward arguments to `go run`:  
-    `bgo run -- ./...` => `go run ./...`
-  - support more building args since [cmdr](https://github.com/hedzr/cmdr) 1.11.1: `BuilderComments`, `GitSummary` and `GitDesc`. See also changes in `.bgo.yaml`:
-
-    ```yaml
-              extends:
-                - pkg: "github.com/hedzr/cmdr/conf"
-                  values:
-                    BuilderComments: "" # yes you can
-    ```
-
-    `GitSummary` and `GitDesc` will be fetched automatically if you're using [cmdr](https://github.com/hedzr/cmdr).
-  - improved `bgo -#` build-info screen.
-  - improved and fixed subcommand `bgo sbom`.
-
-- Older releases [CHANGELOG](./CHANGELOG)
+- More in [CHANGELOG](https://github.com/hedzr/bgo/blob/master/CHANGELOG)
 
 ## Getting Started
 
