@@ -6,6 +6,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 )
 
@@ -164,4 +165,5 @@ func (ss *TargetPlatforms) FilterBy(scope string, forSlice, osSlice, archSlice [
 	}
 
 	ss.OsArchMap = oamNew.OsArchMap
+	logx.DimV("After FilterBy(), the TargetPlatforms are: %v", ss.OsArchMap)
 }

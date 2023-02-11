@@ -78,7 +78,7 @@ func (p *Project) apply(packageName string, bs *BgoSettings) {
 	if p.Common == nil {
 		p.Common = build.NewCommon()
 	}
-	p.Common.CloneFrom(bs.Common)
+	p.Common.MergeFrom(bs.Common)
 	if p.Package == "" && packageName != "" {
 		p.Package = packageName
 	}

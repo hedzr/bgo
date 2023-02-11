@@ -5,6 +5,7 @@ import (
 	"runtime"
 
 	"github.com/hedzr/evendeep"
+	"github.com/hedzr/evendeep/flags/cms"
 
 	"github.com/hedzr/bgo/internal/logic/logx"
 )
@@ -120,23 +121,43 @@ func NewCommon() *Common {
 }
 
 func (c *CommonBase) CloneFrom(from *CommonBase) {
-	cc := evendeep.New()
+	cc := evendeep.New(
+		evendeep.WithCopyStrategyOpt,
+		evendeep.WithStrategies(cms.OmitIfEmpty),
+	)
 	// cc := cmdr.StandardCopier
 	// cc.KeepIfFromIsNil = true
 	// cc.KeepIfFromIsZero = true
 	// cc.EachFieldAlways = true
-	if err := cc.CopyTo(from, c); err != nil {
+	if err := cc.CopyTo(from, &c); err != nil {
 		logx.Error("CommonBase.CloneFrom failed: %v", err)
 	}
 }
 
 func (c *Common) CloneFrom(from *Common) {
-	cc := evendeep.New()
+	cc := evendeep.New(
+		evendeep.WithCopyStrategyOpt,
+		evendeep.WithStrategies(cms.OmitIfEmpty),
+	)
 	// cc := cmdr.StandardCopier
 	// cc.KeepIfFromIsNil = true
 	// cc.KeepIfFromIsZero = true
 	// cc.EachFieldAlways = true
-	if err := cc.CopyTo(from, c); err != nil {
+	if err := cc.CopyTo(from, &c); err != nil {
+		logx.Error("Common.CloneFrom failed: %v", err)
+	}
+}
+
+func (c *Common) MergeFrom(from *Common) {
+	cc := evendeep.New(
+		evendeep.WithMergeStrategyOpt,
+		evendeep.WithStrategies(cms.OmitIfEmpty),
+	)
+	// cc := cmdr.StandardCopier
+	// cc.KeepIfFromIsNil = true
+	// cc.KeepIfFromIsZero = true
+	// cc.EachFieldAlways = true
+	if err := cc.CopyTo(from, &c); err != nil {
 		logx.Error("Common.CloneFrom failed: %v", err)
 	}
 }
