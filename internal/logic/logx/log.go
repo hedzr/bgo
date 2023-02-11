@@ -154,7 +154,11 @@ func Hilight(format string, args ...interface{}) { //nolint:goprintffuncname //s
 	}
 
 	_internalLogTo(func(sb strings.Builder, ln bool) {
-		_, _ = fmt.Fprintf(os.Stdout, "\x1b[0;1m%v\x1b[0m", sb.String())
+		if cmdr.GetNoColorMode() {
+			_, _ = fmt.Fprintf(os.Stdout, "%v", sb.String())
+		} else {
+			_, _ = fmt.Fprintf(os.Stdout, "\x1b[0;1m%v\x1b[0m", sb.String())
+		}
 		if !ln {
 			println() //nolint:forbidigo //no
 		}
@@ -176,7 +180,11 @@ func DimV(format string, args ...interface{}) { //nolint:goprintffuncname //so w
 
 	if IsVerboseMode() {
 		_internalLogTo(func(sb strings.Builder, ln bool) {
-			_, _ = fmt.Fprintf(os.Stdout, "\x1b[2m\x1b[37m%v\x1b[0m", sb.String())
+			if cmdr.GetNoColorMode() {
+				_, _ = fmt.Fprintf(os.Stdout, "%v", sb.String())
+			} else {
+				_, _ = fmt.Fprintf(os.Stdout, "\x1b[2m\x1b[37m%v\x1b[0m", sb.String())
+			}
 			if !ln {
 				println() //nolint:forbidigo //no
 			}
@@ -201,23 +209,33 @@ func Dim(format string, args ...interface{}) { //nolint:goprintffuncname //so wh
 	}
 
 	_internalLogTo(func(sb strings.Builder, ln bool) {
-		_, _ = fmt.Fprintf(os.Stdout, "\x1b[2m\x1b[37m%v\x1b[0m", sb.String())
+		if cmdr.GetNoColorMode() {
+			_, _ = fmt.Fprintf(os.Stdout, "%v", sb.String())
+		} else {
+			_, _ = fmt.Fprintf(os.Stdout, "\x1b[2m\x1b[37m%v\x1b[0m", sb.String())
+		}
 		if !ln {
 			println() //nolint:forbidigo //no
 		}
 	}, format, args...)
 }
 
-func ToDim(format string, args ...interface{}) string {
-	str := fmt.Sprintf(format, args...)
+func ToDim(format string, args ...interface{}) (str string) {
+	str = fmt.Sprintf(format, args...)
+	if cmdr.GetNoColorMode() {
+		return
+	}
 	str = fmt.Sprintf("\x1b[2m\x1b[37m%v\x1b[0m", str)
-	return str
+	return
 }
 
-func ToColor(clr Color, format string, args ...interface{}) string {
-	str := fmt.Sprintf(format, args...)
+func ToColor(clr Color, format string, args ...interface{}) (str string) {
+	str = fmt.Sprintf(format, args...)
+	if cmdr.GetNoColorMode() {
+		return
+	}
 	str = fmt.Sprintf("\u001B[%dm%v\x1b[0m", clr, str)
-	return str
+	return
 }
 
 // ColoredV outputs formatted message to stdout while logger level
@@ -231,8 +249,12 @@ func ColoredV(clr Color, format string, args ...interface{}) { //nolint:goprintf
 
 	if IsVerboseMode() {
 		_internalLogTo(func(sb strings.Builder, ln bool) {
-			color(clr)
-			_, _ = fmt.Fprintf(os.Stdout, "%v\x1b[0m", sb.String())
+			if cmdr.GetNoColorMode() {
+				_, _ = fmt.Fprintf(os.Stdout, "%v", sb.String())
+			} else {
+				color(clr)
+				_, _ = fmt.Fprintf(os.Stdout, "%v\x1b[0m", sb.String())
+			}
 			if !ln {
 				println() //nolint:forbidigo //no
 			}
@@ -251,8 +273,12 @@ func Colored(clr Color, format string, args ...interface{}) { //nolint:goprintff
 	}
 
 	_internalLogTo(func(sb strings.Builder, ln bool) {
-		color(clr)
-		_, _ = fmt.Fprintf(os.Stdout, "%v\x1b[0m", sb.String())
+		if cmdr.GetNoColorMode() {
+			_, _ = fmt.Fprintf(os.Stdout, "%v", sb.String())
+		} else {
+			color(clr)
+			_, _ = fmt.Fprintf(os.Stdout, "%v\x1b[0m", sb.String())
+		}
 		if !ln {
 			println() //nolint:forbidigo //no
 		}
