@@ -3,7 +3,6 @@ package logic
 import (
 	"github.com/hedzr/bgo/internal/logic/build"
 	"github.com/hedzr/cmdr"
-	"github.com/hedzr/evendeep"
 )
 
 type (
@@ -143,30 +142,6 @@ func (s *BgoSettings) _init2() {
 		if !manually {
 			s.Os = nil
 			s.Arch = nil
-		}
-	}
-}
-
-func (s *BgoSettings) PullDownCommonSettings() {
-	c := evendeep.New(evendeep.WithCopyStrategyOpt, evendeep.WithWipeTargetSliceFirstOpt)
-	// c := cmdr.StandardCopier // make a copy
-	// c.KeepIfFromIsNil = true
-	// c.KeepIfFromIsZero = true
-	// c.EachFieldAlways = true
-	// c.IgnoreIfNotEqual = true
-
-	// Copying the common settings from the up level if necessary.
-	// It means:
-	//   the top level (app.bgo.build.xxx) -> project.common
-	//   the project-group level -> project.common
-	for gn, grp := range s.Projects {
-		for pn, prj := range grp.Items {
-			if prj.Common == nil {
-				prj.Common = build.NewCommon()
-			}
-			_ = c.CopyTo(s.Common, prj.Common)
-			_ = c.CopyTo(grp.Common, prj.Common)
-			s.Projects[gn].Items[pn] = prj
 		}
 	}
 }
