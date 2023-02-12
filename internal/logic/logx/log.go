@@ -26,6 +26,15 @@ const extrasLogSkip = 4
 // While you are storing a log.Logger copy locally, DO NOT put these
 // codes into func init() since it's too early to get a unconfigurec
 // log.Logger.
+//
+// The best time to call LazyInit is at cmdr.Root(...).AddGlobalPreAction(...)
+//
+//	root := cmdr.Root(appName, version).
+//			AddGlobalPreAction(func(cmd *cmdr.Command, args []string) (err error) {
+//				logx.LazyInit()
+//			})
+//
+// For this usage, refer to: https://github.com/hedzr/bgo/blob/master/cli/bgo/cmd/root_cmd.go#L31
 func LazyInit() { lazyInit() }
 func lazyInit() *lxS {
 	onceLxInitializer.Do(func() {
