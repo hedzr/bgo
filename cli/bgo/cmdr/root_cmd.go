@@ -5,10 +5,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hedzr/bgo/internal/logic"
-	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/cmdr/conf"
+
+	"github.com/hedzr/bgo/internal/logic"
+	"github.com/hedzr/bgo/internal/logic/logx"
 )
 
 //nolint:nakedret //so what
@@ -26,7 +27,7 @@ func buildRootCmd() (rootCmd *cmdr.RootCommand) {
 			// cmdr.Set("enable-ueh", true)
 			// err = internal.App().Init(cmd, args) // App() will be auto-closed
 
-			// our local logx initialize itself here. logx is an enhancement and wrapper for hedzr/log(ex)
+			// our local logx initialize itself here. logx is used for colored message outputting
 			logx.LazyInit()
 
 			logx.Verbose("VERBOSE: %v, DEBUG: %v", logx.ToDim("%v", logx.IsVerboseMode()), logx.ToDim("%v", cmdr.GetDebugMode()))
