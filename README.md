@@ -40,6 +40,16 @@ All things you need to do is entering the golang project directory and entering 
   - fixed wrong loops when `bgo` in short mode: `bgo -s`
   - improved subcmd `sbom` to produce pretty yaml format directly
   - improved logx to recognize `--no-color`/`-nc`/`NO_COLOR=1`/`NOCOLOR=1` mode so that `bgo sbom -nc` can produce yaml outputs without ANSI Color Escape Sequences.
+  - `bgo chk` updated: it's shipped as part of bgo bundle (Homebrew), see its source script at [`check-code-qualities`](https://github.com/hedzr/bgo/blob/master/ci/etc/bgo/conf.d/80.aliases.yml).
+
+	> You may copy `./ci/etc/bgo` folder as one of these locations to get it work:
+	>
+	> - `$HOME/.config/bgo`
+	> - `$HOME/.bgo`
+	> - `/usr/local/etc/bgo` (for macOS only)
+	> - `/etc/bgo` (for linux only)
+
+    `bgo chk` now run these tools for checking code qualities: govulncheck, golangci-lint, gofumpt.
 
 - v0.5.7
 
