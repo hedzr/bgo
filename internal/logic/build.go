@@ -239,7 +239,7 @@ func buildPackages(tpBase *build.TargetPlatforms, bc *build.Context, bs *BgoSett
 			logx.Dim("%v\n", leftPad(yamlText(pi.p.Common), 5)) //nolint:gomnd //no
 		}
 
-		var ec = errors.New("error occured when building all projects:")
+		var ec = errors.New("error occured when building all projects")
 		defer ec.Defer(&err)
 		for _, os := range bs.Common.Os {
 			for _, arch := range bs.Common.Arch {

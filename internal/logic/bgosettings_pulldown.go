@@ -34,7 +34,8 @@ func (s *BgoSettings) PullDownCommonSettings() {
 			if s.Projects[gn].Items[pn].Disabled {
 				continue
 			}
-			// log.Debugf("  .  PROJECTS[%q][%q]: %+v | Install = %+v\n", gn, pn, s.Projects[gn].Items[pn], s.Projects[gn].Items[pn].Common.Install)
+			// log.Debugf("  .  PROJECTS[%q][%q]: %+v | Install = %+v\n",
+			// gn, pn, s.Projects[gn].Items[pn], s.Projects[gn].Items[pn].Common.Install)
 		}
 	}
 }

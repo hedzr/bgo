@@ -57,8 +57,8 @@ func newBgoSettings(buildScope string) *BgoSettings {
 
 	// logHiLight("Starting...")
 
-	// logx.Dim("- BS:")
-	// logx.Dim("%v", leftPad(yamlText(bs.Projects), 2))
+	// infwr.Dim("- BS:")
+	// infwr.Dim("%v", leftPad(yamlText(bs.Projects), 2))
 	// os.Exit(0)
 
 	// cmdr.DebugOutputTildeInfo(true)
