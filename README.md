@@ -35,6 +35,10 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
+- v0.5.11
+
+  - security maintaining
+
 - v0.5.9
 
   - smaller binary sizes by new cmdr
