@@ -14,12 +14,14 @@ import (
 	"github.com/hedzr/log/exec"
 	"gopkg.in/yaml.v3"
 
-	"github.com/hedzr/bgo/internal/logic/build"
-	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/cmdr/conf"
+
 	"github.com/hedzr/evendeep"
 	"github.com/hedzr/evendeep/flags/cms"
+
+	"github.com/hedzr/bgo/internal/logic/build"
+	"github.com/hedzr/bgo/internal/logic/logx"
 )
 
 func setSaveMode(b bool) {
@@ -211,7 +213,7 @@ func cleanupCommon(c, ref *build.Common) {
 	// // clear target field if equals to source
 	// _ = cp.Copy(c, ref)
 
-	_ = evendeep.DefaultCopyController.CopyTo(c, ref,
+	_ = evendeep.DefaultCopyController.CopyTo(ref, c,
 		evendeep.WithByOrdinalStrategyOpt,
 		evendeep.WithCleanStrategies(cms.KeepIfNotEq),
 	)

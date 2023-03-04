@@ -1,6 +1,7 @@
 package tests_test
 
 import (
+	"reflect"
 	"testing"
 
 	"gopkg.in/yaml.v3"
@@ -123,6 +124,107 @@ app:
 			if !evendeep.DeepEqual(common.Arch, []string{"amd64", "arm64"}) {
 				t.Fatalf("expecting %v but got %v", []string{"amd64", "arm64"}, common.Arch)
 			}
+		}
+	})
+}
+
+func Rindirect(reflectValue reflect.Value) reflect.Value {
+	for reflectValue.Kind() == reflect.Ptr {
+		reflectValue = reflectValue.Elem()
+	}
+	return reflectValue
+}
+
+func TestChan01(t *testing.T) {
+	t.Run(`check cap`, func(t *testing.T) {
+		H := make(chan int, 5)
+		v := reflect.ValueOf(H)
+		t.Logf(`H.cap: %v`, v.Cap())
+
+		H = make(chan int)
+		v = reflect.ValueOf(H)
+		t.Logf(`H.cap: %v`, v.Cap())
+	})
+
+	t.Run(`set field`, func(t *testing.T) {
+		type A struct {
+			H chan int
+		}
+		var a A
+		v := reflect.ValueOf(&a)
+		vind := Rindirect(v)
+		fv := vind.FieldByName(`H`)
+		cv := reflect.MakeChan(fv.Type(), 5)
+		fv.Set(cv)
+		t.Logf(`a: %v`, a)
+	})
+}
+
+func TestComplexStructure91(t *testing.T) {
+	const src = `---
+app:
+  bgo:
+    build:
+      for:
+        - "linux/amd64"
+        - "windows/amd64"
+        - "darwin/amd64"
+        - "darwin/arm64"
+      os: [ linux ]
+      arch: [ amd64, arm64 ]
+      reduce: true
+      upx:
+        enable: false
+        params: [ "-9" ]
+
+      projects:                       # Projects map[string]ProjectGroup
+        000-default-group:
+          leading-text: dummy-title
+          items:                      # Items    map[string]*ProjectWrap
+            003-generic:
+              dir: examples/generic
+              os: [ "darwin","linux" ]
+              arch: [ "amd64" ]
+              upx:
+                enable: false
+                params: [ "-min" ]
+            # 004:
+            #   dir: examples/demo
+          upx:
+            enable: true
+            params: [ "-best", "-clean" ]
+
+`
+	// var b []byte
+	var err error
+
+	var holder Doc
+	err = yaml.Unmarshal([]byte(src), &holder)
+	t.Logf("holder: %+v", holder)
+
+	var c = evendeep.New(
+	// evendeep.WithStrategies(cms.OmitIfZero),
+	// evendeep.WithCopyStrategyOpt,
+	)
+
+	// t.Run("copy project-group map", func(t *testing.T) {
+	// 	var conf Doc
+	// 	// var projectGroup = holder.Projects["000-default-group"]
+	// 	if err = c.CopyTo(holder.Projects, &conf.Projects); err != nil {
+	// 		t.Fatal(err)
+	// 	}
+	// 	if !evendeep.DeepEqual(holder, &conf) {
+	// 		t.Fatalf("expecting \n\n%+v\n\nbut got\n\n%+v", holder, conf)
+	// 	}
+	// })
+
+	t.Run("copy all Doc", func(t *testing.T) {
+		var conf Doc
+		if err = c.CopyTo(holder, &conf); err != nil {
+			t.Fatalf("%+v", err)
+		}
+		if !evendeep.DeepEqual(holder, &conf) {
+			t.Fatalf("expecting \n\n%+v\n\nbut got\n\n%+v", holder, conf)
 		}
 	})
 }
@@ -293,7 +395,7 @@ type (
 		//   fmt, lint, test, cyclo, ...
 
 		keyName string
-		tp      *TargetPlatforms
+		tp      *TargetPlatforms `copy:"-"`
 	}
 )
 

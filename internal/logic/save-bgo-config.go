@@ -5,9 +5,12 @@ import (
 	"os"
 	"path"
 
-	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
+
 	"github.com/hedzr/evendeep"
+	"github.com/hedzr/evendeep/dbglog"
+
+	"github.com/hedzr/bgo/internal/logic/logx"
 
 	"github.com/hedzr/log/dir"
 )
@@ -16,7 +19,7 @@ func saveNewBgoYamlFile(bs *BgoSettings) (err error) {
 	makeCopyOf := func(bs *BgoSettings) *BgoSettings {
 		var bsCopy = new(BgoSettings)
 
-		if err = evendeep.DefaultCopyController.CopyTo(bsCopy, bs); err != nil {
+		if err = evendeep.DefaultCopyController.CopyTo(bs, bsCopy); err != nil {
 			return nil
 		}
 		// if err = cmdr.CloneViaGob(bsCopy, bs); err != nil {
@@ -27,11 +30,26 @@ func saveNewBgoYamlFile(bs *BgoSettings) (err error) {
 		return bsCopy
 	}
 
-	_ = cmdr.SaveCheckpoint()
-	defer func() { err = cmdr.RestoreCheckpoint() }()
-	cmdr.ResetOptions()
+	saveCmdrOptions := func() func() {
+		logx.Log(`saving cmdr checkpoint`)
+		defer dbglog.DisableLog()()
+		err = cmdr.SaveCheckpoint()
+		if err != nil {
+			logx.Error("CANNOT save cmdr options checkpoint. err: %+v", err)
+		}
+		logx.Log(`reset cmdr options, prepare a clean, new options store`)
+		cmdr.ResetOptions()
+		return func() {
+			logx.Log(`restoring cmdr checkpoint`)
+			err = cmdr.RestoreCheckpoint()
+		}
+	}
 
+	defer saveCmdrOptions()()
+
+	logx.Log(`make a copy of BgoSettings as bsCopy | because saveBgoConfigAs will modify it`)
 	bsCopy := makeCopyOf(bs)
+	logx.Log(`and saving bsCopy as yaml file`)
 	return saveBgoConfigAs(bsCopy, bs.SavedAs)
 }
 

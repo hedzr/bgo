@@ -7,25 +7,18 @@ import (
 	"github.com/hedzr/log/exec"
 	"gopkg.in/hedzr/errors.v3"
 
-	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
+
+	"github.com/hedzr/bgo/internal/logic/logx"
 )
 
 func cmdrSubCmdRun(root cmdr.OptCmd) {
-	run := cmdr.NewSubCmd().Titles("run", "r").
+	cmdr.NewSubCmd().Titles("run", "r").
 		Description("synonym to `go run`", `
 			synonym to `+"`go run`"+`.`).
 		Action(goRunAction).
 		TailPlaceholder("", "-- [go-run-arguments...]").
 		AttachTo(root)
-
-	cmdr.NewBool().
-		Titles("more", "m").
-		Description("more details", "").
-		// ToggleGroup("").
-		Group("").
-		VendorHidden(true).
-		AttachTo(run)
 }
 
 func goRunAction(cmd *cmdr.Command, args []string) (err error) {

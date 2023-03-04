@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	exec2 "os/exec"
+
 	"github.com/hedzr/log/dir"
 	"github.com/hedzr/log/exec"
 	"gopkg.in/hedzr/errors.v3"
@@ -19,6 +21,7 @@ import (
 	"github.com/hedzr/bgo/internal/logic/build"
 	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/bgo/internal/logic/tool"
+	"github.com/hedzr/evendeep/dbglog"
 )
 
 func buildCurr(buildScope string, cmd *cmdr.Command, args []string) (err error) {
@@ -98,6 +101,7 @@ func buildProjects(tp *build.TargetPlatforms, bc *build.Context, bs *BgoSettings
 	}
 
 	if !isDryRunMode() && isSaveMode() {
+		logx.Log("\n\nsave to yaml file...\n")
 		if err = saveBackToBs(packages, bs); err == nil {
 			err = saveNewBgoYamlFile(bs)
 		}
@@ -168,13 +172,18 @@ func ensureProject(pi *pkgInfo, bc *build.Context, bs *BgoSettings) {
 
 //nolint:gocognit //no
 func saveBackToBs(packages map[string]*pkgInfo, bs *BgoSettings) (err error) {
+	cloneTool := func(from, to *ProjectWrap) {
+		defer dbglog.DisableLog()()
+		cmdr.Clone(from, to)
+	}
+
 	for _, pi := range packages {
 		var found bool
 		for _, g := range bs.Projects {
 			for _, p := range g.Items {
 				if p.Dir == pi.dirname {
 					found = true
-					cmdr.Clone(pi.p, p)
+					cloneTool(pi.p, p)
 					break
 				}
 			}
@@ -388,7 +397,7 @@ func prepareCommandLine(bc *build.Context, bs *BgoSettings) (cmd []interface{}, 
 
 	if bc.Gocmd != "" {
 		gocmd := os.ExpandEnv(bc.Gocmd)
-		if x, e := exec.LookPath(gocmd); e == nil {
+		if x, e := LookPath(gocmd); e == nil {
 			y := dir.FollowSymLink(x)
 			cmd[0] = y
 			yup1 := path.Dir(y)
@@ -641,8 +650,16 @@ func compressExecutable(bc *build.Context) (err error) {
 }
 
 func commandExists(cmd string) bool {
-	_, err := exec.LookPath(cmd)
+	_, err := LookPath(cmd)
 	return err == nil
+}
+
+// LookPath searches for an executable named file in the
+// directories named by the PATH environment variable.
+// If file contains a slash, it is tried directly and the PATH is not consulted.
+// The result may be an absolute path or a path relative to the current directory.
+func LookPath(file string) (string, error) {
+	return exec2.LookPath(file)
 }
 
 //goland:noinspection ALL

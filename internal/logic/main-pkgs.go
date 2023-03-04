@@ -9,10 +9,11 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/log"
 	"github.com/hedzr/log/dir"
 	"github.com/hedzr/log/exec"
+
+	"github.com/hedzr/bgo/internal/logic/logx"
 )
 
 type pkgInfo struct {
@@ -135,7 +136,7 @@ func scanWorkDir(workdir, scope string, packages map[string]*pkgInfo, bs *BgoSet
 	for folder, pn := range pd {
 		if pn == "main" {
 			if err = dissectTheMainDir(folder, packages, bs); err == nil {
-				logx.Colored(logx.Yellow, "  scanWorkDir: pkg main - %v", folder)
+				logx.Colored(logx.Green, "  scanWorkDir: pkg main - %v", folder)
 			}
 		}
 	}

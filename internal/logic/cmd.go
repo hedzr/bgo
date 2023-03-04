@@ -29,7 +29,8 @@ func AttachToCmdr(root *cmdr.RootCmdOpt) {
 
 	cmdrSubCmdSBOM(root)
 
-	cmdrSubCmdRun(root)
+	cmdrSubCmdRun(root)  // forwarding to `go run`
+	cmdrSubCmdTest(root) // forwarding to `go test`
 }
 
 const gnBuild = "Build Target"

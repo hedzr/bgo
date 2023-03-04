@@ -121,10 +121,8 @@ func NewCommon() *Common {
 }
 
 func (c *CommonBase) CloneFrom(from *CommonBase) {
-	cc := evendeep.New(
-		evendeep.WithCopyStrategyOpt,
-		evendeep.WithStrategies(cms.OmitIfEmpty),
-	)
+	cc := ccForCommon()
+
 	// cc := cmdr.StandardCopier
 	// cc.KeepIfFromIsNil = true
 	// cc.KeepIfFromIsZero = true
@@ -135,10 +133,8 @@ func (c *CommonBase) CloneFrom(from *CommonBase) {
 }
 
 func (c *Common) CloneFrom(from *Common) {
-	cc := evendeep.New(
-		evendeep.WithCopyStrategyOpt,
-		evendeep.WithStrategies(cms.OmitIfEmpty),
-	)
+	cc := ccForCommon()
+
 	// cc := cmdr.StandardCopier
 	// cc.KeepIfFromIsNil = true
 	// cc.KeepIfFromIsZero = true
@@ -149,15 +145,28 @@ func (c *Common) CloneFrom(from *Common) {
 }
 
 func (c *Common) MergeFrom(from *Common) {
-	cc := evendeep.New(
-		evendeep.WithMergeStrategyOpt,
-		evendeep.WithStrategies(cms.OmitIfEmpty),
-	)
+	cc := ccForCommon()
+
 	// cc := cmdr.StandardCopier
 	// cc.KeepIfFromIsNil = true
 	// cc.KeepIfFromIsZero = true
 	// cc.EachFieldAlways = true
+
+	logx.Log(`Common.MergeFrom: from = %+v`, from)
+	// defer dbglog.DisableLog()()
 	if err := cc.CopyTo(from, &c); err != nil {
 		logx.Error("Common.CloneFrom failed: %v", err)
 	}
 }
+
+func ccForCommon() evendeep.DeepCopier {
+	if ccForCommonG == nil {
+		ccForCommonG = evendeep.New(
+			evendeep.WithMergeStrategyOpt,
+			evendeep.WithStrategies(cms.OmitIfEmpty),
+		)
+	}
+	return ccForCommonG
+}
+
+var ccForCommonG evendeep.DeepCopier

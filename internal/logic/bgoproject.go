@@ -78,6 +78,7 @@ func (p *Project) apply(packageName string, bs *BgoSettings) {
 	if p.Common == nil {
 		p.Common = build.NewCommon()
 	}
+	// logx.Log(`Project.apply(bs.Common)`)
 	p.Common.MergeFrom(bs.Common)
 	if p.Package == "" && packageName != "" {
 		p.Package = packageName
