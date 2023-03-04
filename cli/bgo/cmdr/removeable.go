@@ -6,7 +6,7 @@ import (
 
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/cmdr/tool"
-	"github.com/hedzr/logex"
+	"github.com/hedzr/log/detects"
 )
 
 func prdf(key string, val interface{}, format string, params ...interface{}) { //nolint:unused //future
@@ -22,7 +22,7 @@ func soundex(root cmdr.OptCmd) { //nolint:unused,funlen //future
 		TailPlaceholder("[text1, text2, ...]").
 		PreAction(func(cmd *cmdr.Command, remainArgs []string) (err error) {
 			log.Printf("[PRE] DebugMode=%v, TraceMode=%v. InDebugging/IsDebuggerAttached=%v\n",
-				cmdr.GetDebugMode(), logex.GetTraceMode(), cmdr.InDebugging())
+				cmdr.GetDebugMode(), cmdr.GetTraceMode(), detects.InDebugging())
 			for ix, s := range remainArgs {
 				log.Printf("[PRE] %5d. %s\n", ix, s)
 			}
