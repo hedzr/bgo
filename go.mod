@@ -3,10 +3,10 @@ module github.com/hedzr/bgo
 go 1.18
 
 require (
-	github.com/hedzr/cmdr v1.11.11
-	github.com/hedzr/evendeep v0.4.1
-	github.com/hedzr/log v1.6.7
-	github.com/hedzr/logex v1.6.7
+	github.com/hedzr/cmdr v1.11.13
+	github.com/hedzr/evendeep v0.4.3
+	github.com/hedzr/log v1.6.9
+	github.com/hedzr/logex v1.6.9
 	golang.org/x/crypto v0.6.0
 	golang.org/x/mod v0.9.0
 	gopkg.in/hedzr/errors.v3 v3.1.5
