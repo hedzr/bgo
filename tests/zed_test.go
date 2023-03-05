@@ -223,7 +223,7 @@ app:
 		if err = c.CopyTo(holder, &conf); err != nil {
 			t.Fatalf("%+v", err)
 		}
-		if !evendeep.DeepEqual(holder, &conf) {
+		if !evendeep.DeepEqual(holder, conf) {
 			t.Fatalf("expecting \n\n%+v\n\nbut got\n\n%+v", holder, conf)
 		}
 	})
