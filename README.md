@@ -35,6 +35,13 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
+- v0.5.13
+  - improved the logging
+  - review deep copy codes after upgraded evendeep library
+  - fixed lost fields after restoring cmdr checkpoint
+  - fixed tests
+  - added `test` subcommand to forward control to `go test`
+
 - v0.5.11
 
   - security maintaining
