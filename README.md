@@ -35,6 +35,10 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
+- v0.5.16
+  - upgrade deps
+  - fixed a little
+
 - v0.5.13
   - improved the logging
   - review deep copy codes after upgraded evendeep library
