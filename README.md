@@ -20,8 +20,16 @@ All things you need to do is entering the golang project directory and entering 
 
 - `bgo` or `bgo build`: Run go building with or without a config file `.bgo.yml`
 - `bgo run -- ...`: Forward command-line to `go run` as is
+- `bgo test -- ...`: Forward command-line to `go test` as is
 - `bgo init`: Scan the directory to grab all main packages and initial `.bgo.yml`
-- `bgo sbom`: dump SBOM information itself or specified executables
+- `bgo list`: list managed projects in all .bgo.yaml
+- `bgo sbom`: dump [#SBOM](#sbom) information itself or specified executables
+- More extensible commands
+  - pre-builtins (*bundled by [`80.aliases.yml`](https://github.com/hedzr/bgo/blob/master/ci/etc/bgo/conf.d/80.aliases.yml)*)
+    - `bgo chk|check-code-qualities`
+    - `bgo cov|coverage`
+
+    see also [#Extensible Commands](https://github.com/hedzr/bgo#extensible-commands)
 - While
 
   - you have lots of small cli apps in many sub-directories
@@ -31,52 +39,12 @@ All things you need to do is entering the golang project directory and entering 
   - etc.
 
     have a try with `bgo`.
-- [Extensible Commands](#extensible-commands)
 
 ## History
 
 - v0.5.16
   - upgrade deps
   - fixed a little
-
-- v0.5.13
-  - improved the logging
-  - review deep copy codes after upgraded evendeep library
-  - fixed lost fields after restoring cmdr checkpoint
-  - fixed tests
-  - added `test` subcommand to forward control to `go test`
-
-- v0.5.11
-
-  - security maintaining
-
-- v0.5.9
-
-  - smaller binary sizes by new cmdr
-
-- v0.5.8
-
-  - fixed wrong loops when `bgo` in short mode: `bgo -s`
-  - improved subcmd `sbom` to produce pretty yaml format directly
-  - improved logx to recognize `--no-color`/`-nc`/`NO_COLOR=1`/`NOCOLOR=1` mode so that `bgo sbom -nc` can produce yaml outputs without ANSI Color Escape Sequences.
-  - `bgo chk` updated: it's shipped as part of bgo bundle (Homebrew), see its source script at [`check-code-qualities`](https://github.com/hedzr/bgo/blob/master/ci/etc/bgo/conf.d/80.aliases.yml).
-
-	> You may copy `./ci/etc/bgo` folder as one of these locations to get it work:
-	>
-	> - `$HOME/.config/bgo`
-	> - `$HOME/.bgo`
-	> - `/usr/local/etc/bgo` (for macOS only)
-	> - `/etc/bgo` (for linux only)
-
-    `bgo chk` now run these tools for checking code qualities: govulncheck, golangci-lint, gofumpt.
-
-- v0.5.7
-
-  - fixed wrong loops when `bgo` in auto mode: `bgo -a`/`bgo`/`bgo build`
-  - reviewed and clear the codes for merging sub-configs
-  - code style
-  - more subtests
-  - upgrade deps
 
 - More in [CHANGELOG](https://github.com/hedzr/bgo/blob/master/CHANGELOG)
 
@@ -90,9 +58,9 @@ Or Built from source code:
 
 ```bash
 go install github.com/hedzr/bgo@latest
-bgo --help
-bgo --version
-bgo --build-info
+bgo --help         # -h
+bgo --version      # -V
+bgo --build-info   # -#
 ```
 
 You may clone and compile `bgo` from source code:
@@ -146,6 +114,7 @@ bgo -os linux -arch 386 -arch amd64 -arch arm64
 ```
 
 Both long and short options are available for `for`, `os` and `arch`.
+Their values are stacked by specifying multiple times, so `-arch 386 -arch amd64 -arch arm64` is same with `--arch 386,amd64,arm64`.
 
 ### Run with `.bgo.yml`
 
@@ -208,6 +177,20 @@ The underlying real command will be run:
 go run ./...
 ```
 
+#### `test`
+
+`bgo test` can forward arguments to `go test`. For the command line
+
+```bash
+bgo test -- ./...
+```
+
+The underlying real command will be run:
+
+```bash
+go test ./...
+```
+
 ### `SBOM`
 
 Checking executable's [SBOM (`Software Bill Of Materials`)](ttps://www.argon.io/blog/guide-to-sbom/) without golang installed:
@@ -227,15 +210,15 @@ The commands system of `bgo` can be extensible by editing `.bgo.yaml`.
 
 `bgo` loads all `bgo.yaml` as its configurations from these locations:
 
-1. Main Config Files:
-   - `/etc/bgo/bgo.yml` and `conf.d/*.yml`
-   - `/usr/local/etc/bgo/bgo.yml` and `conf.d/*.yml`
+1. _Main_ Config Files:
+   - `/etc/bgo/bgo.yml` and `conf.d/*.yml` in it
+   - `/usr/local/etc/bgo/bgo.yml` and `conf.d/*.yml` in it
    Any of them will be loaded as default config set.
-2. Secondary Config Files:
-   - `$HOME/.bgo/bgo.yml` and `conf.d/*.yml`
-   - `$HOME/.config/bgo/bgo.yml` and `conf.d/*.yml`
+2. _Secondary_ Config Files:
+   - `$HOME/.bgo/bgo.yml` and `conf.d/*.yml` in it
+   - `$HOME/.config/bgo/bgo.yml` and `conf.d/*.yml` in it
    Any of them will be loaded as extensible config set.
-3. Alternative Config File:
+3. _Alternative_ Config File:
    - `./.bgo.yaml`
    This config file is used to current building project by `bgo`.
    The scanning results of golang CLI apps from current directory will be written into this file.
