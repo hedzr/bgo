@@ -24,37 +24,37 @@ ARG W_PKG="github.com/hedzr/cmdr/conf"
 ARG GOPROXY="https://goproxy.cn,direct"
 
 ENV APP_HOME="/var/lib/$APPNAME" TGT=/app \
-	USER=${USERNAME:-appuser} \
-	UID=${USER_ID:-500} \
-	GID=${GROUP_ID:-500}
+    USER=${USERNAME:-appuser} \
+    UID=${USER_ID:-500} \
+    GID=${GROUP_ID:-500}
 
 # Install git.
 # Git is required for fetching the dependencies.
 RUN echo "${APK_MIRROR}"; echo "${APPNAME}"; echo "${APP_HOME}"; sed -i "s/dl-cdn.alpinelinux.org/${APK_MIRROR}/g" /etc/apk/repositories; \
-	apk update \
-	&& apk add --no-cache git ca-certificates tzdata musl-dev musl-utils strace \
-	&& update-ca-certificates
+    apk update \
+    && apk add --no-cache git ca-certificates tzdata musl-dev musl-utils strace \
+    && update-ca-certificates
 # RUN apk info -vv | sort
 
 # See https://stackoverflow.com/a/55757473/12429735RUN
 RUN adduser \
-	--disabled-password \
-	--gecos "" \
-	--home "/nonexistent" \
-	--shell "/sbin/nologin" \
-	--no-create-home \
-	--uid "${UID}" \
-	"${USER}"
+    --disabled-password \
+    --gecos "" \
+    --home "/nonexistent" \
+    --shell "/sbin/nologin" \
+    --no-create-home \
+    --uid "${UID}" \
+    "${USER}"
 
 RUN mkdir -p $APP_HOME && chown -R ${USER}: $APP_HOME
 WORKDIR $APP_HOME
 COPY . .
 RUN ls -la . && pwd
 RUN mkdir -pv $TGT/var/lib/$APPNAME/conf.d \
-	&& mkdir -pv $TGT/var/run/$APPNAME $TGT/var/log/$APPNAME $TGT/etc/$APPNAME/conf/conf.d $TGT/etc/sysconfig $TGT/etc/default $TGT/etc/$APPNAME \
-	&& touch $TGT/etc/sysconfig/$APPNAME $TGT/etc/default/$APPNAME $TGT/etc/$APPNAME/conf/$APPNAME.yml \
-  && cp -R ./ci/etc/$APPNAME $TGT/etc/ \
-	&& chown -R ${USER}: $TGT/var/lib/$APPNAME $TGT/var/log/$APPNAME $TGT/var/run/$APPNAME $TGT/etc/$APPNAME $TGT/etc/sysconfig/$APPNAME $TGT/etc/default/$APPNAME
+    && mkdir -pv $TGT/var/run/$APPNAME $TGT/var/log/$APPNAME $TGT/etc/$APPNAME/conf/conf.d $TGT/etc/sysconfig $TGT/etc/default $TGT/etc/$APPNAME \
+    && touch $TGT/etc/sysconfig/$APPNAME $TGT/etc/default/$APPNAME $TGT/etc/$APPNAME/conf/$APPNAME.yml \
+    && cp -R ./ci/etc/$APPNAME $TGT/etc/ \
+    && chown -R ${USER}: $TGT/var/lib/$APPNAME $TGT/var/log/$APPNAME $TGT/var/run/$APPNAME $TGT/etc/$APPNAME $TGT/etc/sysconfig/$APPNAME $TGT/etc/default/$APPNAME
 # && touch /target/$APPNAME/var/lib/conf.d/90.alternative.yml
 # RUN ls -la ./ &&
 # RUN ls -la $TGT/etc/$APPNAME
@@ -65,15 +65,15 @@ RUN echo "Using GOPROXY=$GOPROXY" && go mod download
 # 	&& export VERSION="$(grep -E 'Version[ \t]+=[ \t]+' ./cli/bgo/cmdr/doc.go|grep -Eo '[0-9.]+')"
 # --mount=type=cache,target=/root/.cache/go-build
 RUN export GOVER=$(go version) \
-	&& export LDFLAGS="-s -w \
-	-X \"$W_PKG.Buildstamp=${BUILDTIME}\" -X \"$W_PKG.Githash=${GIT_REVISION}\" \
-	-X \"$W_PKG.Version=${VERSION}\" -X \"$W_PKG.GoVersion=${GOVER}\" \
-	-X \"$W_PKG.ServerID=docker-build\" " \
-	&& echo "Using APPNAME=$APPNAME VERSION=$VERSION" \
-	&& CGO_ENABLED=0 go build -v -trimpath \
-	-tags docker -tags k8s,istio -tags cmdr-apps \
-	-ldflags "$LDFLAGS" \
-	-o $TGT/var/lib/$APPNAME/$APPNAME ./main.go
+    && export LDFLAGS="-s -w \
+    -X \"$W_PKG.Buildstamp=${BUILDTIME}\" -X \"$W_PKG.Githash=${GIT_REVISION}\" \
+    -X \"$W_PKG.Version=${VERSION}\" -X \"$W_PKG.GoVersion=${GOVER}\" \
+    -X \"$W_PKG.ServerID=docker-build\" " \
+    && echo "Using APPNAME=$APPNAME VERSION=$VERSION" \
+    && CGO_ENABLED=0 go build -v -trimpath \
+    -tags docker -tags k8s,istio -tags cmdr-apps \
+    -ldflags "$LDFLAGS" \
+    -o $TGT/var/lib/$APPNAME/$APPNAME ./main.go
 RUN ls -la $TGT $TGT/var/lib/$APPNAME $TGT/etc/$APPNAME
 # RUN ldd --help
 # RUN ldd $TGT/var/lib/$APPNAME/$APPNAME   # need musl-utils & musl-dev
@@ -95,14 +95,14 @@ ARG APPNAME
 ARG VERSION
 ARG PORT
 
-LABEL com.hedzr.image.authors="hedzr <hedzrz@gmail.com>"
+LABEL com.hedzr.image.authors="hedzr <hedzr@duck.com>"
 LABEL com.hedzr.image.description="make go building easier with hedzr/bgo"
 LABEL description="make go building easier with hedzr/bgo"
-LABEL version="$VERSION"
+LABEL version="${VERSION}"
 LABEL org.opencontainers.image.description="make go building easier with hedzr/bgo"
-LABEL org.opencontainers.image.author="hedzr <hedzrz@gmail.com>"
+LABEL org.opencontainers.image.author="hedzr <hedzr@duck.com>"
 LABEL org.opencontainers.image.url="https://github.com/hedzr/bgo"
-LABEL org.opencontainers.image.version="$VERSION"
+LABEL org.opencontainers.image.version="${VERSION}"
 LABEL org.opencontainers.image.license="Apache 2.0"
 
 
@@ -111,10 +111,10 @@ LABEL org.opencontainers.image.license="Apache 2.0"
 #COPY --from=builder /etc/group /etc/group
 
 ENV APP_HOME="/var/lib/$APPNAME" TGT=/app \
-	USER="${USERNAME:-appuser}" \
-	UID="${USER_ID:-500}" \
-	GID="${GROUP_ID:-500}" \
-	GOPROXY=$GOPROXY
+    USER="${USERNAME:-appuser}" \
+    UID="${USER_ID:-500}" \
+    GID="${GROUP_ID:-500}" \
+    GOPROXY=$GOPROXY
 
 WORKDIR "/app"
 VOLUME ["/app", "/etc/bgo/conf/conf.d", "/go/pkg", "/tmp"]
