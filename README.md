@@ -152,6 +152,12 @@ Run `bgo gen sh --zsh` to install auto-completion script to the proper location 
 
 ![image-20220130092618399](https://cdn.jsdelivr.net/gh/hzimg/blog-pics@master/uPic/image-20220130092618399.png)
 
+For macOS, you may install zsh completion script manually (not recommended, the better way is by HomeBrew):
+
+```bash
+bgo gen sh --zsh --output "$(brew --prefix)/share/zsh/site-functions/_bgo"
+```
+
 Run `bgo gen sh --bash -o=bgo.bash` to get bash completions script and put it to the right location. Generally it should be:
 
 ```bash
