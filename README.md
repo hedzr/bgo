@@ -22,7 +22,7 @@ All things you need to do is entering the golang project directory and entering 
 - `bgo run -- ...`: Forward command-line to `go run` as is
 - `bgo test -- ...`: Forward command-line to `go test` as is
 - `bgo init`: Scan the directory to grab all main packages and initial `.bgo.yml`
-- `bgo list`: list managed projects in all .bgo.yaml
+- `bgo list`: list managed projects in all of `.bgo.yaml`
 - `bgo sbom`: dump [#SBOM](#sbom) information itself or specified executables
 - More extensible commands
   - pre-builtins (*bundled by [`80.aliases.yml`](https://github.com/hedzr/bgo/blob/master/ci/etc/bgo/conf.d/80.aliases.yml)*)
@@ -41,6 +41,10 @@ All things you need to do is entering the golang project directory and entering 
     have a try with `bgo`.
 
 ## History
+
+- v0.5.18
+  - upgrade deps
+  - fixed: change `SaveAs`(`--output`) field from string slice to string
 
 - v0.5.16
   - upgrade deps

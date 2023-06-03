@@ -1,13 +1,32 @@
 # CHANGELOG
 
-- v0.5.8
+- v0.5.18
+  - upgrade deps
+  - fixed: change `SaveAs`(`--output`) field from string slice to string
 
+- v0.5.16
+  - upgrade deps
+  - fixed a little
+
+- v0.5.13
+  - improved the logging
+  - review deep copy codes after upgraded evendeep library
+  - fixed lost fields after restoring cmdr checkpoint
+  - fixed tests
+  - added `test` subcommand to forward control to `go test`
+
+- v0.5.11
+  - security maintaining
+
+- v0.5.9
+  - smaller binary sizes by new cmdr
+
+- v0.5.8
   - fixed wrong loops when `bgo` in short mode: `bgo -s`
   - improved subcmd `sbom` to produce pretty yaml format directly
   - improved logx to recognize `--no-color`/`-nc`/`NO_COLOR=1`/`NOCOLOR=1` mode so that `bgo sbom -nc` can produce yaml outputs without ANSI Color Escape Sequences.
 
 - v0.5.7
-
   - fixed wrong loops when `bgo` in auto mode: `bgo -a`/`bgo`/`bgo build`
   - reviewed and clear the codes for merging sub-configs
   - code style
@@ -15,7 +34,6 @@
   - upgrade deps
 
 - v0.5.6
-
   - added `args: [ ]` and `asan: false`
   - fixed the duplicated loops of building projects
   - upgrade `hedzr/cmdr` to latest
@@ -25,7 +43,6 @@
   - .1 -> .6
 
 - v0.5.0
-
   - Deep Reduce Building: new option `reduce: true` in `.bgo.yaml` to enable `-gcflags=all=-l -B`
   - Special Post-process via `upx`: new options `upx: { enable:true, params:[] }` in `.bgo.yaml`
   - added new subcommand `run` to forward arguments to `go run`:  
@@ -44,24 +61,19 @@
   - improved and fixed subcommand `bgo sbom`.
 
 - v0.3.23
-
   - add support to GOAMD64
 
 - v0.3.21
-
   - add SBOM support: `bgo sbom <executable>`
   - what is SBOM: [here](https://www.argon.io/blog/guide-to-sbom/), and [here](https://blog.sonatype.com/sbom-from-the-idea-of-transparency-to-the-reality-of-code).
 
 - v0.3.18
-
-  - code reviewd
+  - code reviewed
 
 - v0.3.17
-
-  - upgrade log,errors
+  - upgrade log, errors
 
 - v0.3.15
-
   - fix: version command and help screen not work
 
 - v0.3.13
