@@ -285,7 +285,7 @@ func cmdrSubCmdInit(root cmdr.OptCmd) {
 		Action(initAction).
 		AttachTo(root)
 
-	cmdr.NewStringSlice("bgo.yml").
+	cmdr.NewString("bgo.yml").
 		Titles("output", "o").
 		Description("filename to be saved setting as", "").
 		// ToggleGroup("").

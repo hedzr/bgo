@@ -1,8 +1,9 @@
 package logic
 
 import (
-	"github.com/hedzr/bgo/internal/logic/build"
 	"github.com/hedzr/cmdr"
+
+	"github.com/hedzr/bgo/internal/logic/build"
 )
 
 type (
@@ -18,7 +19,7 @@ type (
 		Excludes []string `yaml:",omitempty,flow" json:"excludes,omitempty" toml:"excludes,omitempty"`
 		Goproxy  string   `yaml:",omitempty" json:"goproxy,omitempty" toml:"goproxy,omitempty"`
 
-		SavedAs []string `yaml:"saved-as,omitempty" json:"saved_as,omitempty" toml:"saved_as,omitempty"`
+		SavedAs string `yaml:"saved-as,omitempty" json:"saved_as,omitempty" toml:"saved_as,omitempty"`
 	}
 
 	//nolint:lll //no
@@ -67,10 +68,10 @@ func newBgoSettings(buildScope string) *BgoSettings {
 }
 
 func (s *BgoSettings) initFromCmdr() {
-	if s.SavedAs == nil {
-		s.SavedAs = []string{"bgo.yml"}
+	if s.SavedAs == "" {
+		s.SavedAs = "bgo.yml"
 	}
-	s.SavedAs = cmdr.GetStringSliceR("settings-filename", s.SavedAs...)
+	s.SavedAs = cmdr.GetStringR("settings-filename", s.SavedAs)
 
 	if str := cmdr.GetStringR("build.output"); str != "" {
 		s.Output.NamedAs = str
