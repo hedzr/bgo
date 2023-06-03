@@ -288,6 +288,10 @@ jobs:
         run: |
           echo NOT YET
 
+      # This uploads artifacts from your workflow allowing you to share data between jobs and store data once a workflow is complete.
+      # https://github.com/actions/upload-artifact
+      # https://github.com/actions/download-artifact
+      #
       - name: Upload artifacts
         uses: actions/upload-artifact@master
         if: startsWith(github.ref, 'refs/tags/v')
@@ -295,6 +299,23 @@ jobs:
           name: binaries
           path: bin/
 
+      # This step reads a file from repo and use it for body of the release
+      # This works on any self-hosted runner OS
+      - name: Read RELNOTES.md and use it as a body of new release
+        id: read_release_notes
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          if [ -f RELNOTES.md ]; then
+          r=$(cat RELNOTES.md)
+          r="${r//'%'/'%25'}"
+          r="${r//$'\n'/'%0A'}"
+          r="${r//$'\r'/'%0D'}"
+          echo "RELEASE_BODY=$r" >> $GITHUB_OUTPUT
+          fi
+
+      # This action allows you to select which files to upload to the just-tagged release. It runs on all operating systems types offered by GitHub.
+      # https://github.com/svenstaro/upload-release-action
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         if: startsWith(github.ref, 'refs/tags/v')
@@ -304,7 +325,8 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
           file_glob: true
-          #body:
+          body: |
+            ${{ steps.read_release_notes.outputs.RELEASE_BODY }}
 
   # release-build-1:
   #   needs: coverage
