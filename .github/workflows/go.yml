@@ -27,7 +27,7 @@ jobs:
   test:
     strategy:
       matrix:
-        go-version: [1.18.x] # 1.11.x, 1.12.x, 1.13.x,
+        go-version: [ 1.20.x ]                 # 1.11.x, 1.12.x, 1.13.x,
         #os: [ubuntu-latest, macos-latest, windows-latest]
         os: [ubuntu-latest]
       fail-fast: false
@@ -62,7 +62,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.18.x
+          go-version: 1.20.x
       - name: Checkout code
         uses: actions/checkout@v2
         #with:
@@ -96,7 +96,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.18.x
+          go-version: 1.20.x
       - name: Checkout code
         uses: actions/checkout@v2
         #with:
@@ -210,20 +210,13 @@ jobs:
               GOVERSION: $GOVERSION
               BUILDTIME: $BUILDTIME
           EOF
-          # go install -v github.com/swaggo/swag/cmd/swag
-          # go generate ./...
-          # for app in app1 app2 app3 ...; do
           #
-          # for app in $(ls -b ./cli) ; do
-          # for dir in cli; do
-          fromdir="$FROM_FOLDER"
-          [ -d $fromdir/cli ] && fromdir="$fromdir/cli"
-          for app in $(ls -b $fromdir); do
-          for dir in .; do
+          function gobuild() {
+            local d="$1" APP_NAME="${2:-$APP_NAME}"
             for GOOS in $OSes; do
               for GOARCH in $ARCHes; do
                 suf=; suf2=tgz; if [[ $GOOS == "windows" ]]; then suf=".exe"; suf2=7z; if [ "$GOARCH" == "arm64" ]; then GOARCH=arm; fi; fi
-                GOOS=$GOOS GOARCH=$GOARCH CGO_ENABLED=0 go build -v -trimpath -ldflags "$LDFLAGS" -o ./bin/$APP_NAME$suf $fromdir/$dir/$app
+                GOOS=$GOOS GOARCH=$GOARCH CGO_ENABLED=0 go build -v -trimpath -ldflags "$LDFLAGS" -o ./bin/$APP_NAME$suf $d
                 chmod +x ./bin/$APP_NAME$suf
                 if [[ $GOOS == "windows" ]]; then
                   7z a ./bin/$APP_NAME-$GOOS-$GOARCH$suf.$suf2 ./bin/$APP_NAME$suf
@@ -239,10 +232,34 @@ jobs:
                 fi
                 sha256sum ./bin/$APP_NAME-$GOOS-$GOARCH$suf.$suf2 >> $BINARIES_ASC
                 rm -f ./bin/$APP_NAME$suf
+                NOTHING_OK=0
               done
             done
-          done
-          done
+          }
+          #
+          # go install -v github.com/swaggo/swag/cmd/swag
+          # go generate ./...
+          # for app in app1 app2 app3 ...; do
+          #
+          # for app in $(ls -b ./cli) ; do
+          # for dir in cli; do
+          fromdir="$FROM_FOLDER"
+          [ -d $fromdir/cli ] && fromdir="$fromdir/cli"
+          NOTHING_OK=1
+          for app in $(ls -b $fromdir); do
+            for dir in .; do
+              if [ -d "$fromdir/$dir/$app" ]; then
+                gobuild "$fromdir/$dir/$app" "${APP_NAME}"
+              else
+                echo "folder $fromdir/$dir/$app skipped."
+              fi
+            done # dir
+          done   # app
+          if (($NOTHING_OK)); then
+            if [ -d "$fromdir/simple" ]; then
+              gobuild "$fromdir/simple" "${APP_NAME}"
+            fi
+          fi
           ls -la bin/*
 
       - name: bump homebrew-brew
@@ -306,13 +323,33 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         shell: bash
         run: |
-          if [ -f RELNOTES.md ]; then
-          r=$(cat RELNOTES.md)
-          r="${r//'%'/'%25'}"
-          r="${r//$'\n'/'%0A'}"
-          r="${r//$'\r'/'%0D'}"
-          echo "RELEASE_BODY=$r" >> $GITHUB_OUTPUT
-          fi
+          REPO_NAME="${GITHUB_REPOSITORY##*/}"
+          APP_NAME="${GITHUB_REPOSITORY##*/}"
+          APP_NAME=$(echo $APP_NAME | sed 's/^(go-)//' | sed 's/(-go)$//' | tr '[:upper:]' '[:lower:]')
+          if [ $APP_NAME = "cmdrstarter" ]; then APP_NAME=your-starter; fi
+          ACTOR=$(echo $GITHUB_ACTOR | tr '[:upper:]' '[:lower:]')
+          GOT=0
+          for f in RELNOTES relnotes RELNOTES.md REL-NOTES.md relnotes.md rel-notes.md; do
+            if ! (($GOT)); then
+              if [ -f $f ]; then
+                r=$(cat $f)
+                r="${r//'%'/'%25'}"
+                r="${r//$'\n'/'%0A'}"
+                r="${r//$'\r'/'%0D'}"
+                r="${r//'{''{'APP_NAME'}''}'/$APP_NAME}"
+                r="${r//'{''{'VERSION'}''}'/$VERSION}"
+                r="${r//'{''{'ACTOR'}''}'/$ACTOR}"
+                r="${r//'{''{'REPO_NAME'}''}'/$REPO_NAME}"
+                r="${r//'{''{'GITHUB_SHA'}''}'/$GITHUB_SHA}"
+                r="${r//'{''{'GITHUB_REF'}''}'/$GITHUB_REF}"
+                r="${r//'{''{'GITHUB_REF_NAME'}''}'/$GITHUB_REF_NAME}"
+                r="${r//'{''{'GITHUB_REPOSITORY'}''}'/$GITHUB_REPOSITORY}"
+                r="${r//'{''{'GITHUB_REPOSITORY_OWNER'}''}'/$GITHUB_REPOSITORY_OWNER}"
+                echo "RELEASE_BODY=$r" >> $GITHUB_OUTPUT
+                GOT=1
+              fi
+            fi
+          done
 
       # This action allows you to select which files to upload to the just-tagged release. It runs on all operating systems types offered by GitHub.
       # https://github.com/svenstaro/upload-release-action
