@@ -3,6 +3,7 @@ package build
 //nolint:goimports //so what
 import (
 	"runtime"
+	"sync"
 
 	"github.com/hedzr/evendeep"
 	"github.com/hedzr/evendeep/flags/cms"
@@ -160,13 +161,14 @@ func (c *Common) MergeFrom(from *Common) {
 }
 
 func ccForCommon() evendeep.DeepCopier {
-	if ccForCommonG == nil {
+	onceCcForCommonG.Do(func() {
 		ccForCommonG = evendeep.New(
 			evendeep.WithMergeStrategyOpt,
 			evendeep.WithStrategies(cms.OmitIfEmpty),
 		)
-	}
+	})
 	return ccForCommonG
 }
 
-var ccForCommonG evendeep.DeepCopier
+var ccForCommonG evendeep.DeepCopier //nolint:gochecknoglobals // once var here
+var onceCcForCommonG sync.Once       //nolint:gochecknoglobals // once var here
