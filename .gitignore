@@ -2,8 +2,6 @@ swaggerdocs/
 bgo
 bgo.yml
 _bgo
-tools/bgo/go.work
-go.work
 .local/
 
 test*.bash
