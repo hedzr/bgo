@@ -9,7 +9,7 @@ import (
 	"github.com/hedzr/cmdr/conf"
 
 	"github.com/hedzr/bgo/internal/logic"
-	"github.com/hedzr/bgo/internal/logic/logx"
+	"github.com/hedzr/bgo/internal/logx"
 )
 
 //nolint:nakedret //so what

@@ -4,8 +4,9 @@ package build
 import (
 	"path"
 
-	"github.com/hedzr/bgo/internal/logic/tool"
 	"github.com/hedzr/log/dir"
+
+	"github.com/hedzr/bgo/internal/tool"
 )
 
 type (

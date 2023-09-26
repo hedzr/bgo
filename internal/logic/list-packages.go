@@ -2,7 +2,7 @@ package logic
 
 import (
 	"github.com/hedzr/bgo/internal/logic/build"
-	"github.com/hedzr/bgo/internal/logic/logx"
+	"github.com/hedzr/bgo/internal/logx"
 )
 
 //nolint:lll //no

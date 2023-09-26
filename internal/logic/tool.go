@@ -17,11 +17,11 @@ import (
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/cmdr/conf"
 
+	"github.com/hedzr/bgo/internal/logx"
 	"github.com/hedzr/evendeep"
 	"github.com/hedzr/evendeep/flags/cms"
 
 	"github.com/hedzr/bgo/internal/logic/build"
-	"github.com/hedzr/bgo/internal/logic/logx"
 )
 
 func setSaveMode(b bool) {

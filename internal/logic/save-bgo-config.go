@@ -7,10 +7,9 @@ import (
 
 	"github.com/hedzr/cmdr"
 
+	"github.com/hedzr/bgo/internal/logx"
 	"github.com/hedzr/evendeep"
 	"github.com/hedzr/evendeep/dbglog"
-
-	"github.com/hedzr/bgo/internal/logic/logx"
 
 	"github.com/hedzr/log/dir"
 )

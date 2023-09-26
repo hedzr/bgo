@@ -5,11 +5,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/hedzr/bgo/internal/logic/logx"
-
 	"gopkg.in/hedzr/errors.v3"
 
 	"github.com/hedzr/cmdr"
+
+	"github.com/hedzr/bgo/internal/logx"
 )
 
 func cmdrSubCmdSBOM(root cmdr.OptCmd) {

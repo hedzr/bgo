@@ -13,7 +13,7 @@ import (
 	"github.com/hedzr/log/dir"
 	"github.com/hedzr/log/exec"
 
-	"github.com/hedzr/bgo/internal/logic/logx"
+	"github.com/hedzr/bgo/internal/logx"
 )
 
 type pkgInfo struct {

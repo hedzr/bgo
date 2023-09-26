@@ -4,8 +4,9 @@ import ( //nolint:goimports //so what
 
 	"log"
 
-	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
+
+	"github.com/hedzr/bgo/internal/logx"
 )
 
 func rootAction(cmd *cmdr.Command, args []string) (err error) { //nolint:unused //no

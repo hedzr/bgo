@@ -6,8 +6,8 @@ import (
 	"github.com/hedzr/log/dir"
 
 	"github.com/hedzr/bgo/internal/logic/build"
-	"github.com/hedzr/bgo/internal/logic/logx"
-	"github.com/hedzr/bgo/internal/logic/tool"
+	"github.com/hedzr/bgo/internal/logx"
+	"github.com/hedzr/bgo/internal/tool"
 )
 
 func loopTargetPlatforms(

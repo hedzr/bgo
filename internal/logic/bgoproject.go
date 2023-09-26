@@ -2,7 +2,7 @@ package logic
 
 import (
 	"github.com/hedzr/bgo/internal/logic/build"
-	"github.com/hedzr/bgo/internal/logic/tool"
+	"github.com/hedzr/bgo/internal/tool"
 )
 
 // const BgoYamlFilename = ".bgo.yml"

@@ -4,8 +4,9 @@ package build
 import (
 	"os"
 
-	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/log/closers"
+
+	"github.com/hedzr/bgo/internal/logx"
 )
 
 var TempDir string //nolint:gochecknoglobals //no

@@ -5,10 +5,9 @@ import (
 	"runtime"
 	"sync"
 
+	"github.com/hedzr/bgo/internal/logx"
 	"github.com/hedzr/evendeep"
 	"github.com/hedzr/evendeep/flags/cms"
-
-	"github.com/hedzr/bgo/internal/logic/logx"
 )
 
 type (

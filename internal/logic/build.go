@@ -19,8 +19,8 @@ import (
 	"github.com/hedzr/cmdr"
 
 	"github.com/hedzr/bgo/internal/logic/build"
-	"github.com/hedzr/bgo/internal/logic/logx"
-	"github.com/hedzr/bgo/internal/logic/tool"
+	"github.com/hedzr/bgo/internal/logx"
+	"github.com/hedzr/bgo/internal/tool"
 	"github.com/hedzr/evendeep/dbglog"
 )
 

@@ -10,9 +10,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/log/exec"
+
+	"github.com/hedzr/bgo/internal/logx"
 )
 
 type (

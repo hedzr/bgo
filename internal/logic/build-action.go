@@ -1,10 +1,11 @@
 package logic
 
 import (
-	"github.com/hedzr/bgo/internal/logic/logx"
 	"github.com/hedzr/cmdr"
 	"github.com/hedzr/log"
 	"github.com/hedzr/log/isdelve"
+
+	"github.com/hedzr/bgo/internal/logx"
 )
 
 func listAction(cmd *cmdr.Command, args []string) (err error) {

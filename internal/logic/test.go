@@ -9,7 +9,7 @@ import (
 
 	"github.com/hedzr/cmdr"
 
-	"github.com/hedzr/bgo/internal/logic/logx"
+	"github.com/hedzr/bgo/internal/logx"
 )
 
 func cmdrSubCmdTest(root cmdr.OptCmd) {

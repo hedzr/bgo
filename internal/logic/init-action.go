@@ -3,7 +3,7 @@ package logic
 import (
 	"github.com/hedzr/cmdr"
 
-	"github.com/hedzr/bgo/internal/logic/logx"
+	"github.com/hedzr/bgo/internal/logx"
 )
 
 func initAction(cmd *cmdr.Command, args []string) (err error) {
