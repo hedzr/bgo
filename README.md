@@ -44,6 +44,10 @@ All things you need to do is entering the golang project directory and entering 
 
 - v0.5.18
   - upgrade deps
+  - fixed: `StripOrderPrefix`, ...
+
+- v0.5.18
+  - upgrade deps
   - fixed: change `SaveAs`(`--output`) field from string slice to string
 
 - v0.5.16

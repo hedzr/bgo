@@ -2,6 +2,10 @@
 
 - v0.5.18
   - upgrade deps
+  - fixed: `StripOrderPrefix`, ...
+
+- v0.5.18
+  - upgrade deps
   - fixed: change `SaveAs`(`--output`) field from string slice to string
 
 - v0.5.16
