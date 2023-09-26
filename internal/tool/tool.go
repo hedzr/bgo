@@ -12,7 +12,10 @@ func StripOrderPrefix(s string) string {
 		return s
 	}
 	a := xre.FindStringSubmatch(s)
-	return a[2]
+	if len(a) > 2 {
+		return a[2]
+	}
+	return s
 }
 
 // HasOrderPrefix tests whether an order prefix is present or not.
@@ -34,6 +37,6 @@ func NextString(length int) string {
 
 //nolint:gochecknoglobals //no
 var (
-	xre = regexp.MustCompile(`^([0-9A-Za-z]+[.-])?(.+)$`)
+	xre = regexp.MustCompile(`^([0-9A-Za-z]+[.-]){1}(.+)$`)
 	rr  = randomizer.New()
 )
