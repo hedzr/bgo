@@ -42,7 +42,8 @@ All things you need to do is entering the golang project directory and entering 
 
 ## History
 
-- v0.5.21
+- v0.5.21/23
+  - removed sending to coverall since a unknown/untagged error when gh action triggering the release 
   - security patch: bump golang.org/x/net from 0.15.0 to 0.17.0, and more
   - fixed a bug from errors.v3
   - upgrade deps
