@@ -91,14 +91,14 @@ jobs:
           # go install -v github.com/swaggo/swag/cmd/swag
           # go generate ./...
           go test -v -coverprofile=profile.cov ./...
-      # notifies coveralls that all test jobs are finished
-      - name: Send coverage
-        uses: shogo82148/actions-goveralls@v1
-        if: startsWith(github.ref, 'refs/tags/v') && env.ENABLE_Coveralls_Sender != 0
-        with:
-          path-to-profile: profile.cov
-          parallel: true
-          parallel-finished: true
+#      # notifies coveralls that all test jobs are finished
+#      - name: Send coverage
+#        uses: shogo82148/actions-goveralls@v1
+#        if: startsWith(github.ref, 'refs/tags/v') && env.ENABLE_Coveralls_Sender != 0
+#        with:
+#          path-to-profile: profile.cov
+#          parallel: true
+#          parallel-finished: true
 
   #
   # https://docs.github.com/en/actions/learn-github-actions/contexts#job-context
