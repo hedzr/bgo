@@ -1,6 +1,11 @@
 # CHANGELOG
 
-- v0.5.18
+- v0.5.21
+  - security patch: bump golang.org/x/net from 0.15.0 to 0.17.0, and more
+  - fixed a bug from errors.v3
+  - upgrade deps
+
+- v0.5.19
   - upgrade deps
   - fixed: `StripOrderPrefix`, ...
 
