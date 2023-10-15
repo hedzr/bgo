@@ -20,7 +20,7 @@ root = true
 # ij_wrap_on_typing = false
 trim_trailing_whitespace = false
 
-[*.{css,scss,sass]
+[*.{css,scss,sass}]
 indent_style = tab
 # ij_visual_guides =
 # ij_css_align_closing_brace_with_properties = false
@@ -66,7 +66,7 @@ trim_trailing_whitespace = true
 indent_size = 2
 tab_width = 2
 
-[{*.ant,*.fxml,*.jhm,*.jnlp,*.jrxml,*.rng,*.tld,*.wsdl,*.xml,*.xsd,*.xsl,*.xslt,*.xul}]
+[*.{ant,fxml,jhm,jnlp,jrxml,rng,tld,wsdl,xml,xsd,xsl,xslt,xul}]
 # ij_visual_guides =
 # ij_xml_align_attributes = true
 # ij_xml_align_text = false
@@ -280,7 +280,7 @@ tab_width = 2
 # ij_typescript_while_on_new_line = false
 # ij_typescript_wrap_comments = false
 
-[{*.bash,*.sh,*.zsh,*.fish}]
+[*.{bash,sh,zsh,fish}]
 indent_size = 2
 indent_style = tab
 tab_width = 2
@@ -294,11 +294,12 @@ tab_width = 2
 # ij_shell_switch_cases_indented = false
 # ij_shell_use_unix_line_separator = true
 
-[{*.c,*.c++,*.c++m,*.cc,*.ccm,*.cp,*.cpp,*.cppm,*.cu,*.cuh,*.cxx,*.cxxm,*.h,*.h++,*.hh,*.hp,*.hpp,*.hxx,*.i,*.icc,*.ii,*.inl,*.ino,*.ipp,*.ixx,*.m,*.mm,*.mxx,*.pch,*.tcc,*.tpp}]
+[*.{c,c++,c++m,cc,ccm,cp,cpp,cppm,cu,cuh,cxx,cxxm,h,h++,hh,hp,hpp,hxx,i,icc,ii,inl,ino,ipp,ixx,m,mm,mxx,pch,tcc,tlh,tli,tpp}]
 indent_size = 2
 indent_style = tab
 tab_width = 2
-trim_trailing_whitespace = true
+# trim_trailing_whitespace = true
+
 # ij_visual_guides =
 # ij_c_add_brief_tag = true
 # ij_c_add_getter_prefix = true
@@ -590,7 +591,72 @@ trim_trailing_whitespace = true
 # ij_c_while_on_new_line = false
 # ij_c_wrap_property_declaration = off
 
-[{*.cjs,*.js}]
+# # Visual C++ Code Style settings
+# 
+# cpp_generate_documentation_comments = doxygen_slash_star
+# 
+# # Visual C++ Formatting settings
+# 
+# cpp_indent_braces = false
+# cpp_indent_multi_line_relative_to = innermost_parenthesis
+# cpp_indent_within_parentheses = align_to_parenthesis
+# cpp_indent_preserve_within_parentheses = true
+# cpp_indent_case_contents = true
+# cpp_indent_case_labels = false
+# cpp_indent_case_contents_when_block = false
+# cpp_indent_lambda_braces_when_parameter = true
+# cpp_indent_goto_labels = one_left
+# cpp_indent_preprocessor = leftmost_column
+# cpp_indent_access_specifiers = false
+# cpp_indent_namespace_contents = true
+# cpp_indent_preserve_comments = false
+# cpp_new_line_before_open_brace_namespace = same_line
+# cpp_new_line_before_open_brace_type = same_line
+# cpp_new_line_before_open_brace_function = same_line
+# cpp_new_line_before_open_brace_block = same_line
+# cpp_new_line_before_open_brace_lambda = same_line
+# cpp_new_line_scope_braces_on_separate_lines = true
+# cpp_new_line_close_brace_same_line_empty_type = false
+# cpp_new_line_close_brace_same_line_empty_function = false
+# cpp_new_line_before_catch = true
+# cpp_new_line_before_else = false
+# cpp_new_line_before_while_in_do_while = false
+# cpp_space_before_function_open_parenthesis = remove
+# cpp_space_within_parameter_list_parentheses = false
+# cpp_space_between_empty_parameter_list_parentheses = false
+# cpp_space_after_keywords_in_control_flow_statements = true
+# cpp_space_within_control_flow_statement_parentheses = false
+# cpp_space_before_lambda_open_parenthesis = false
+# cpp_space_within_cast_parentheses = false
+# cpp_space_after_cast_close_parenthesis = true
+# cpp_space_within_expression_parentheses = false
+# cpp_space_before_block_open_brace = true
+# cpp_space_between_empty_braces = true
+# cpp_space_before_initializer_list_open_brace = true
+# cpp_space_within_initializer_list_braces = true
+# cpp_space_preserve_in_initializer_list = true
+# cpp_space_before_open_square_bracket = false
+# cpp_space_within_square_brackets = false
+# cpp_space_before_empty_square_brackets = false
+# cpp_space_between_empty_square_brackets = false
+# cpp_space_group_square_brackets = true
+# cpp_space_within_lambda_brackets = false
+# cpp_space_between_empty_lambda_brackets = false
+# cpp_space_before_comma = false
+# cpp_space_after_comma = true
+# cpp_space_remove_around_member_operators = true
+# cpp_space_before_inheritance_colon = true
+# cpp_space_before_constructor_colon = true
+# cpp_space_remove_before_semicolon = true
+# cpp_space_after_semicolon = true
+# cpp_space_remove_around_unary_operator = true
+# cpp_space_around_binary_operator = insert
+# cpp_space_around_assignment_operator = insert
+# cpp_space_pointer_reference_alignment = left
+# cpp_space_around_ternary_operator = insert
+# cpp_wrap_preserve_blocks = never
+
+[*.{cjs,js}]
 indent_size = 2
 tab_width = 2
 # ij_continuation_indent_size = 4
@@ -782,7 +848,7 @@ indent_style = tab
 # ij_cmake_spaces_within_while_parentheses = false
 
 [{*.har,*.jsb2,*.jsb3,*.json,.babelrc,.eslintrc,.stylelintrc,bowerrc,jest.config}]
-# indent_size = 2
+indent_size = 2
 # ij_visual_guides =
 # ij_json_array_wrapping = split_into_lines
 # ij_json_keep_blank_lines_in_code = 0
@@ -799,7 +865,8 @@ indent_style = tab
 # ij_json_spaces_within_brackets = false
 # ij_json_wrap_long_lines = false
 
-[{*.htm,*.html,*.sht,*.shtm,*.shtml}]
+[*.{htm,html,sht,shtm,shtml}]
+indent_size = 2
 # ij_visual_guides =
 # ij_html_add_new_line_before_tags = body,div,p,form,h1,h2,h3
 # ij_html_align_attributes = true
@@ -828,8 +895,8 @@ indent_style = tab
 # ij_html_space_inside_empty_tag = false
 # ij_html_text_wrap = normal
 
-[{*.http,*.rest}]
-# indent_size = 0
+[*.{http,rest}]
+indent_size = 0
 # ij_continuation_indent_size = 4
 # ij_visual_guides =
 # ij_http-request_call_parameters_wrap = normal
@@ -837,7 +904,7 @@ indent_style = tab
 # ij_http-request_space_before_comma = true
 # ij_http-request_spaces_around_assignment_operators = true
 
-[{*.markdown,*.mkd,*.md}]
+[*.{markdown,mkd,md}]
 indent_style = tab
 insert_final_newline = true
 trim_trailing_whitespace = false
@@ -863,7 +930,7 @@ trim_trailing_whitespace = false
 indent_style = tab
 # ij_visual_guides =
 
-[{*.py,*.pyw}]
+[*.{py,pyw}]
 indent_size = 2
 indent_style = tab
 tab_width = 2
@@ -939,7 +1006,8 @@ tab_width = 2
 # ij_python_use_continuation_indent_for_parameters = true
 # ij_python_wrap_long_lines = false
 
-[{*.qml,*.qmltypes}]
+[*.{qml,qmltypes}]
+indent_style = space
 # ij_continuation_indent_size = 4
 # ij_visual_guides =
 # ij_qmllang_align_imports = false
