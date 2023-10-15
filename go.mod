@@ -3,8 +3,8 @@ module github.com/hedzr/bgo
 go 1.18
 
 require (
-	github.com/hedzr/cmdr v1.11.21
-	github.com/hedzr/evendeep v0.4.13
+	github.com/hedzr/cmdr v1.11.23
+	github.com/hedzr/evendeep v0.4.17
 	github.com/hedzr/log v1.6.23
 	github.com/hedzr/logex v1.6.23
 	golang.org/x/crypto v0.14.0
