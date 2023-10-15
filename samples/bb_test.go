@@ -12,12 +12,17 @@ import (
 // TestErrorsIs _
 func TestErrorsIs(t *testing.T) {
 	_, err := strconv.ParseFloat("hello", 64)
+
 	t.Logf("err = %+v", err)
+
 	e1 := errors2.Unwrap(err)
 	t.Logf("e1 = %+v", e1)
 
+	t.Logf("err = %+v", err)
 	t.Logf("errors.Is(err, strconv.ErrSyntax): %v", errors.Is(err, strconv.ErrSyntax))
+	t.Logf("err = %+v", err)
 	t.Logf("errors.Is(err, &strconv.NumError{}): %v", errors.Is(err, &strconv.NumError{}))
+	t.Logf("err = %+v", err)
 
 	var e2 *strconv.NumError
 	if errors.As(err, &e2) {
