@@ -2,6 +2,8 @@ swaggerdocs/
 bgo.yml
 _bgo
 .local/
+lint.txt
+logs/
 
 test*.bash
 go.work*
