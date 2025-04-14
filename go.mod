@@ -6,7 +6,7 @@ toolchain go1.23.7
 
 require (
 	github.com/hedzr/cmdr v1.11.26
-	github.com/hedzr/evendeep v1.3.11
+	github.com/hedzr/evendeep v1.2.10
 	github.com/hedzr/log v1.6.25
 	github.com/hedzr/logex v1.11.26
 	golang.org/x/crypto v0.37.0
