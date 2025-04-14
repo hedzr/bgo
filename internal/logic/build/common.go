@@ -153,7 +153,7 @@ func (c *Common) MergeFrom(from *Common) {
 	// cc.EachFieldAlways = true
 
 	logx.Log(`Common.MergeFrom: from = %+v`, from)
-	// defer dbglog.DisableLog()()
+	// defer dbglog.DisableLogAndDefer()()
 	if err := cc.CopyTo(from, &c); err != nil {
 		logx.Error("Common.CloneFrom failed: %v", err)
 	}

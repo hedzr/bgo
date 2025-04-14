@@ -32,7 +32,7 @@ func saveNewBgoYamlFile(bs *BgoSettings) (err error) {
 
 	saveCmdrOptions := func() func() {
 		logx.Log(`saving cmdr checkpoint`)
-		defer dbglog.DisableLog()()
+		defer dbglog.DisableLogAndDefer()()
 		err = cmdr.SaveCheckpoint()
 		if err != nil {
 			logx.Error("CANNOT save cmdr options checkpoint. err: %+v", err)

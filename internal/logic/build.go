@@ -173,7 +173,7 @@ func ensureProject(pi *pkgInfo, bc *build.Context, bs *BgoSettings) {
 //nolint:gocognit //no
 func saveBackToBs(packages map[string]*pkgInfo, bs *BgoSettings) (err error) {
 	cloneTool := func(from, to *ProjectWrap) {
-		defer dbglog.DisableLog()()
+		defer dbglog.DisableLogAndDefer()()
 		cmdr.Clone(from, to)
 	}
 
